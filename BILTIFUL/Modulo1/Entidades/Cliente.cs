@@ -123,10 +123,6 @@ namespace BILTIFUL.Modulo1
 
         static bool VerificarCpf(string cpf)
         {
-            bool v1 = IsRepetido(cpf);
-            bool v2 = ValidacaoDigitoUm(cpf);
-            bool v3 = ValidacaoDigitoDois(cpf);
-
             return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
         }
 
