@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BILTIFUL.Modulo4.Entidades
+namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
-    internal class ItemProduto
+    internal class ManipularCliente
     {
     }
 }
