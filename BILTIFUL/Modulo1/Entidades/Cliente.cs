@@ -53,9 +53,81 @@ namespace BILTIFUL.Modulo1
         }
 
 
-        public static bool VerificarCpf(string cpf)
+        private static bool IsRepetido(string str)
         {
-            throw new NotImplementedException();
+
+            int nroRepetidos = 0;
+            for (int i = 0; i < str.Length - 1; i++)
+            {
+                int n1 = int.Parse(str.Substring(i, 1));
+                int n2 = int.Parse(str.Substring(i + 1, 1));
+
+                if (n1 == n2)
+                {
+                    nroRepetidos++;
+                }
+            }
+
+            return nroRepetidos == str.Length - 1;
+        }
+
+
+
+
+        private static bool ValidacaoDigitoUm(string str)
+        {
+            if (str.Length < 11)
+            {
+                return false;
+            }
+
+            int resultado = 0;
+            for (int i = 0, multiplica = 10; i < 9; i++, multiplica--)
+            {
+                int digito = int.Parse(str.Substring(i, 1));
+                resultado += digito * multiplica;
+            }
+
+            // O resto deve ser igual ao primeiro digito verificador
+            int resto = (resultado * 10) % 11;
+            int digitoUm = int.Parse(str.Substring(9, 1));
+
+            return resto == digitoUm;
+        }
+
+
+
+
+        private static bool ValidacaoDigitoDois(string str)
+        {
+            if (str.Length < 11)
+            {
+                return false;
+            }
+
+            int resultado = 0;
+            for (int i = 0, multiplica = 11; i < 10; i++, multiplica--)
+            {
+                int digito = int.Parse(str.Substring(i, 1));
+                resultado += digito * multiplica;
+            }
+
+            int resto = (resultado * 10) % 11;
+
+            int digito2 = int.Parse(str.Substring(10, 1));
+
+            return resto == digito2;
+        }
+
+
+
+        static bool VerificarCpf(string cpf)
+        {
+            bool v1 = IsRepetido(cpf);
+            bool v2 = ValidacaoDigitoUm(cpf);
+            bool v3 = ValidacaoDigitoDois(cpf);
+
+            return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
         }
 
         public string FormatarParaArquivo()
