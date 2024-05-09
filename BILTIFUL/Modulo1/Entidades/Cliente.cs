@@ -19,7 +19,8 @@ namespace BILTIFUL.Modulo1
         public Cliente(string cpf, string nome, DateOnly dataNascimento, char sexo)
         {
             Cpf = cpf;
-            Nome = nome;
+            Nome = FormatarNome(nome);
+
             DataNascimento = dataNascimento;
             Sexo = sexo;
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -40,7 +41,46 @@ namespace BILTIFUL.Modulo1
 
             DataCadastro = ConverterParaData(data.Substring(78, 8));
             Situacao = char.Parse(data.Substring(86, 1));
+        }
 
+        // Metodos
+        public static bool VerificarCpf(string cpf)
+        {
+            return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
+        }
+
+        public string FormatarParaArquivo()
+        {
+            string data = "";
+
+            data += Cpf;
+            data += Nome;
+            data += ConverterDataParaString(DataNascimento);
+            data += Sexo;
+            data += ConverterDataParaString(UltimaCompra);
+            data += ConverterDataParaString(DataCadastro);
+            data += Situacao;
+
+            return data;
+        }
+
+        // Conversoes
+        private string FormatarNome(string n)
+        {
+            string nomeFormatado = n;
+
+            nomeFormatado = n;
+
+            // caso o nome tenha menos que 50
+            while (nomeFormatado.Length < 50)
+            {
+                nomeFormatado += ' ';
+            }
+
+            // caso o nome tenha mais que 50
+            nomeFormatado = nomeFormatado.Substring(0, 50);
+
+            return nomeFormatado;
         }
 
         private DateOnly ConverterParaData(string data)
@@ -52,7 +92,21 @@ namespace BILTIFUL.Modulo1
             return DateOnly.Parse($"{dia}/{mes}/{ano}");
         }
 
+        private string ConverterDataParaString(DateOnly data)
+        {
+            string dataStr = "";
+            int dia = data.Day;
+            int mes = data.Month;
+            int ano = data.Year;
 
+            dataStr += $"{dia:00}";
+            dataStr += $"{mes:00}";
+            dataStr += $"{ano:0000}";
+
+            return dataStr;
+        }
+
+        // Validacoes do cpf
         private static bool IsRepetido(string str)
         {
 
@@ -70,9 +124,6 @@ namespace BILTIFUL.Modulo1
 
             return nroRepetidos == str.Length - 1;
         }
-
-
-
 
         private static bool ValidacaoDigitoUm(string str)
         {
@@ -95,9 +146,6 @@ namespace BILTIFUL.Modulo1
             return resto == digitoUm;
         }
 
-
-
-
         private static bool ValidacaoDigitoDois(string str)
         {
             if (str.Length < 11)
@@ -119,16 +167,5 @@ namespace BILTIFUL.Modulo1
             return resto == digito2;
         }
 
-
-
-        static bool VerificarCpf(string cpf)
-        {
-            return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
-        }
-
-        public string FormatarParaArquivo()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
