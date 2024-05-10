@@ -33,43 +33,37 @@ namespace BILTIFUL.Modulo1
             Cpf = data.Substring(0, 11);
             Nome = data.Substring(11, 50);
 
-            DataNascimento = ConverterParaData(data.Substring(61, 8));
-
+            DataNascimento = DateOnly.ParseExact(data.Substring(61, 8), "ddMMyyyy", null);
             Sexo = char.Parse(data.Substring(69, 1));
 
-            UltimaCompra = ConverterParaData(data.Substring(70, 8));
+            UltimaCompra = DateOnly.ParseExact(data.Substring(70, 8), "ddMMyyyy", null);
+            DataCadastro = DateOnly.ParseExact(data.Substring(78, 8), "ddMMyyyy", null);
 
-            DataCadastro = ConverterParaData(data.Substring(78, 8));
             Situacao = char.Parse(data.Substring(86, 1));
         }
 
-        // Metodos
-        public static bool VerificarCpf(string cpf)
-        {
-            return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
-        }
 
+        // Metodos publicos
         public string FormatarParaArquivo()
         {
             string data = "";
 
             data += Cpf;
             data += Nome;
-            data += ConverterDataParaString(DataNascimento);
+            data += DataNascimento.ToString().Replace("/", "");
             data += Sexo;
-            data += ConverterDataParaString(UltimaCompra);
-            data += ConverterDataParaString(DataCadastro);
+            data += UltimaCompra.ToString().Replace("/", "");
+            data += DataCadastro.ToString().Replace("/", "");
             data += Situacao;
 
             return data;
         }
 
-        // Conversoes
+
+        // metodos privates
         private string FormatarNome(string n)
         {
             string nomeFormatado = n;
-
-            nomeFormatado = n;
 
             // caso o nome tenha menos que 50
             while (nomeFormatado.Length < 50)
@@ -83,30 +77,13 @@ namespace BILTIFUL.Modulo1
             return nomeFormatado;
         }
 
-        private DateOnly ConverterParaData(string data)
-        {
-            string dia = data.Substring(0, 2);
-            string mes = data.Substring(2, 2);
-            string ano = data.Substring(4, 4);
 
-            return DateOnly.Parse($"{dia}/{mes}/{ano}");
+        // Metodos estaticos
+        public static bool VerificarCpf(string cpf)
+        {
+            return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
         }
 
-        private string ConverterDataParaString(DateOnly data)
-        {
-            string dataStr = "";
-            int dia = data.Day;
-            int mes = data.Month;
-            int ano = data.Year;
-
-            dataStr += $"{dia:00}";
-            dataStr += $"{mes:00}";
-            dataStr += $"{ano:0000}";
-
-            return dataStr;
-        }
-
-        // Validacoes do cpf
         private static bool IsRepetido(string str)
         {
 
