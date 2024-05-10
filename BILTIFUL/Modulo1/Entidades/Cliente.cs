@@ -8,8 +8,23 @@ namespace BILTIFUL.Modulo1
 {
     internal class Cliente
     {
-        public string Cpf { get; set; }                 //11 (0-10)
-        public string Nome { get; set; }                //50 (11-60)
+        private string _cpf;    //11 (0-10)
+        private string _nome;   //50 (11-60)
+
+
+        public string Cpf
+        {
+            get => _cpf;
+            set { _cpf = RemoverCaractere(value); }
+        }
+
+        public string Nome
+        {
+            get => _nome;
+            set { _nome = FormatarNome(value); }
+        }               
+
+
         public DateOnly DataNascimento { get; set; }    //8  (61-68)
         public char Sexo { get; set; }                  //1  (69-69)
         public DateOnly UltimaCompra { get; set; }      //8  (70-77)
@@ -19,8 +34,7 @@ namespace BILTIFUL.Modulo1
         public Cliente(string cpf, string nome, DateOnly dataNascimento, char sexo)
         {
             Cpf = cpf;
-            Nome = FormatarNome(nome);
-
+            Nome = nome;
             DataNascimento = dataNascimento;
             Sexo = sexo;
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -139,7 +153,7 @@ namespace BILTIFUL.Modulo1
             // O resto deve ser igual ao primeiro digito verificador
             int resto = (resultado * 10) % 11;
 
-            if(resto == 10)
+            if (resto == 10)
             {
                 resto = 0;
             }
@@ -165,5 +179,20 @@ namespace BILTIFUL.Modulo1
             return resto == digito2;
         }
 
+
+        public string Print()
+        {
+            string result = "";
+
+            result += $"CPF..............: {Cpf}\n";
+            result += $"Nome.............: {Nome}\n";
+            result += $"Data de nasc.....: {DataNascimento}\n";
+            result += $"Sexo.............: {Sexo}\n";
+            result += $"Ultima Compra....: {UltimaCompra}\n";
+            result += $"Data de cadastro.: {DataCadastro}\n";
+            result += $"Situacao.........: {Situacao}";
+
+            return result;
+        }
     }
 }

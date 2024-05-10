@@ -8,17 +8,31 @@ namespace BILTIFUL.Modulo1
 {
     internal class Fornecedor
     {
-        public string Cnpj { get; set; }             //14 (0-13)
-        public string RazaoSocial { get; set; }      //50 (14-63)
-        public DateOnly DataAbertura { get; set; }   //8 (64-71)
-        public DateOnly UltimaCompra { get; set; }   //8 (72-79)
-        public DateOnly DataCadastro { get; set; }   //8 (80-87)
-        public char Situacao { get; set; }           //1 (88-88)
+        private string _cnpj;                         //14 (0-13)
+        private string _razaoSocial;                  //50 (14-63)
+
+
+        public string Cnpj
+        {
+            get => _cnpj;
+            set { _cnpj = Formatar(value, 14); }
+        }
+
+        public string RazaoSocial
+        {
+            get => _razaoSocial;
+            set { _razaoSocial = Formatar(value, 50); }
+        }
+
+        public DateOnly DataAbertura { get; set; }    //8 (64-71)
+        public DateOnly UltimaCompra { get; set; }    //8 (72-79)
+        public DateOnly DataCadastro { get; set; }    //8 (80-87)
+        public char Situacao { get; set; }            //1 (88-88)
 
         public Fornecedor(string cnpj, string razaoSocial, DateOnly dataAbertura)
         {
             Cnpj = cnpj;
-            RazaoSocial = FormatarRazaoSocial(razaoSocial);
+            RazaoSocial = razaoSocial;
             DataAbertura = dataAbertura;
             UltimaCompra = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -54,16 +68,16 @@ namespace BILTIFUL.Modulo1
 
 
         // Metodos privados
-        private string FormatarRazaoSocial(string n)
+        private string Formatar(string n, int tamanho)
         {
             string formatado = n;
 
-            while (formatado.Length < 50)
+            while (formatado.Length < tamanho)
             {
                 formatado += ' ';
             }
 
-            formatado = formatado.Substring(0, 50);
+            formatado = formatado.Substring(0, tamanho);
 
             return formatado;
         }
@@ -146,7 +160,7 @@ namespace BILTIFUL.Modulo1
                     nroRepetidos++;
                 }
             }
-            return nroRepetidos == cnpj.Length-1;
+            return nroRepetidos == cnpj.Length - 1;
         }
 
         static private string RemoverCaractere(string cnpj)

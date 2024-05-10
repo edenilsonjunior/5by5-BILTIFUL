@@ -45,22 +45,16 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
 
         public void Cadastrar()
         {
-            List<Cliente> clientes = Recuperar();
             string cpf, nome;
             char sexo;
             DateOnly dataNascimento;
-
+            List<Cliente> clientes = Recuperar();
 
             cpf = LerCpf(verificaRegistros: true);
-
-
             nome = MainModulo1.LerString("Digite o nome: ");
             sexo = LerSexo();
 
-
-            Cliente c = new(cpf, nome, dataNascimento, sexo);
-
-            clientes.Add(c);
+            clientes.Add(new(cpf, nome, dataNascimento, sexo));
             Salvar(clientes);
         }
 
@@ -68,26 +62,18 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         {
             List<Cliente> clientes = Recuperar();
             string cpf;
-
+            
             cpf = LerCpf(verificaRegistros: false);
 
-            Cliente achei = null;
-            foreach (var item in clientes)
-            {
-                if (item.Cpf.Equals(cpf))
-                {
-                    achei = item;
-                }
-            }
-
             Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
+
+
 
             if (c == null)
             {
                 Console.WriteLine("O cpf digitado nao existe nos registros!");
                 return;
             }
-
 
             int opcao;
 
@@ -98,8 +84,10 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
                 switch (opcao)
                 {
                     case 1:
+                        c.Nome = MainModulo1.LerString("Digite o novo nome: ");
                         break;
                     case 2:
+                        c.DataNascimento = MainModulo1.LerData("Digite a nova data de nascimento: ");
                         break;
                     case 3:
                         c.Sexo = LerSexo();
@@ -114,8 +102,8 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
 
             } while (opcao != 0);
 
-
-
+            Console.WriteLine("Usuario atualizado:");
+            Console.WriteLine(c.Print());
 
         }
 
