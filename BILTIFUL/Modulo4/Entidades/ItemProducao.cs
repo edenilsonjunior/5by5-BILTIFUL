@@ -25,6 +25,14 @@ namespace BILTIFUL.Modulo4.Entidades
             MateriaPrima = materiaPrima;
             QuantidadeMateriaPrima = quantidadeMateriaPrima;
         }
+        public ItemProducao(string data)
+        {
+            Id = Int32.Parse(data.Substring(0, 5));
+            DataProducao = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy");
+            MateriaPrima = data.Substring(13, 6);
+            QuantidadeMateriaPrima = float.Parse((data.Substring(19, 5))) / 100;
+            ItemProducao tempProducao = new(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
+        }
         public override string? ToString()
         {
             string texto = "";
@@ -32,6 +40,14 @@ namespace BILTIFUL.Modulo4.Entidades
             texto += DataProducao.ToString().Replace("/","");
             texto += MateriaPrima.ToUpper().PadLeft(6, '0');
             texto += QuantidadeMateriaPrima.ToString("N2").Replace(",", "").PadLeft(5, '0');
+            return texto;
+        }
+        public string imprimirNaTela()
+        {
+            string texto = "";
+            texto += $"DATA DE PRODUÇÃO: {DataProducao}  |";
+            texto += $" MATÉRIA PRIMA UTILIZADA: {MateriaPrima}  |";
+            texto += $" QUANTIDADE UTILIZADA: " + QuantidadeMateriaPrima.ToString("N2");
             return texto;
         }
     }
