@@ -1,4 +1,4 @@
-﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
