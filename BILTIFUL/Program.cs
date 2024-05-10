@@ -8,6 +8,7 @@ namespace BILTIFUL
         {
             Console.WriteLine("Hello, World!");
             //teste;
+            new MainModulo3();
         }
     }
 }

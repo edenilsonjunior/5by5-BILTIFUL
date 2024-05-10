@@ -48,21 +48,43 @@ namespace BILTIFUL.Modulo3
             return fornecedoresExistentes;
         }
 
-        public void VerificarFornecedorBloqueado()
+        public List<string> VerificarFornecedoresBloqueados()
         {
+            List<string> fornecedoresBloqueados = new();
             string path = @"C:\Teste\";
             string file = "Bloqueado.dat";
-            int indice = 14;
             string[] linhas = File.ReadAllLines(path + file);
 
             foreach (var linha in linhas)
             {
-                Console.WriteLine(linha);
+                fornecedoresBloqueados.Add(linha);
             }
+            return fornecedoresBloqueados;
         }
 
-        public void VerificarFornecedorDeSeisMeses()
+        public List<DateOnly> VerificarFornecedoresDeSeisMeses()
         {
+            List<string> fornecedoresComMenosDeSeisMeses = new();
+            string path = @"C:\Teste\";
+            string file = "Fornecedor.dat";
+            int indice = 71;
+            string linha = "";
+            string[] linhas = File.ReadAllLines(path + file);
+            List<DateOnly> dataAbertura = new();
+
+            for (int i = 0; i < linhas.Length; i++)
+            {
+                linha = linhas[i];
+
+                if (indice < linha.Length)
+                {
+                    string data = linha.Substring(64, 8);
+                    fornecedoresComMenosDeSeisMeses.Add(data);
+                    //Pego a lista de fornecedores e transformo de string para dateOnly
+                    dataAbertura.Add(DateOnly.ParseExact(fornecedoresComMenosDeSeisMeses[i].Substring(0, 8), "ddMMyyyy"));
+                }
+            }
+            return dataAbertura;
         }
 
         public override string? ToString()
