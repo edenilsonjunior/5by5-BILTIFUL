@@ -68,9 +68,11 @@ namespace BILTIFUL.Modulo3
             string path = @"C:\Teste\";
             string file = "Fornecedor.dat";
             int indice = 71;
-            string linha = "";
+            string linha;
             string[] linhas = File.ReadAllLines(path + file);
+            DateOnly dataAtual = DateOnly.FromDateTime(DateTime.Now);
             List<DateOnly> dataAbertura = new();
+            List<DateOnly> dataMaisSeisMeses = new();
 
             for (int i = 0; i < linhas.Length; i++)
             {
@@ -80,11 +82,21 @@ namespace BILTIFUL.Modulo3
                 {
                     string data = linha.Substring(64, 8);
                     fornecedoresComMenosDeSeisMeses.Add(data);
-                    //Pego a lista de fornecedores e transformo de string para dateOnly
+                    //Pego a lista de data de abertura de fornecedores e transformo de string para dateOnly
                     dataAbertura.Add(DateOnly.ParseExact(fornecedoresComMenosDeSeisMeses[i].Substring(0, 8), "ddMMyyyy"));
                 }
             }
-            return dataAbertura;
+            //Adiciona na lista apenas as datas de aberturas maiores ou iguais a seis meses
+            for (int i = 0; i < dataAbertura.Count; i++)
+            {
+                int diferencaEmMeses = ((dataAtual.Year - dataAbertura[i].Year) * 12) + dataAtual.Month - dataAbertura[i].Month;
+                if(diferencaEmMeses >= 6)
+                {
+                    dataMaisSeisMeses.Add(dataAbertura[i]);
+                }
+            }
+
+            return dataMaisSeisMeses;
         }
 
         public override string? ToString()

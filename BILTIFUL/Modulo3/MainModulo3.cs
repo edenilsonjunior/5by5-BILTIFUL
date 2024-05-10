@@ -5,11 +5,6 @@
         public MainModulo3()
         {
             Compra c = new Compra();
-            foreach (var cnpj in c.VerificarFornecedoresDeSeisMeses())
-            {
-                Console.WriteLine(cnpj);
-            }
-            //c.VerificarFornecedorBloqueado();
 
             Compra CadastrarCompra()
             {
