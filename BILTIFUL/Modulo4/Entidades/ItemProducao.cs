@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BILTIFUL.Modulo4.Entidades
 {
-    internal class ItemProduto
+    internal class ItemProducao
     {
     }
 }
