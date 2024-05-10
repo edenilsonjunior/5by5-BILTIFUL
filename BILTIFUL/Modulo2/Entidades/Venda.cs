@@ -1,8 +1,5 @@
-﻿/*VENDA - Classe
+﻿/*VENDA
 Atributos
-1) ID - int núm sequencial de 1 a 99999 indice 0-4 vetor?
-*não pode ter 2 registros
-2) Data - DateOnly / data atual
 3) Cliente - armazena apenas o CPF, mas mostra nome e data de nasc
 *não pode vender pra menor de 18 anos
 * não vender inadimplente(inativo no Cliente)
@@ -12,65 +9,62 @@ Função/Método
 1) cadastrar:
 2) localizar: uma venda e seus itens -percorrer lista cliente e imprimir?
 3) excluir: apaga a venda e seus respectivos itens -percorrer lista e excluir?
-4) impressão por registro: podendo ir para o próximo/anterior ou para as extremidades 
+4) impressão por registro: podendo ir para o próximo/anterior ou para as extremidades */
+using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo1.ManipuladorArquivos;
 
-salvar: FormatarParaArquivo (): string  Vendas.dat
-
-Venda - string line
-Venda (int i, DataVenda, string Cliente, int valorTotal*/
 namespace BILTIFUL.Modulo2
 {
     internal class Venda
     {
-        public int idVenda;
+        public int idVenda { get; }
         public DateOnly dataVenda;
-        public int valorTotal;
-        public string cliente;
+        public string cpfCliente;
+        public float valorTotal;
 
-        public Venda(int idVenda, DateOnly dataVenda, int valorTotal, string cliente)
+        public Venda(string data)
         {
-            this.idVenda = idVenda;//chave
-            this.dataVenda = dataVenda;
-            this.cliente = cliente;
-            this.valorTotal = valorTotal;
-
+            idVenda = int.Parse(data.Substring(0, 5));
+            dataVenda = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy", null);
+            cpfCliente = data.Substring(13, 11);
+            valorTotal = float.Parse((data.Substring(24, 7))) / 100;
         }
 
-        bool ValidarVenda()
-        {
-            return true;
-        }
 
-        public void CadastrarVenda()
-        {
-            //não pode ter 2 com o mesmo id
-        }
 
-        public void LocalizarVenda()
+        public void LocalizarImprimirVenda()
         {
-
+            //localizar e imprimir venda específica com todos os seus itens
         }
 
         public void ExcluirVenda()
         {
-
+            //localizar venda e excluir
         }
 
-        public void ImprimirRegisVenda()
+        public void ImprimirVenda()
         {
-
+            //usuário navega pelos registros, podendo ir próx/ant/prim/últm
         }
-
-
 
         public void FormatarParaArquivo()
         {
-
+            //deixar bonitinho
         }
 
-        public override string? ToString()
+
+        public static void ChecarCaminho(string CaminhoDiretorio, string CaminhoArquivo)
         {
-            return base.ToString();
+            if (!Directory.Exists(CaminhoDiretorio))
+            {
+                Directory.CreateDirectory(CaminhoDiretorio);
+            }
+            if (!File.Exists(CaminhoArquivo))
+            {
+                var file = File.Create(CaminhoArquivo);
+                file.Close();
+            }
         }
+
     }
 }
