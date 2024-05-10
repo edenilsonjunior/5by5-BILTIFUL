@@ -144,5 +144,20 @@ namespace BILTIFUL.Modulo1
             return resto == digito2;
         }
 
+        public static void salvarArquivo<T>(List<T> lista, string file)
+        {
+            string path = @"C:\BILTIFUL\";
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            StreamWriter filecontent = new(path + file);
+            foreach (var item in lista)
+            {
+                filecontent.WriteLine(item.ToString());
+            }
+            filecontent.Close();
+        }
+
     }
 }

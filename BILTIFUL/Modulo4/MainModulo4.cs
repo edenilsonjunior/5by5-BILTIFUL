@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using BILTIFUL.Modulo4.Entidades;
-using BILTIFUL.Modulo4.Utils;
+﻿using BILTIFUL.Modulo4.Entidades;
+using BILTIFUL.Modulo4.ManipuladorArquivos;
+using BILTIFUL.Modulo1;
 
 namespace BILTIFUL.Modulo4
 {
@@ -15,10 +9,10 @@ namespace BILTIFUL.Modulo4
         public MainModulo4()
         {
             // carrega listas pelos arquivos da pasta
-            List<Producao> listaProducao = new(ManipuladorArquivos.importarProducao(@"C:\BILTIFUL\", "Producao.dat"));
-            List<ItemProducao> listaItemProducao = new(ManipuladorArquivos.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
-            List<MPrima> listaMPrima = new(ManipuladorArquivos.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
-            List<Produto> listaProduto = new(ManipuladorArquivos.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
+            List<Producao> listaProducao = new(ManipuladorArquivosProducao.importarProducao(@"C:\BILTIFUL\", "Producao.dat"));
+            List<ItemProducao> listaItemProducao = new(ManipuladorArquivosProducao.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
+            List<MPrima> listaMPrima = new(ManipuladorArquivosProducao.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
+            List<Produto> listaProduto = new(ManipuladorArquivosProducao.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
 
             Menu(listaProducao, listaItemProducao);
         }
@@ -99,8 +93,8 @@ namespace BILTIFUL.Modulo4
                 {
                     Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
                     listaProducao.Add(tempProducao);
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaProducao, "Producao.txt");
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaItemProducao, "ItemProducao.txt");
+                    ManipuladorArquivosProducao.salvarArquivo(listaProducao, "Producao.dat");
+                    ManipuladorArquivosProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
                     Console.WriteLine("Produção criada com suceso!");
                 }
                 else
@@ -146,8 +140,8 @@ namespace BILTIFUL.Modulo4
                 {
                     listaItemProducao.RemoveAll(x => x.Id == Id);
                     listaProducao.Remove(producaoLocalizada);
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaProducao, "Producao.txt");
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaItemProducao, "ItemProducao.txt");
+                    ManipuladorArquivosProducao.salvarArquivo(listaProducao, "Producao.dat");
+                    ManipuladorArquivosProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
                     Console.WriteLine($"Exclusão do Id [ {Id} ] realizada com sucesso!");
                 }
                 else
@@ -238,7 +232,8 @@ namespace BILTIFUL.Modulo4
                         Console.WriteLine(item.imprimirNaTela());
                     }
                     Console.WriteLine("-".PadLeft(110, '-'));
-                } else
+                }
+                else
                 {
                     Console.WriteLine("Não foi localizada uma Produção com esse Id.");
                 }

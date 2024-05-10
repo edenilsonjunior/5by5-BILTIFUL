@@ -1,5 +1,3 @@
-using BILTIFUL.Modulo1;
-
 namespace BILTIFUL.Modulo4.Entidades
 {
     internal class ItemProducao
