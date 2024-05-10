@@ -7,8 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="C:\Users\Guilherme\Desktop\ManipuladorArquivosProducao.cs" Link="ManipuladorArquivosProducao.cs" />
-  </ItemGroup>
-
 </Project>

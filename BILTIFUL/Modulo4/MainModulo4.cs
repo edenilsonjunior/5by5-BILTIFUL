@@ -1,7 +1,6 @@
 ﻿using BILTIFUL.Modulo4.Entidades;
-using BILTIFUL.Modulo4.ManipuladorArquivos;
 using BILTIFUL.Modulo1;
-
+using BILTIFUL.Modulo4.ManipuladorArquivos;
 namespace BILTIFUL.Modulo4
 {
     internal class MainModulo4
@@ -9,14 +8,14 @@ namespace BILTIFUL.Modulo4
         public MainModulo4()
         {
             // carrega listas pelos arquivos da pasta
-            List<Producao> listaProducao = new(ManipuladorArquivos.ManipuladorArquivos.importarProducao(@"C:\BILTIFUL\", "Producao.dat"));
-            List<ItemProducao> listaItemProducao = new(ManipuladorArquivos.ManipuladorArquivos.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
-            List<MPrima> listaMPrima = new(ManipuladorArquivos.ManipuladorArquivos.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
-            List<Produto> listaProduto = new(ManipuladorArquivos.ManipuladorArquivos.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
+            List<Producao> listaProducao = new(ArquivoProducao.importarProducao(@"C:\BILTIFUL\", "Producao.dat"));
+            List<ItemProducao> listaItemProducao = new(ArquivoProducao.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
+            List<MPrima> listaMPrima = new(ArquivoProducao.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
+            List<Produto> listaProduto = new(ArquivoProducao.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
 
-            Menu(listaProducao, listaItemProducao);
+            Menu(listaProducao, listaItemProducao, listaMPrima, listaProduto);
         }
-        static void Menu(List<Producao> listaProducao, List<ItemProducao> listaItemProducao)
+        static void Menu(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
         {
             int opcao = -1;
             while (opcao != 0)
@@ -58,21 +57,66 @@ namespace BILTIFUL.Modulo4
 
             void inserirProducao()
             {
-                int Id, contador = 0;
+                int Id, Contador = 0;
                 DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
                 string Produto = "", opcao = "";
                 float Quantidade = 0;
+                bool Abortar = false;
+                Id = listaProducao.Last().Id + 1;
 
                 Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
                 Produto = Console.ReadLine();
-                Console.WriteLine("Informe a quantidade a ser produzida:");
-                Quantidade = float.Parse(Console.ReadLine());
-                Id = listaProducao.Last().Id + 1;
+
+                if (listaProduto.Find(x => x.CodigoBarras == Produto) == null)
+                {
+                    do
+                    {
+                        Console.WriteLine("Atenção: O produto não existe!");
+                        Console.WriteLine("Deseja informar o produto novamente?");
+                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
+                        opcao = Console.ReadLine();
+                        if (opcao == "s")
+                        {
+                            Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
+                            Produto = Console.ReadLine();
+                        }
+                        else
+                        {
+                            Abortar = true;
+                        }
+                    } while ((listaProduto.Find(x => x.Nome == Produto) == null) && !Abortar);
+                }
+
+                if (!Abortar)
+                {
+                    Console.WriteLine("Informe a quantidade a ser produzida:");
+                    Quantidade = float.Parse(Console.ReadLine());
+                }
+                if (Quantidade >= 1000)
+                {
+                    do
+                    {
+                        Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
+                        Console.WriteLine("Deseja corrigir a quantidade?");
+                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
+                        opcao = Console.ReadLine();
+                        if (opcao == "s")
+                        {
+                            Console.WriteLine("Informe a quantidade a ser produzida:");
+                            Quantidade = float.Parse(Console.ReadLine());
+                        }
+                        else
+                        {
+                            Abortar = true;
+                        }
+                    }
+                    while (Quantidade >= 1000 && !Abortar);
+                }
 
                 // Add na lista item producao os itens de materia prima
-                do
+                while (opcao.ToLower() != "n" && opcao.ToLower() != "x" && !Abortar)
                 {
-                    if (contador > 1)
+                    if (Contador > 1)
                     {
                         Console.WriteLine("Deseja inserir mais uma matéria prima?\nS - Sim\nN - Nao\nX - Anular insercao");
                         opcao = Console.ReadLine();
@@ -80,21 +124,25 @@ namespace BILTIFUL.Modulo4
                         {
                             listaItemProducao.Add(inserirItemProducao(Id));
                         }
+                        else if (opcao.ToLower() == "x")
+                        {
+                            Abortar = true;
+                        }
                     }
                     else
                     {
                         listaItemProducao.Add(inserirItemProducao(Id));
                     }
-                    contador++;
-                } while (opcao.ToLower() != "n" && opcao.ToLower() != "x");
+                    Contador++;
+                }
 
                 // Por fim cria a producao em si
-                if (opcao.ToLower() != "x")
+                if (opcao.ToLower() != "x" && !Abortar)
                 {
                     Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
                     listaProducao.Add(tempProducao);
-                    ManipuladorArquivos.ManipuladorArquivos.salvarArquivo(listaProducao, "Producao.dat");
-                    ManipuladorArquivos.ManipuladorArquivos.salvarArquivo(listaItemProducao, "ItemProducao.dat");
+                    ArquivoProducao.salvarArquivo(listaProducao, "Producao.dat");
+                    ArquivoProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
                     Console.WriteLine("Produção criada com suceso!");
                 }
                 else
@@ -105,6 +153,7 @@ namespace BILTIFUL.Modulo4
                 Console.WriteLine("Pressione qualquer tecla para continuar.");
                 Console.ReadKey();
             }
+
             ItemProducao inserirItemProducao(int Id)
             {
                 DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
@@ -140,8 +189,8 @@ namespace BILTIFUL.Modulo4
                 {
                     listaItemProducao.RemoveAll(x => x.Id == Id);
                     listaProducao.Remove(producaoLocalizada);
-                    ManipuladorArquivos.ManipuladorArquivos.salvarArquivo(listaProducao, "Producao.dat");
-                    ManipuladorArquivos.ManipuladorArquivos.salvarArquivo(listaItemProducao, "ItemProducao.dat");
+                    ArquivoProducao.salvarArquivo(listaProducao, "Producao.dat");
+                    ArquivoProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
                     Console.WriteLine($"Exclusão do Id [ {Id} ] realizada com sucesso!");
                 }
                 else
