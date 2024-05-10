@@ -7,7 +7,7 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
     {
         public ArquivoProducao()
         {
-            
+
         }
         public static List<Producao> importarProducao(string path, string file)
         {
@@ -173,6 +173,37 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 filecontent.WriteLine(item.ToString());
             }
             filecontent.Close();
+        }
+        public static void ChecarCaminho(string path)
+        {
+            string file = "";
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        file = "Producao.dat";
+                        break;
+                    case 1:
+                        file = "ItemProducao.dat";
+                        break;
+                    case 2:
+                        file = "Materia.dat";
+                        break;
+                    case 3:
+                        file = "Cosmetico.dat";
+                        break;
+                }
+                if (!File.Exists(path + file))
+                {
+                    var newfile = File.Create(path + file);
+                    newfile.Close();
+                }
+            }
         }
     }
 }

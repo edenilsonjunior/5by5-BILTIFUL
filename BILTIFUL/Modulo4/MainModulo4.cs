@@ -7,11 +7,13 @@ namespace BILTIFUL.Modulo4
     {
         public MainModulo4()
         {
+            string path = @"C:\BILTIFUL\";
             // Carrega Listas pelos arquivos da pasta
-            List<Producao> listaProducao = new(ArquivoProducao.importarProducao(@"C:\BILTIFUL\", "Producao.dat"));
-            List<ItemProducao> listaItemProducao = new(ArquivoProducao.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
-            List<MPrima> listaMPrima = new(ArquivoProducao.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
-            List<Produto> listaProduto = new(ArquivoProducao.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
+            ArquivoProducao.ChecarCaminho(path);
+            List<Producao> listaProducao = new(ArquivoProducao.importarProducao(path, "Producao.dat"));
+            List<ItemProducao> listaItemProducao = new(ArquivoProducao.importarItemProducao(path, "ItemProducao.dat"));
+            List<MPrima> listaMPrima = new(ArquivoProducao.importarMPrima(path, "Materia.dat"));
+            List<Produto> listaProduto = new(ArquivoProducao.importarProduto(path, "Cosmetico.dat"));
 
             // Chama a função do Menu que carrega as demais funções
             Menu(listaProducao, listaItemProducao, listaMPrima, listaProduto);
@@ -22,7 +24,7 @@ namespace BILTIFUL.Modulo4
                 while (opcao != 0)
                 {
                     Console.Clear();
-                    Console.WriteLine("====== Cadastrar Produção ======");
+                    Console.WriteLine("======Produção======");
 
                     Console.WriteLine("Opção:");
                     Console.WriteLine("1 - Cadastrar Produção");
@@ -35,23 +37,18 @@ namespace BILTIFUL.Modulo4
 
                     switch (opcao)
                     {
-                        // sair
                         case 0:
                             Console.WriteLine("Saindo do módulo Produção");
                             break;
-                        // cadastrar
                         case 1:
                             inserirProducao();
                             break;
-                        // localizar
                         case 2:
                             localizarProducao();
                             break;
-                        // excluir
                         case 3:
                             excluirProducao();
                             break;
-                        // impressao
                         case 4:
                             imprimirProducao();
                             break;
@@ -101,7 +98,6 @@ namespace BILTIFUL.Modulo4
                         }
                     } while ((listaProduto.Find(x => x.CodigoBarras == Produto) == null) && !Abortar);
                 }
-
                 if (!Abortar)
                 {
                     Console.WriteLine("Informe a quantidade a ser produzida:");
@@ -112,20 +108,10 @@ namespace BILTIFUL.Modulo4
                     do
                     {
                         Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
-                        Console.WriteLine("Deseja corrigir a quantidade?");
-                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
-                        opcao = Console.ReadLine();
-                        if (opcao.ToLower() == "s")
-                        {
-                            Console.WriteLine("Informe a quantidade a ser produzida:");
-                            Quantidade = retornarFloat();
-                        }
-                        else
-                        {
-                            Abortar = true;
-                        }
+                        Console.WriteLine("Informe a quantidade a ser produzida:");
+                        Quantidade = retornarFloat();
                     }
-                    while (Quantidade >= 1000 && !Abortar);
+                    while (Quantidade >= 1000);
                 }
 
                 // Add na lista item producao os itens de materia prima
@@ -196,7 +182,7 @@ namespace BILTIFUL.Modulo4
                 Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
                 MateriaPrima = Console.ReadLine().ToUpper();
 
-                if (listaItemProducao.Find(x => x.MateriaPrima == MateriaPrima) == null)
+                if (listaMPrima.Find(x => x.Id == MateriaPrima) == null)
                 {
                     do
                     {
@@ -213,13 +199,23 @@ namespace BILTIFUL.Modulo4
                         {
                             Abortar = true;
                         }
-                    } while ((listaItemProducao.Find(x => x.MateriaPrima == MateriaPrima) == null) && !Abortar);
+                    } while ((listaMPrima.Find(x => x.Id == MateriaPrima) == null) && !Abortar);
                 }
 
                 if (!Abortar)
                 {
-                    Console.WriteLine("Informe a quantidade da matéria prima a ser inserida");
+                    Console.WriteLine("Informe a quantidade da matéria prima a ser utilizada:");
                     QuantidadeMateriaPrima = retornarFloat();
+                    if (QuantidadeMateriaPrima >= 1000)
+                    {
+                        do
+                        {
+                            Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
+                            Console.WriteLine("Informe a quantidade da matéria prima a ser utilizada:");
+                            QuantidadeMateriaPrima = retornarFloat();
+                        }
+                        while (QuantidadeMateriaPrima >= 1000);
+                    }
                     itemProducao = new ItemProducao(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
                 }
                 return itemProducao;
@@ -270,64 +266,73 @@ namespace BILTIFUL.Modulo4
             {
                 int Id, IdInicial, IdFinal, opcao = 10;
                 Producao listaTemporaria;
-                IdInicial = listaProducao.First().Id;
-                Id = IdInicial;
-                IdFinal = listaProducao.Last().Id;
-                imprimirProducaoAux(IdInicial);
-                while (opcao != 9)
+                if (listaProducao.Count == 0)
                 {
-                    Console.WriteLine("Digite:");
-                    Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
-                    Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
-                    Console.WriteLine("[ 9 - Sair ]");
-                    opcao = retornarInt();
-                    switch (opcao)
+                    Console.WriteLine("Não há Produção cadastrada!");
+                    Console.WriteLine("Pressione qualquer tecla para continuar.");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    IdInicial = listaProducao.First().Id;
+                    Id = IdInicial;
+                    IdFinal = listaProducao.Last().Id;
+                    imprimirProducaoAux(IdInicial);
+                    while (opcao != 9)
                     {
-                        case 0:
-                            Id = IdInicial;
-                            imprimirProducaoAux(Id);
-                            break;
-                        case 1:
-                            if (Id > IdInicial)
-                            {
-                                do
-                                {
-                                    Id--;
-                                    listaTemporaria = listaProducao.Find(x => x.Id == Id);
-                                } while (listaTemporaria == null);
+                        Console.WriteLine("Digite:");
+                        Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
+                        Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
+                        Console.WriteLine("[ 9 - Sair ]");
+                        opcao = retornarInt();
+                        switch (opcao)
+                        {
+                            case 0:
+                                Id = IdInicial;
                                 imprimirProducaoAux(Id);
-                            }
-                            else
-                            {
-                                imprimirProducaoAux(IdInicial);
-                                Console.WriteLine("Inicio da Lista!");
-                            }
-                            break;
-                        case 2:
-                            if (Id < IdFinal)
-                            {
-                                do
+                                break;
+                            case 1:
+                                if (Id > IdInicial)
                                 {
-                                    Id++;
-                                    listaTemporaria = listaProducao.Find(x => x.Id == Id);
-                                } while (listaTemporaria == null);
+                                    do
+                                    {
+                                        Id--;
+                                        listaTemporaria = listaProducao.Find(x => x.Id == Id);
+                                    } while (listaTemporaria == null);
+                                    imprimirProducaoAux(Id);
+                                }
+                                else
+                                {
+                                    imprimirProducaoAux(IdInicial);
+                                    Console.WriteLine("Inicio da Lista!");
+                                }
+                                break;
+                            case 2:
+                                if (Id < IdFinal)
+                                {
+                                    do
+                                    {
+                                        Id++;
+                                        listaTemporaria = listaProducao.Find(x => x.Id == Id);
+                                    } while (listaTemporaria == null);
+                                    imprimirProducaoAux(Id);
+                                }
+                                else
+                                {
+                                    imprimirProducaoAux(IdFinal);
+                                    Console.WriteLine("Fim da Lista!");
+                                }
+                                break;
+                            case 3:
+                                Id = IdFinal;
                                 imprimirProducaoAux(Id);
-                            }
-                            else
-                            {
-                                imprimirProducaoAux(IdFinal);
-                                Console.WriteLine("Fim da Lista!");
-                            }
-                            break;
-                        case 3:
-                            Id = IdFinal;
-                            imprimirProducaoAux(Id);
-                            break;
-                        case 9:
-                            break;
-                        default:
-                            Console.WriteLine("Opção inválida.");
-                            break;
+                                break;
+                            case 9:
+                                break;
+                            default:
+                                Console.WriteLine("Opção inválida.");
+                                break;
+                        }
                     }
                 }
             }

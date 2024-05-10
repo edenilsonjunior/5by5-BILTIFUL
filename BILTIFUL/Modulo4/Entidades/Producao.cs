@@ -41,7 +41,7 @@
             texto = $"Id: [ {Id} ] |";
             texto += $" DATA DE PRODUÇÃO: {DataProducao} |";
             texto += $" COSMÉTICO PRODUZIDO: {Produto} |";
-            texto += $" QUANTIDADE UTILIZADA: {Quantidade.ToString("N2")}";
+            texto += $" QUANTIDADE PRODUZIDA: {Quantidade.ToString("N2")}";
             return texto;
         }
     }
