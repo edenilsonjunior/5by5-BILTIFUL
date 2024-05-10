@@ -1,4 +1,6 @@
-﻿namespace BILTIFUL
+﻿using BILTIFUL.Modulo3;
+
+namespace BILTIFUL
 {
     internal class Program
     {
