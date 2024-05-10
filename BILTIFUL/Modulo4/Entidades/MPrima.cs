@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BILTIFUL.Modulo1
+namespace BILTIFUL.Modulo4.Entidades
 {
     internal class MPrima
     {
@@ -64,9 +64,9 @@ namespace BILTIFUL.Modulo1
 
         public static bool VerificarId(string id)
         {
-            if(id.Length != 6)
+            if (id.Length != 6)
                 return false;
-            
+
             string mp = id.Substring(0, 2);
             if (mp[0] != 'M' || mp[1] != 'P')
                 return false;
@@ -75,7 +75,7 @@ namespace BILTIFUL.Modulo1
             if (!conversao)
                 return false;
 
-            return true;            
+            return true;
         }
     }
 }

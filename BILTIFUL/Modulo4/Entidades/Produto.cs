@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BILTIFUL.Modulo1
+namespace BILTIFUL.Modulo4.Entidades
 {
     internal class Produto
     {
@@ -86,7 +86,7 @@ namespace BILTIFUL.Modulo1
 
             bool resultadoTry = int.TryParse(cod.Substring(0, 3), out int inicio);
 
-            if (!resultadoTry) 
+            if (!resultadoTry)
                 return false;
 
             return inicio == 789;

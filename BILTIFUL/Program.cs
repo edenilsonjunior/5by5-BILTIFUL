@@ -6,7 +6,7 @@ namespace BILTIFUL
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            //Console.WriteLine("Hello, World!");
             //teste;
             new MainModulo3();
         }
