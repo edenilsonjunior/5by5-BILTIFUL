@@ -1,9 +1,4 @@
 ﻿using BILTIFUL.Modulo1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BILTIFUL.Modulo4.Entidades
 {
@@ -15,7 +10,7 @@ namespace BILTIFUL.Modulo4.Entidades
         public float QuantidadeMateriaPrima { get; set; }
         public ItemProducao()
         {
-            
+
         }
 
         public ItemProducao(int id, DateOnly dataProducao, string materiaPrima, float quantidadeMateriaPrima)
@@ -37,7 +32,7 @@ namespace BILTIFUL.Modulo4.Entidades
         {
             string texto = "";
             texto = Id.ToString().PadLeft(5, '0');
-            texto += DataProducao.ToString().Replace("/","");
+            texto += DataProducao.ToString().Replace("/", "");
             texto += MateriaPrima.ToUpper().PadLeft(6, '0');
             texto += QuantidadeMateriaPrima.ToString("N2").Replace(",", "").PadLeft(5, '0');
             return texto;

@@ -15,10 +15,10 @@ namespace BILTIFUL.Modulo4
         public MainModulo4()
         {
             // carrega listas pelos arquivos da pasta
-            List<Producao> listaProducao = new(Utils.ManipuladorArquivos.importarProducao());
-            List<ItemProducao> listaItemProducao = new(Utils.ManipuladorArquivos.importarItemProducao());
-            List<MPrima> listaMPrima = new(Utils.ManipuladorArquivos.importarMPrima());
-            List<Produto> listaProduto = new(Utils.ManipuladorArquivos.importarProduto());
+            List<Producao> listaProducao = new(ManipuladorArquivos.importarProducao(@"C:\BILTIFUL\", "Producao.dat"));
+            List<ItemProducao> listaItemProducao = new(ManipuladorArquivos.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
+            List<MPrima> listaMPrima = new(ManipuladorArquivos.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
+            List<Produto> listaProduto = new(ManipuladorArquivos.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
 
             Menu(listaProducao, listaItemProducao);
         }

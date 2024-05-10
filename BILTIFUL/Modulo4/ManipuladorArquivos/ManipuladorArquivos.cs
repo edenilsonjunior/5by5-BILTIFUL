@@ -1,13 +1,4 @@
 ﻿using BILTIFUL.Modulo4.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BILTIFUL.Modulo4.Utils
 {
@@ -17,12 +8,12 @@ namespace BILTIFUL.Modulo4.Utils
         {
 
         }
-        public static List<Producao> importarProducao()
+        public static List<Producao> importarProducao(string path, string file)
         {
             List<Producao> templista = new();
             try
             {
-                string path = @"C:\BILTIFUL\", file = "Producao.dat";
+                //string path = @"C:\BILTIFUL\", file = "Producao.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -60,12 +51,12 @@ namespace BILTIFUL.Modulo4.Utils
             }
             return tempProducao;
         }
-        public static List<ItemProducao> importarItemProducao()
+        public static List<ItemProducao> importarItemProducao(string path, string file)
         {
             List<ItemProducao> templista = new();
             try
             {
-                string path = @"C:\BILTIFUL\", file = "ItemProducao.dat";
+                //string path = @"C:\BILTIFUL\", file = "ItemProducao.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -106,7 +97,7 @@ namespace BILTIFUL.Modulo4.Utils
         }
         public static void salvarArquivo<T>(List<T> lista, string file)
         {
-            string path = @"C:\BILTIFUL\";//, file = "Producao.txt";
+            string path = @"C:\BILTIFUL\";
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -121,12 +112,12 @@ namespace BILTIFUL.Modulo4.Utils
 
         ///////////////
         ///
-        public static List<MPrima> importarMPrima()
+        public static List<MPrima> importarMPrima(string path, string file)
         {
             List<MPrima> templista = new();
             try
             {
-                string path = @"C:\BILTIFUL\", file = "Materia.dat";
+                //string path = @"C:\BILTIFUL\", file = "Materia.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -152,12 +143,12 @@ namespace BILTIFUL.Modulo4.Utils
             return tempProducao;
         }
 
-        public static List<Produto> importarProduto()
+        public static List<Produto> importarProduto(string path, string file)
         {
             List<Produto> templista = new();
             try
             {
-                string path = @"C:\BILTIFUL\", file = "Cosmetico.dat";
+                //string path = @"C:\BILTIFUL\", file = "Cosmetico.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
