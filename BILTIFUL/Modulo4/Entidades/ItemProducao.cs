@@ -1,4 +1,4 @@
-﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo1;
 
 namespace BILTIFUL.Modulo4.Entidades
 {
