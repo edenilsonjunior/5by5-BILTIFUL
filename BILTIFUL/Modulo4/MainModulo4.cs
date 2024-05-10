@@ -12,27 +12,28 @@ namespace BILTIFUL.Modulo4
             List<ItemProducao> listaItemProducao = new(ArquivoProducao.importarItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat"));
             List<MPrima> listaMPrima = new(ArquivoProducao.importarMPrima(@"C:\BILTIFUL\", "Materia.dat"));
             List<Produto> listaProduto = new(ArquivoProducao.importarProduto(@"C:\BILTIFUL\", "Cosmetico.dat"));
-            
-            Menu(listaProducao, listaItemProducao, listaMPrima, listaProduto);
-        }
-        static void Menu(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
-        {
-            int opcao = -1;
-            while (opcao != 0)
-            {
-                Console.Clear();
-                Console.WriteLine("====== Cadastrar Produção ======");
 
-                Console.WriteLine("Opção:");
-                Console.WriteLine("1 - Cadastrar Produção");
-                Console.WriteLine("2 - Localizar Produção");
-                Console.WriteLine("3 - Excluir Produção");
-                Console.WriteLine("4 - Impressao Produção");
-                Console.WriteLine("0 - Voltar ao Menu Inicial");
-                Console.Write("R: ");
-                if (int.TryParse(Console.ReadLine(), out int option))
+            // Chama a função do Menu que carrega as demais funções
+            Menu(listaProducao, listaItemProducao, listaMPrima, listaProduto);
+
+            void Menu(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
+            {
+                int opcao = -1;
+                while (opcao != 0)
                 {
-                    switch (option)
+                    Console.Clear();
+                    Console.WriteLine("====== Cadastrar Produção ======");
+
+                    Console.WriteLine("Opção:");
+                    Console.WriteLine("1 - Cadastrar Produção");
+                    Console.WriteLine("2 - Localizar Produção");
+                    Console.WriteLine("3 - Excluir Produção");
+                    Console.WriteLine("4 - Impressao Produção");
+                    Console.WriteLine("0 - Voltar ao Menu Inicial");
+                    Console.Write("R: ");
+                    opcao = retornarInt();
+
+                    switch (opcao)
                     {
                         // sair
                         case 0:
@@ -40,19 +41,19 @@ namespace BILTIFUL.Modulo4
                             break;
                         // cadastrar
                         case 1:
-                            inserirProducao(listaProducao, listaItemProducao, listaProduto);
+                            inserirProducao();
                             break;
                         // localizar
                         case 2:
-                            localizarProducao(listaProducao, listaItemProducao);
+                            localizarProducao();
                             break;
                         // excluir
                         case 3:
-                            excluirProducao(listaProducao, listaItemProducao);
+                            excluirProducao();
                             break;
                         // impressao
                         case 4:
-                            imprimirProducao(listaProducao, listaItemProducao);
+                            imprimirProducao();
                             break;
                         default:
                             Console.WriteLine("Opção inválida.");
@@ -60,164 +61,189 @@ namespace BILTIFUL.Modulo4
                             Console.ReadKey();
                             break;
                     }
-                    opcao = option;
+                }
+            }
+            void inserirProducao()
+            {
+                int Id, Contador = 0;
+                DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
+                string Produto = "", opcao = "";
+                float Quantidade = 0;
+                bool Abortar = false;
+                if (listaProducao.Count == 0)
+                {
+                    Id = 1;
                 }
                 else
                 {
-                    Console.WriteLine("Por favor, informe um número!");
-                    Console.Write("Pressione qualquer tecla para continuar...");
-                    Console.ReadKey();
-                    opcao = -1;
+                    Id = listaProducao.Last().Id + 1;
                 }
-            }
-        }
-        static void inserirProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<Produto> listaProduto)
-        {
-            int Id, Contador = 0;
-            DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
-            string Produto = "", opcao = "";
-            float Quantidade = 0;
-            bool Abortar = false;
-            if (listaProducao.Count == 0)
-            {
-                Id = 1;
-            }
-            else
-            {
-                Id = listaProducao.Last().Id + 1;
-            }
 
-            Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
-            Produto = Console.ReadLine();
+                Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
+                Produto = Console.ReadLine();
 
-            if (listaProduto.Find(x => x.CodigoBarras == Produto) == null)
-            {
-                do
+                if (listaProduto.Find(x => x.CodigoBarras == Produto) == null)
                 {
-                    Console.WriteLine("Atenção: O produto não existe!");
-                    Console.WriteLine("Deseja informar o produto novamente?");
-                    Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
-                    opcao = Console.ReadLine();
-                    if (opcao == "s")
+                    do
                     {
-                        Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
-                        Produto = Console.ReadLine();
+                        Console.WriteLine("Atenção: O produto não existe!");
+                        Console.WriteLine("Deseja informá-lo novamente?");
+                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
+                        opcao = Console.ReadLine();
+                        if (opcao.ToLower() == "s")
+                        {
+                            Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
+                            Produto = Console.ReadLine();
+                        }
+                        else
+                        {
+                            Abortar = true;
+                        }
+                    } while ((listaProduto.Find(x => x.CodigoBarras == Produto) == null) && !Abortar);
+                }
+
+                if (!Abortar)
+                {
+                    Console.WriteLine("Informe a quantidade a ser produzida:");
+                    Quantidade = retornarFloat();
+                }
+                if (Quantidade >= 1000 && !Abortar)
+                {
+                    do
+                    {
+                        Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
+                        Console.WriteLine("Deseja corrigir a quantidade?");
+                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
+                        opcao = Console.ReadLine();
+                        if (opcao.ToLower() == "s")
+                        {
+                            Console.WriteLine("Informe a quantidade a ser produzida:");
+                            Quantidade = retornarFloat();
+                        }
+                        else
+                        {
+                            Abortar = true;
+                        }
+                    }
+                    while (Quantidade >= 1000 && !Abortar);
+                }
+
+                // Add na lista item producao os itens de materia prima
+                while (opcao.ToLower() != "n" && opcao.ToLower() != "x" && !Abortar)
+                {
+                    if (Contador > 1 && !Abortar)
+                    {
+                        Console.WriteLine("Deseja inserir mais uma matéria prima?\nS - Sim\nN - Nao\nX - Anular insercao");
+                        opcao = Console.ReadLine();
+                        if (opcao.ToLower() == "s")
+                        {
+                            ItemProducao tempitem = inserirItemProducao(Id);
+                            if (tempitem.MateriaPrima != null)
+                            {
+                                listaItemProducao.Add(tempitem);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Matéria Prima não inserida.");
+                            }
+                        }
+                        else if (opcao.ToLower() == "x")
+                        {
+                            Abortar = true;
+                        }
                     }
                     else
                     {
-                        Abortar = true;
+                        ItemProducao tempitem = inserirItemProducao(Id);
+                        if (tempitem.MateriaPrima != null)
+                        {
+                            listaItemProducao.Add(tempitem);
+                        }
+                        else
+                        {
+                            Abortar = true;
+                        }
                     }
-                } while ((listaProduto.Find(x => x.Nome == Produto) == null) && !Abortar);
-            }
-
-            if (!Abortar)
-            {
-                Console.WriteLine("Informe a quantidade a ser produzida:");
-                Quantidade = float.Parse(Console.ReadLine());
-            }
-            if (Quantidade >= 1000)
-            {
-                do
-                {
-                    Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
-                    Console.WriteLine("Deseja corrigir a quantidade?");
-                    Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
-                    opcao = Console.ReadLine();
-                    if (opcao == "s")
-                    {
-                        Console.WriteLine("Informe a quantidade a ser produzida:");
-                        Quantidade = float.Parse(Console.ReadLine());
-                    }
-                    else
-                    {
-                        Abortar = true;
-                    }
+                    Contador++;
                 }
-                while (Quantidade >= 1000 && !Abortar);
-            }
 
-            // Add na lista item producao os itens de materia prima
-            while (opcao.ToLower() != "n" && opcao.ToLower() != "x" && !Abortar)
-            {
-                if (Contador > 1)
+                // Por fim cria a producao em si
+                if (opcao.ToLower() != "x" && !Abortar)
                 {
-                    Console.WriteLine("Deseja inserir mais uma matéria prima?\nS - Sim\nN - Nao\nX - Anular insercao");
-                    opcao = Console.ReadLine();
-                    if (opcao.ToLower() == "s")
-                    {
-                        listaItemProducao.Add(inserirItemProducao(Id));
-                    }
-                    else if (opcao.ToLower() == "x")
-                    {
-                        Abortar = true;
-                    }
+                    Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
+                    listaProducao.Add(tempProducao);
+                    ArquivoProducao.salvarArquivo(listaProducao, "Producao.dat");
+                    ArquivoProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
+                    Console.WriteLine("Produção criada com suceso!");
                 }
                 else
                 {
-                    listaItemProducao.Add(inserirItemProducao(Id));
+                    listaItemProducao.RemoveAll(x => x.Id == Id); // se for escolhido anular, exclui da lista producao item os itens
+                    Console.WriteLine("Produção anulada!");
                 }
-                Contador++;
-            }
-
-            // Por fim cria a producao em si
-            if (opcao.ToLower() != "x" && !Abortar)
-            {
-                Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
-                listaProducao.Add(tempProducao);
-                ArquivoProducao.salvarArquivo(listaProducao, "Producao.dat");
-                ArquivoProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
-                Console.WriteLine("Produção criada com suceso!");
-            }
-            else
-            {
-                listaItemProducao.RemoveAll(x => x.Id == Id); // se for escolhido anular, exclui da lista producao item os itens
-                Console.WriteLine("Produção anulada!");
-            }
-            Console.WriteLine("Pressione qualquer tecla para continuar.");
-            Console.ReadKey();
-        }
-
-        static ItemProducao inserirItemProducao(int Id)
-        {
-            DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
-            string MateriaPrima = "";
-            float QuantidadeMateriaPrima = 0;
-
-            Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
-            MateriaPrima = Console.ReadLine();
-            Console.WriteLine("Informe a quantidade da matéria prima a ser inserida");
-            QuantidadeMateriaPrima = float.Parse(Console.ReadLine());
-
-            ItemProducao itemProducao = new ItemProducao(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
-            return itemProducao;
-        }
-        static void localizarProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao)
-        {
-            Console.WriteLine("Informe o Id da produção que deseja localizar:");
-            if (int.TryParse(Console.ReadLine(), out int Id))
-            {
-                imprimirProducaoAux(Id, listaProducao, listaItemProducao);
                 Console.WriteLine("Pressione qualquer tecla para continuar.");
                 Console.ReadKey();
             }
-            else
+            ItemProducao inserirItemProducao(int Id)
             {
-                Console.WriteLine("Por favor, informe um número!");
-                Console.Write("Pressione qualquer tecla para continuar...");
+                string opcao = "";
+                bool Abortar = false;
+                DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
+                string MateriaPrima = "";
+                float QuantidadeMateriaPrima = 0;
+
+                ItemProducao itemProducao = new();
+                Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
+                MateriaPrima = Console.ReadLine().ToUpper();
+
+                if (listaItemProducao.Find(x => x.MateriaPrima == MateriaPrima) == null)
+                {
+                    do
+                    {
+                        Console.WriteLine("Atenção: A Matéria Prima não existe!");
+                        Console.WriteLine("Deseja informá-la novamente?");
+                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
+                        opcao = Console.ReadLine();
+                        if (opcao.ToLower() == "s")
+                        {
+                            Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
+                            MateriaPrima = Console.ReadLine().ToUpper();
+                        }
+                        else
+                        {
+                            Abortar = true;
+                        }
+                    } while ((listaItemProducao.Find(x => x.MateriaPrima == MateriaPrima) == null) && !Abortar);
+                }
+
+                if (!Abortar)
+                {
+                    Console.WriteLine("Informe a quantidade da matéria prima a ser inserida");
+                    QuantidadeMateriaPrima = retornarFloat();
+                    itemProducao = new ItemProducao(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
+                }
+                return itemProducao;
+            }
+            void localizarProducao()
+            {
+                int Id;
+                Console.WriteLine("Informe o Id da produção que deseja localizar:");
+                Id = retornarInt();
+                imprimirProducaoAux(Id);
+                Console.WriteLine("Pressione qualquer tecla para continuar.");
                 Console.ReadKey();
             }
-        }
-        static void excluirProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao)
-        {
-            string opcao = "";
-            Console.WriteLine("Informe o Id da produção que deseja EXCLUIR:");
-            if (int.TryParse(Console.ReadLine(), out int Id))
+            void excluirProducao()
             {
-                var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
+                string opcao = "";
+                int Id;
+                Console.WriteLine("Informe o Id da produção que deseja EXCLUIR:");
+                Id = retornarInt();
 
+                var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
                 if (producaoLocalizada != null)
                 {
-                    imprimirProducaoAux(Id, listaProducao, listaItemProducao);
+                    imprimirProducaoAux(Id);
                     Console.WriteLine("Pressione qualquer tecla para continuar.");
                     Console.ReadKey();
                     Console.WriteLine("Confirma exclusão da Produção?");
@@ -238,35 +264,28 @@ namespace BILTIFUL.Modulo4
                 }
                 Console.WriteLine("Pressione qualquer tecla para continuar.");
                 Console.ReadKey();
+
             }
-            else
+            void imprimirProducao()
             {
-                Console.WriteLine("Por favor, informe um número!");
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
-            }
-        }
-        static void imprimirProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao)
-        {
-            int Id, IdInicial, IdFinal, opcao = 10;
-            Producao listaTemporaria;
-            IdInicial = listaProducao.First().Id;
-            Id = IdInicial;
-            IdFinal = listaProducao.Last().Id;
-            imprimirProducaoAux(IdInicial, listaProducao, listaItemProducao);
-            while (opcao != 9)
-            {
-                Console.WriteLine("Digite:");
-                Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
-                Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
-                Console.WriteLine("[ 9 - Sair ]");
-                if (int.TryParse(Console.ReadLine(), out int option))
+                int Id, IdInicial, IdFinal, opcao = 10;
+                Producao listaTemporaria;
+                IdInicial = listaProducao.First().Id;
+                Id = IdInicial;
+                IdFinal = listaProducao.Last().Id;
+                imprimirProducaoAux(IdInicial);
+                while (opcao != 9)
                 {
-                    switch (option)
+                    Console.WriteLine("Digite:");
+                    Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
+                    Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
+                    Console.WriteLine("[ 9 - Sair ]");
+                    opcao = retornarInt();
+                    switch (opcao)
                     {
                         case 0:
                             Id = IdInicial;
-                            imprimirProducaoAux(Id, listaProducao, listaItemProducao);
+                            imprimirProducaoAux(Id);
                             break;
                         case 1:
                             if (Id > IdInicial)
@@ -276,11 +295,11 @@ namespace BILTIFUL.Modulo4
                                     Id--;
                                     listaTemporaria = listaProducao.Find(x => x.Id == Id);
                                 } while (listaTemporaria == null);
-                                imprimirProducaoAux(Id, listaProducao, listaItemProducao);
+                                imprimirProducaoAux(Id);
                             }
                             else
                             {
-                                imprimirProducaoAux(IdInicial, listaProducao, listaItemProducao);
+                                imprimirProducaoAux(IdInicial);
                                 Console.WriteLine("Inicio da Lista!");
                             }
                             break;
@@ -292,17 +311,17 @@ namespace BILTIFUL.Modulo4
                                     Id++;
                                     listaTemporaria = listaProducao.Find(x => x.Id == Id);
                                 } while (listaTemporaria == null);
-                                imprimirProducaoAux(Id, listaProducao, listaItemProducao);
+                                imprimirProducaoAux(Id);
                             }
                             else
                             {
-                                imprimirProducaoAux(IdFinal, listaProducao, listaItemProducao);
+                                imprimirProducaoAux(IdFinal);
                                 Console.WriteLine("Fim da Lista!");
                             }
                             break;
                         case 3:
                             Id = IdFinal;
-                            imprimirProducaoAux(Id, listaProducao, listaItemProducao);
+                            imprimirProducaoAux(Id);
                             break;
                         case 9:
                             break;
@@ -310,38 +329,68 @@ namespace BILTIFUL.Modulo4
                             Console.WriteLine("Opção inválida.");
                             break;
                     }
-                    opcao = option;
+                }
+            }
+            void imprimirProducaoAux(int Id)
+            {
+                var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
+                var producaoItemLocalizada = listaItemProducao.FindAll(x => x.Id == Id);
+
+                if (producaoLocalizada != null)
+                {
+                    Console.Clear();
+                    Console.WriteLine("-".PadLeft(110, '-'));
+                    Console.WriteLine(producaoLocalizada.imprimirNaTela());
+                    Console.WriteLine("-".PadLeft(110, '-'));
+                    foreach (ItemProducao item in producaoItemLocalizada)
+                    {
+                        Console.WriteLine(item.imprimirNaTela());
+                    }
+                    Console.WriteLine("-".PadLeft(110, '-'));
                 }
                 else
                 {
-                    Console.WriteLine("Por favor, informe um número!");
-                    Console.Write("Pressione qualquer tecla para continuar...");
-                    Console.WriteLine();
-                    Console.ReadKey();
+                    Console.WriteLine("Não foi localizada uma Produção com esse Id.");
                 }
             }
         }
-        static void imprimirProducaoAux(int Id, List<Producao> listaProducao, List<ItemProducao> listaItemProducao)
+        static float retornarFloat()
         {
-            var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
-            var producaoItemLocalizada = listaItemProducao.FindAll(x => x.Id == Id);
+            float Quantidade = 0;
+            bool ex = false;
 
-            if (producaoLocalizada != null)
+            while (!ex)
             {
-                Console.Clear();
-                Console.WriteLine("-".PadLeft(110, '-'));
-                Console.WriteLine(producaoLocalizada.imprimirNaTela());
-                Console.WriteLine("-".PadLeft(110, '-'));
-                foreach (ItemProducao item in producaoItemLocalizada)
+                if (float.TryParse(Console.ReadLine(), out float qtde))
                 {
-                    Console.WriteLine(item.imprimirNaTela());
+                    Quantidade = qtde;
+                    ex = true;
                 }
-                Console.WriteLine("-".PadLeft(110, '-'));
+                else
+                {
+                    Console.WriteLine("Formato inválido. Preencha por exemplo 0,01 1,00 10,00 100,00");
+                }
             }
-            else
+            return Quantidade;
+        }
+        static int retornarInt()
+        {
+            int Inteiro = 0;
+            bool ex = false;
+
+            while (!ex)
             {
-                Console.WriteLine("Não foi localizada uma Produção com esse Id.");
+                if (int.TryParse(Console.ReadLine(), out int varint))
+                {
+                    Inteiro = varint;
+                    ex = true;
+                }
+                else
+                {
+                    Console.WriteLine("Formato inválido. Informe números inteiros apenas.");
+                }
             }
+            return Inteiro;
         }
     }
 }
