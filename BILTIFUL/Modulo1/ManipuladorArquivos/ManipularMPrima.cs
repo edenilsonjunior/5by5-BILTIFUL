@@ -8,5 +8,13 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
     internal class ManipularMPrima
     {
+        private string _caminho;
+        private string _arquivo;
+
+        public ManipularMPrima(string caminho, string arquivo)
+        {
+            _caminho = caminho;
+            _arquivo = arquivo;
+        }
     }
 }

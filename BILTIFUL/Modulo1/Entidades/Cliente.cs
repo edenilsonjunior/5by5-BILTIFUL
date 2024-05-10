@@ -81,7 +81,29 @@ namespace BILTIFUL.Modulo1
         // Metodos estaticos
         public static bool VerificarCpf(string cpf)
         {
+            cpf = RemoverCaractere(cpf);
+
+            if (cpf.Length != 11)
+                return false;
+
+
+            bool v1 = IsRepetido(cpf);
+            bool v2 = ValidacaoDigitoUm(cpf);
+            bool v3 = ValidacaoDigitoDois(cpf);
+
+            Console.WriteLine(cpf);
+            Console.WriteLine(v1);
+            Console.WriteLine(v2);
+            Console.WriteLine(v3);
+
             return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
+        }
+
+        private static string RemoverCaractere(string cpf)
+        {
+            cpf.Replace(".", "");
+            cpf.Replace(".", "-");
+            return cpf;
         }
 
         private static bool IsRepetido(string str)
@@ -104,20 +126,24 @@ namespace BILTIFUL.Modulo1
 
         private static bool ValidacaoDigitoUm(string str)
         {
-            if (str.Length < 11)
-            {
-                return false;
-            }
-
             int resultado = 0;
-            for (int i = 0, multiplica = 10; i < 9; i++, multiplica--)
+            int multiplica = 10;
+
+            for (int i = 0; i < 9; i++)
             {
                 int digito = int.Parse(str.Substring(i, 1));
                 resultado += digito * multiplica;
+                multiplica--;
             }
 
             // O resto deve ser igual ao primeiro digito verificador
             int resto = (resultado * 10) % 11;
+
+            if(resto == 10)
+            {
+                resto = 0;
+            }
+
             int digitoUm = int.Parse(str.Substring(9, 1));
 
             return resto == digitoUm;
@@ -125,11 +151,6 @@ namespace BILTIFUL.Modulo1
 
         private static bool ValidacaoDigitoDois(string str)
         {
-            if (str.Length < 11)
-            {
-                return false;
-            }
-
             int resultado = 0;
             for (int i = 0, multiplica = 11; i < 10; i++, multiplica--)
             {

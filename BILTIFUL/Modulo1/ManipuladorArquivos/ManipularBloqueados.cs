@@ -8,5 +8,14 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
     internal class ManipularBloqueados
     {
+
+        private string _caminho;
+        private string _arquivo;
+
+        public ManipularBloqueados(string caminho, string arquivo)
+        {
+            _caminho = caminho;
+            _arquivo = arquivo;
+        }
     }
 }
