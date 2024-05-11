@@ -7,9 +7,9 @@ namespace BILTIFUL.Modulo3
         public MainModulo3()
         {
             //Variavel global
-            int valorTotal = 0;
+            int valorTotal = 0, Id = 1;
 
-            //Listas para acessar as propriedades
+            //Listas para acessar as propriedades das classes necessarias
             List<Fornecedor> listFornecedor = new List<Fornecedor>(ManipuladorArquivoCompra.importarFornecedor(@"C:\Teste\", "Fornecedor.dat"));
             List<string> listFornecedorBloqueados = new List<string>(ManipuladorArquivoCompra.importarFornecedorBloqueado(@"C:\Teste\", "Bloqueado.dat"));
             List<MPrima> listMPrima = new List<MPrima>(ManipuladorArquivoCompra.importarMPrima(@"C:\Teste\", "Materia.dat"));
@@ -20,7 +20,6 @@ namespace BILTIFUL.Modulo3
                 List<Compra> listaCompra = new();
                 var data = DateOnly.FromDateTime(DateTime.Now);
                 string tempCNPJ, mensagem = "";
-                int idCompra = 1;
 
                 bool podeCadastrar = true;
                 do
@@ -75,14 +74,17 @@ namespace BILTIFUL.Modulo3
                 if (podeCadastrar)
                 {
                     PegarMateriaPrima();
-                    compra = new(idCompra, data, tempCNPJ, valorTotal);
+
+                    //if (listaCompra.Count != 0)
+                    //{
+                    //    Id = listaCompra.Last().Id + 1;
+                    //}
+
+                    compra = new(Id, data, tempCNPJ, valorTotal);
                     listaCompra.Add(compra);
                     EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
+
                     return listaCompra;
-                }
-                else
-                {
-                    Console.WriteLine(mensagem);
                 }
                 return null;
             }
@@ -94,7 +96,7 @@ namespace BILTIFUL.Modulo3
                 bool podeCadastrar = true;
                 string mensagem = "", materiaPrimaTemp = "";
                 var dataAtual = DateOnly.FromDateTime(DateTime.Now);
-                int valorMateriaPrima = 0, valorTotalPorMateria = 0, idMPrima = 1, quantidadeCompraMPrima = 0;
+                int valorMateriaPrima = 0, valorTotalPorMateria = 0, idMPrima = Id, quantidadeCompraMPrima = 0;
 
                 Console.Write("Informe quantas matérias primas deseja comprar: ");
                 int quantidadeMPrima = int.Parse(Console.ReadLine());
