@@ -20,6 +20,11 @@
         public DateOnly DataCadastro { get; set; }  //8 (34-41)
         public char Situacao { get; set; }          //1 (42)
 
+        /// <summary>
+        /// Inicializa uma nova instância da classe MPrima com o ID e nome especificados.
+        /// </summary>
+        /// <param name="id">O ID.</param>
+        /// <param name="nome">O nome.</param>
         public MPrima(string id, string nome)
         {
             Id = id;
@@ -29,6 +34,10 @@
             Situacao = 'A';
         }
 
+        /// <summary>
+        /// Inicializa uma nova instância da classe MPrima com base nos dados fornecidos.
+        /// </summary>
+        /// <param name="data">Os dados.</param>
         public MPrima(string data)
         {
             Id = data.Substring(0, 6);
@@ -38,7 +47,11 @@
             Situacao = char.Parse(data.Substring(42, 1));
         }
 
-        // Metodos 
+
+        /// <summary>
+        /// Formata os dados da instância para serem gravados em um arquivo.
+        /// </summary>
+        /// <returns>Os dados formatados.</returns>
         public string FormatarParaArquivo()
         {
             string data = "";
@@ -52,20 +65,33 @@
             return data;
         }
 
+        /// <summary>
+        /// Retorna uma representação em string da instância.
+        /// </summary>
+        /// <returns>A representação em string da instância.</returns>
         public string Print()
         {
+            string situacao = Situacao == 'A' ? "Ativo" : "Inativo";
             string data = "";
+
             data += $"Id...........: {Id}\n";
             data += $"Nome.........: {Nome}\n";
             data += $"Ultima Compra: {UltimaCompra:dd/MM/yyyy}\n";
             data += $"Data Cadastro: {DataCadastro:dd/MM/yyyy}\n";
-            data += $"Situacao.....: {Situacao}";
+            data += $"Situacao.....: {situacao}";
 
             return data;
         }
 
 
-        // Metodos privados
+
+
+        /// <summary>
+        /// Formata uma string para o tamanho especificado.
+        /// </summary>
+        /// <param name="n">A string a ser formatada.</param>
+        /// <param name="tamanho">O tamanho desejado.</param>
+        /// <returns>A string formatada.</returns>
         private string Formatar(string n, int tamanho)
         {
             string formatado = n;
@@ -81,7 +107,12 @@
         }
 
 
-        // Metodos estaticos
+
+        /// <summary>
+        /// Verifica se o ID fornecido é válido.
+        /// </summary>
+        /// <param name="id">O ID a ser verificado.</param>
+        /// <returns>True se o ID for válido, caso contrário, False.</returns>
         public static bool VerificarId(string id)
         {
             if (id.Length != 6)

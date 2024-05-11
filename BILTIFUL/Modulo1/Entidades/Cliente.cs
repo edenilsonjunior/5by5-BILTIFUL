@@ -2,9 +2,8 @@
 {
     internal class Cliente
     {
-        private string _cpf;    //11 (0-10)
-        private string _nome;   //50 (11-60)
-
+        private string _cpf;                            //11 (0-10)
+        private string _nome;                           //50 (11-60)
 
         public string Cpf
         {
@@ -24,6 +23,13 @@
         public DateOnly DataCadastro { get; set; }      //8  (78-85)
         public char Situacao { get; set; }              //1  (86-86)
 
+        /// <summary>
+        /// Construtor da classe Cliente.
+        /// </summary>
+        /// <param name="cpf">O CPF do cliente.</param>
+        /// <param name="nome">O nome do cliente.</param>
+        /// <param name="dataNascimento">A data de nascimento do cliente.</param>
+        /// <param name="sexo">O sexo do cliente.</param>
         public Cliente(string cpf, string nome, DateOnly dataNascimento, char sexo)
         {
             Cpf = cpf;
@@ -35,6 +41,10 @@
             Situacao = 'A';
         }
 
+        /// <summary>
+        /// Construtor da classe Cliente.
+        /// </summary>
+        /// <param name="data">Os dados do cliente em formato de string.</param>
         public Cliente(string data)
         {
             Cpf = data.Substring(0, 11);
@@ -50,7 +60,10 @@
         }
 
 
-        // Metodos publicos
+        /// <summary>
+        /// Formata os dados do cliente para serem salvos em um arquivo.
+        /// </summary>
+        /// <returns>Os dados do cliente formatados em uma string.</returns>
         public string FormatarParaArquivo()
         {
             string data = "";
@@ -66,23 +79,34 @@
             return data;
         }
 
+        /// <summary>
+        /// Retorna uma representação em string dos dados do cliente.
+        /// </summary>
+        /// <returns>Uma string contendo os dados do cliente formatados.</returns>
         public string Print()
         {
-            string result = "";
+            string situacao = Situacao == 'A' ? "Ativo" : "Inativo";
 
-            result += $"CPF..............: {Cpf}\n";
-            result += $"Nome.............: {Nome}\n";
-            result += $"Data de nasc.....: {DataNascimento}\n";
-            result += $"Sexo.............: {Sexo}\n";
-            result += $"Ultima Compra....: {UltimaCompra}\n";
-            result += $"Data de cadastro.: {DataCadastro}\n";
-            result += $"Situacao.........: {Situacao}";
+            string data = "";
+            data += $"CPF.............: {Cpf}\n";
+            data += $"Nome............: {Nome}\n";
+            data += $"Data de nasc....: {DataNascimento}\n";
+            data += $"Sexo............: {Sexo}\n";
+            data += $"Ultima Compra...: {UltimaCompra}\n";
+            data += $"Data de cadastro: {DataCadastro}\n";
+            data += $"Situacao........: {situacao}";
 
-            return result;
+            return data;
         }
 
 
         // metodos privados
+
+        /// <summary>
+        /// Formata o nome do cliente.
+        /// </summary>
+        /// <param name="n">O nome do cliente.</param>
+        /// <returns>O nome do cliente formatado.</returns>
         private string FormatarNome(string n)
         {
             string nomeFormatado = n;
@@ -100,6 +124,12 @@
         }
 
         // Metodos estaticos
+
+        /// <summary>
+        /// Verifica se um CPF é válido.
+        /// </summary>
+        /// <param name="cpf">O CPF a ser verificado.</param>
+        /// <returns>True se o CPF for válido, False caso contrário.</returns>
         public static bool VerificarCpf(string cpf)
         {
             cpf = RemoverCaractere(cpf);
@@ -120,6 +150,11 @@
             return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
         }
 
+        /// <summary>
+        /// Remove caracteres especiais de um CPF.
+        /// </summary>
+        /// <param name="cpf">O CPF a ser formatado.</param>
+        /// <returns>O CPF formatado.</returns>
         private static string RemoverCaractere(string cpf)
         {
             cpf.Replace(".", "");
@@ -128,6 +163,11 @@
             return cpf;
         }
 
+        /// <summary>
+        /// Verifica se um CPF possui dígitos repetidos.
+        /// </summary>
+        /// <param name="str">O CPF a ser verificado.</param>
+        /// <returns>True se o CPF possuir dígitos repetidos, False caso contrário.</returns>
         private static bool IsRepetido(string str)
         {
 
@@ -146,6 +186,11 @@
             return nroRepetidos == str.Length - 1;
         }
 
+        /// <summary>
+        /// Realiza a validação do primeiro dígito verificador de um CPF.
+        /// </summary>
+        /// <param name="str">O CPF a ser validado.</param>
+        /// <returns>True se o primeiro dígito verificador for válido, False caso contrário.</returns>
         private static bool ValidacaoDigitoUm(string str)
         {
             int resultado = 0;
@@ -171,6 +216,11 @@
             return resto == digitoUm;
         }
 
+        /// <summary>
+        /// Realiza a validação do segundo dígito verificador de um CPF.
+        /// </summary>
+        /// <param name="str">O CPF a ser validado.</param>
+        /// <returns>True se o segundo dígito verificador for válido, False caso contrário.</returns>
         private static bool ValidacaoDigitoDois(string str)
         {
             int resultado = 0;

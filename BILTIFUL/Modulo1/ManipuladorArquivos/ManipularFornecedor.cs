@@ -9,10 +9,13 @@
         {
             _caminho = caminho;
             _arquivo = arquivo;
+            CriarDiretorioArquivo();
         }
 
-
-        // Metodos Principais
+        /// <summary>
+        /// Recupera a lista de fornecedores do arquivo.
+        /// </summary>
+        /// <returns>A lista de fornecedores.</returns>
         public List<Fornecedor> Recuperar()
         {
             List<Fornecedor> fornecedores = new();
@@ -26,6 +29,10 @@
             return fornecedores;
         }
 
+        /// <summary>
+        /// Salva a lista de fornecedores no arquivo.
+        /// </summary>
+        /// <param name="fornecedores">A lista de fornecedores a ser salva.</param>
         public void Salvar(List<Fornecedor> fornecedores)
         {
             fornecedores.Sort((f1, f2) => f1.RazaoSocial.CompareTo(f2.RazaoSocial));
@@ -39,6 +46,9 @@
             }
         }
 
+        /// <summary>
+        /// Cadastra um novo fornecedor.
+        /// </summary>
         public void Cadastrar()
         {
             string cnpj, razaoSocial;
@@ -61,6 +71,9 @@
             Salvar(fornecedores);
         }
 
+        /// <summary>
+        /// Edita um fornecedor existente.
+        /// </summary>
         public void Editar()
         {
             List<Fornecedor> fornecedores = Recuperar();
@@ -96,6 +109,10 @@
             Salvar(fornecedores);
         }
 
+        /// <summary>
+        /// Busca um fornecedor pelo CNPJ.
+        /// </summary>
+        /// <returns>O fornecedor encontrado ou null se não encontrado.</returns>
         public Fornecedor? BuscarPorCnpj()
         {
             List<Fornecedor> fornecedores = Recuperar();
@@ -104,6 +121,9 @@
             return fornecedores.Find(f => f.Cnpj.Equals(cnpj));
         }
 
+        /// <summary>
+        /// Localiza um fornecedor pelo CNPJ e exibe suas informações.
+        /// </summary>
         public void Localizar()
         {
             Fornecedor? fornecedor = BuscarPorCnpj();
@@ -118,6 +138,9 @@
             Console.WriteLine(fornecedor.Print());
         }
 
+        /// <summary>
+        /// Imprime a lista de fornecedores.
+        /// </summary>
         public void Imprimir()
         {
             List<Fornecedor> fornecedores = Recuperar();
@@ -137,7 +160,11 @@
         }
 
 
-        // Metodos privados
+
+        /// <summary>
+        /// Lê o CNPJ do fornecedor.
+        /// </summary>
+        /// <returns>O CNPJ lido.</returns>
         private string LerCnpj()
         {
             string cnpj;
@@ -153,6 +180,11 @@
             return cnpj;
         }
 
+        /// <summary>
+        /// Exibe o menu de edição do fornecedor.
+        /// </summary>
+        /// <param name="razaoSocial">A razão social do fornecedor.</param>
+        /// <returns>A opção selecionada.</returns>
         private int MenuEditar(string razaoSocial)
         {
             Console.Clear();
@@ -176,6 +208,21 @@
                 Console.Write("Pressione qualquer tecla para continuar...");
                 Console.ReadKey();
                 return MenuEditar(razaoSocial);
+            }
+        }
+
+        /// <summary>
+        /// Cria o diretório e o arquivo se não existirem.
+        /// </summary>
+        private void CriarDiretorioArquivo()
+        {
+            if (!Directory.Exists(_caminho))
+                Directory.CreateDirectory(_caminho);
+
+            if (!File.Exists(_caminho + _arquivo))
+            {
+                var file = File.Create(_caminho + _arquivo);
+                file.Close();
             }
         }
     }
