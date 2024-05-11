@@ -51,15 +51,14 @@ internal class ManipuladorArquivoCompra
 
     public static List<string> importarFornecedorBloqueado(string path, string file)
     {
-        List<string> templista = new();
+        List<string> tempLista = new();
         try
         {
-            //string path = @"C:\BILTIFUL\", file = "Producao.dat";
             if (File.Exists(path + file))
             {
                 foreach (string item in File.ReadLines(path + file))
                 {
-                    templista.Add(importarFornecedorBloqueadoAux(item));
+                    tempLista.Add(importarFornecedorBloqueadoAux(item));
                 }
             }
             else
@@ -72,22 +71,22 @@ internal class ManipuladorArquivoCompra
             Console.WriteLine("Erro inesperado!");
             Console.WriteLine(e.Message);
         }
-        return templista; // retorno essa lista para a Main e importo a minha agenda
+        return tempLista;
     }
 
     static string importarFornecedorBloqueadoAux(string conteudo)
     {
-        string tempProducao = new(conteudo);
+        string tempFornecedorBloqueado = new(conteudo);
         try
         {
-            tempProducao = new(conteudo); // constructor que recebe a linha do arquivo
+            tempFornecedorBloqueado = new(conteudo);
         }
         catch (Exception e)
         {
             Console.WriteLine("Erro inesperado.");
             Console.WriteLine(e.Message);
         }
-        return tempProducao;
+        return tempFornecedorBloqueado;
     }
 
     public static List<MPrima> importarMPrima(string path, string file)

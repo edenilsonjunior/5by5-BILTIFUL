@@ -8,12 +8,12 @@ namespace BILTIFUL.Modulo3
 {
     internal class ItemCompra
     {
-        public int id { get; set; }
-        public DateOnly dataCompra { get; set; }
-        public string materiaPrimaID { get; set; }
-        public int quantidade { get; set; }
-        public int valorUnitarioItem { get; set; }
-        public int valorTotalItem { get; set; }
+        public int Id { get; set; }
+        public DateOnly DataCompra { get; set; }
+        public string MateriaPrimaID { get; set; }
+        public int Quantidade { get; set; }
+        public int ValorUnitarioItem { get; set; }
+        public int ValorTotalItem { get; set; }
 
         public ItemCompra()
         {
@@ -21,22 +21,22 @@ namespace BILTIFUL.Modulo3
 
         public ItemCompra(int id, DateOnly dataCompra, string materiaPrimaID, int quantidade, int valorUnitarioItem, int valorTotalItem)
         {
-            this.id = id;
-            this.dataCompra = dataCompra;
-            this.materiaPrimaID = materiaPrimaID;
-            this.quantidade = quantidade;
-            this.valorUnitarioItem = valorUnitarioItem;
-            this.valorTotalItem = valorTotalItem;
+            Id = id;
+            DataCompra = dataCompra;
+            MateriaPrimaID = materiaPrimaID;
+            Quantidade = quantidade;
+            ValorUnitarioItem = valorUnitarioItem;
+            ValorTotalItem = valorTotalItem;
         }
 
         public override string? ToString()
         {
-            return id.ToString().PadLeft(5, '0') +
-                dataCompra.ToString("ddMMyyyy") +
-                materiaPrimaID +
-                quantidade.ToString().PadLeft(5, '0') +
-                valorUnitarioItem.ToString().PadLeft(5, '0') +
-                valorTotalItem.ToString().PadLeft(6, '0');
+            return Id.ToString().PadLeft(5, '0') +
+                DataCompra.ToString("ddMMyyyy") +
+                MateriaPrimaID +
+                Quantidade.ToString().PadLeft(5, '0') +
+                ValorUnitarioItem.ToString().PadLeft(5, '0') +
+                ValorTotalItem.ToString().PadLeft(6, '0');
         }
     }
 }
