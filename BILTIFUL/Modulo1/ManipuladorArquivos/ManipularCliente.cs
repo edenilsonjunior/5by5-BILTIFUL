@@ -54,7 +54,7 @@
             DateOnly dataNascimento;
             List<Cliente> clientes = Recuperar();
 
-            cpf = LerCpf(verificaRegistros: true);
+            cpf = LerCpf();
             nome = MainModulo1.LerString("Digite o nome: ");
             sexo = LerSexo();
 
@@ -70,7 +70,7 @@
             List<Cliente> clientes = Recuperar();
             string cpf;
 
-            cpf = LerCpf(verificaRegistros: false);
+            cpf = LerCpf();
 
             Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
 
@@ -100,6 +100,9 @@
                     case 4:
                         c.Situacao = (c.Situacao == 'A') ? 'I' : 'A';
                         break;
+                    case 5:
+
+
                     default:
                         Console.WriteLine("Opcao invalida!");
                         break;
@@ -137,7 +140,7 @@
         /// </summary>
         public void Localizar()
         {
-            string cpf = LerCpf(verificaRegistros: true);
+            string cpf = LerCpf();
 
             var clientes = Recuperar();
             Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
@@ -244,6 +247,7 @@
             Console.WriteLine("2- Editar Data de nascimento");
             Console.WriteLine("3- Editar o sexo");
             Console.WriteLine("4- Inverter situacao");
+            Console.WriteLine("5- Adicionar ou remover na lista de risco!");
             Console.WriteLine("0- Parar edicao");
             Console.Write("R: ");
 
