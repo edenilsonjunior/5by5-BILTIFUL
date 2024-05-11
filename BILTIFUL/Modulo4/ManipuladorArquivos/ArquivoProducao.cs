@@ -36,10 +36,6 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
         }
         static Producao importarProducaoAux(string conteudo)
         {
-            int Id;
-            DateOnly DataProducao;
-            string Produto;
-            float Quantidade;
             Producao tempProducao = new();
             try
             {
@@ -57,7 +53,6 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             List<ItemProducao> templista = new();
             try
             {
-                //string path = @"C:\BILTIFUL\", file = "ItemProducao.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -79,11 +74,6 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
         }
         static ItemProducao importarItemProducaoAux(string conteudo)
         {
-            int Id;
-            DateOnly DataProducao;
-            string MateriaPrima;
-            float QuantidadeMateriaPrima;
-
             ItemProducao tempItemProducao = new();
             try
             {
@@ -96,15 +86,11 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             }
             return tempItemProducao;
         }
-
-        ///////////////
-        ///
         public static List<MPrima> importarMPrima(string path, string file)
         {
             List<MPrima> templista = new();
             try
             {
-                //string path = @"C:\BILTIFUL\", file = "Materia.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -122,7 +108,7 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 Console.WriteLine("Erro inesperado!");
                 Console.WriteLine(e.Message);
             }
-            return templista; // retorno essa lista para a Main e importo a minha agenda
+            return templista;
         }
         static MPrima importarMPrimaAux(string conteudo)
         {
@@ -135,7 +121,6 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             List<Produto> templista = new();
             try
             {
-                //string path = @"C:\BILTIFUL\", file = "Cosmetico.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -160,9 +145,8 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             Produto tempProducao = new(conteudo);
             return tempProducao;
         }
-        public static void salvarArquivo<T>(List<T> lista, string file)
+        public static void salvarArquivo<T>(List<T> lista, string path, string file)
         {
-            string path = @"C:\BILTIFUL\";
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

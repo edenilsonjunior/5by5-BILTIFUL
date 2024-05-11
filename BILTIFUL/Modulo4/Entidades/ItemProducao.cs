@@ -1,3 +1,5 @@
+using BILTIFUL.Modulo1;
+
 namespace BILTIFUL.Modulo4.Entidades
 {
     internal class ItemProducao
@@ -35,12 +37,16 @@ namespace BILTIFUL.Modulo4.Entidades
             texto += QuantidadeMateriaPrima.ToString("N2").Replace(",", "").PadLeft(5, '0');
             return texto;
         }
-        public string imprimirNaTela()
+        public string imprimirNaTela(List<MPrima> listaMPrima)
         {
             string texto = "";
             texto += $"DATA DE PRODUÇÃO: {DataProducao}  |";
-            texto += $" MATÉRIA PRIMA UTILIZADA: {MateriaPrima}  |";
-            texto += $" QUANTIDADE UTILIZADA: " + QuantidadeMateriaPrima.ToString("N2");
+            texto += $" MATÉRIA PRIMA UTILIZADA: {MateriaPrima} ";
+            if (listaMPrima.Find(x => x.Id == MateriaPrima) != null)
+            {
+                texto += (listaMPrima.Find(x => x.Id == MateriaPrima).Nome);
+            }
+            texto += $" | QTDE UTILIZADA: " + QuantidadeMateriaPrima.ToString("N2");
             return texto;
         }
     }

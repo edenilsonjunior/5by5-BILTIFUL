@@ -64,7 +64,7 @@ namespace BILTIFUL.Modulo4
             {
                 int Id, Contador = 0;
                 DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
-                string Produto = "", opcao = "";
+                string Cosmetico = "", opcao = "";
                 float Quantidade = 0;
                 bool Abortar = false;
                 if (listaProducao.Count == 0)
@@ -77,26 +77,26 @@ namespace BILTIFUL.Modulo4
                 }
 
                 Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
-                Produto = Console.ReadLine();
+                Cosmetico = Console.ReadLine();
 
-                if (listaProduto.Find(x => x.CodigoBarras == Produto) == null)
+                if (listaProduto.Find(x => x.CodigoBarras == Cosmetico && x.Situacao.ToString() == "A") == null)
                 {
                     do
                     {
-                        Console.WriteLine("Atenção: O produto não existe!");
-                        Console.WriteLine("Deseja informá-lo novamente?");
+                        Console.WriteLine("Atenção: O produto não existe ou não se encontra na situação Ativo!");
+                        Console.WriteLine("Deseja tentar novamente?");
                         Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
                         opcao = Console.ReadLine();
                         if (opcao.ToLower() == "s")
                         {
                             Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
-                            Produto = Console.ReadLine();
+                            Cosmetico = Console.ReadLine();
                         }
                         else
                         {
                             Abortar = true;
                         }
-                    } while ((listaProduto.Find(x => x.CodigoBarras == Produto) == null) && !Abortar);
+                    } while ((listaProduto.Find(x => x.CodigoBarras == Cosmetico && x.Situacao.ToString() == "A") == null) && !Abortar);
                 }
                 if (!Abortar)
                 {
@@ -156,10 +156,10 @@ namespace BILTIFUL.Modulo4
                 // Por fim cria a producao em si
                 if (opcao.ToLower() != "x" && !Abortar)
                 {
-                    Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
+                    Producao tempProducao = new(Id, DataProducao, Cosmetico, Quantidade);
                     listaProducao.Add(tempProducao);
-                    ArquivoProducao.salvarArquivo(listaProducao, "Producao.dat");
-                    ArquivoProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
+                    ArquivoProducao.salvarArquivo(listaProducao, path, "Producao.dat");
+                    ArquivoProducao.salvarArquivo(listaItemProducao, path, "ItemProducao.dat");
                     Console.WriteLine("Produção criada com suceso!");
                 }
                 else
@@ -182,12 +182,12 @@ namespace BILTIFUL.Modulo4
                 Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
                 MateriaPrima = Console.ReadLine().ToUpper();
 
-                if (listaMPrima.Find(x => x.Id == MateriaPrima) == null)
+                if (listaMPrima.Find(x => x.Id == MateriaPrima && x.Situacao.ToString() == "A") == null)
                 {
                     do
                     {
-                        Console.WriteLine("Atenção: A Matéria Prima não existe!");
-                        Console.WriteLine("Deseja informá-la novamente?");
+                        Console.WriteLine("Atenção: A Matéria Prima não existe ou não se encontra na situação Ativa!");
+                        Console.WriteLine("Deseja tentar novamente?");
                         Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
                         opcao = Console.ReadLine();
                         if (opcao.ToLower() == "s")
@@ -199,7 +199,7 @@ namespace BILTIFUL.Modulo4
                         {
                             Abortar = true;
                         }
-                    } while ((listaMPrima.Find(x => x.Id == MateriaPrima) == null) && !Abortar);
+                    } while ((listaMPrima.Find(x => x.Id == MateriaPrima && x.Situacao.ToString() == "A") == null) && !Abortar);
                 }
 
                 if (!Abortar)
@@ -249,8 +249,8 @@ namespace BILTIFUL.Modulo4
                     {
                         listaItemProducao.RemoveAll(x => x.Id == Id);
                         listaProducao.Remove(producaoLocalizada);
-                        ArquivoProducao.salvarArquivo(listaProducao, "Producao.dat");
-                        ArquivoProducao.salvarArquivo(listaItemProducao, "ItemProducao.dat");
+                        ArquivoProducao.salvarArquivo(listaProducao, path, "Producao.dat");
+                        ArquivoProducao.salvarArquivo(listaItemProducao, path, "ItemProducao.dat");
                         Console.WriteLine($"Exclusão do Id [ {Id} ] realizada com sucesso!");
                     }
                 }
@@ -344,14 +344,14 @@ namespace BILTIFUL.Modulo4
                 if (producaoLocalizada != null)
                 {
                     Console.Clear();
-                    Console.WriteLine("-".PadLeft(110, '-'));
-                    Console.WriteLine(producaoLocalizada.imprimirNaTela());
-                    Console.WriteLine("-".PadLeft(110, '-'));
+                    Console.WriteLine("-".PadLeft(115, '-'));
+                    Console.WriteLine(producaoLocalizada.imprimirNaTela(listaProduto));
+                    Console.WriteLine("-".PadLeft(115, '-'));
                     foreach (ItemProducao item in producaoItemLocalizada)
                     {
-                        Console.WriteLine(item.imprimirNaTela());
+                        Console.WriteLine(item.imprimirNaTela(listaMPrima));
                     }
-                    Console.WriteLine("-".PadLeft(110, '-'));
+                    Console.WriteLine("-".PadLeft(115, '-'));
                 }
                 else
                 {
