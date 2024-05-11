@@ -9,11 +9,13 @@
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo(caminho, arquivo);
+            CriarDiretorioArquivo();
         }
 
-
-        // Metodos Principais
+        /// <summary>
+        /// Recupera a lista de clientes a partir do arquivo.
+        /// </summary>
+        /// <returns>A lista de clientes recuperada.</returns>
         public List<Cliente> Recuperar()
         {
             List<Cliente> clientes = new();
@@ -27,6 +29,10 @@
             return clientes;
         }
 
+        /// <summary>
+        /// Salva a lista de clientes no arquivo.
+        /// </summary>
+        /// <param name="clientes">A lista de clientes a ser salva.</param>
         public void Salvar(List<Cliente> clientes)
         {
             using var sw = new StreamWriter(_caminho + _arquivo);
@@ -38,6 +44,9 @@
             }
         }
 
+        /// <summary>
+        /// Cadastra um novo cliente.
+        /// </summary>
         public void Cadastrar()
         {
             string cpf, nome;
@@ -53,6 +62,9 @@
             Salvar(clientes);
         }
 
+        /// <summary>
+        /// Edita um cliente existente.
+        /// </summary>
         public void Editar()
         {
             List<Cliente> clientes = Recuperar();
@@ -100,6 +112,10 @@
 
         }
 
+        /// <summary>
+        /// Busca um cliente pelo CPF.
+        /// </summary>
+        /// <returns>O cliente encontrado ou null se não existir.</returns>
         public Cliente? BuscarPorCpf()
         {
             string cpf = LerCpf();
@@ -116,6 +132,9 @@
             return c;
         }
 
+        /// <summary>
+        /// Localiza um cliente pelo CPF e exibe seus dados.
+        /// </summary>
         public void Localizar()
         {
             string cpf = LerCpf(verificaRegistros: true);
@@ -132,6 +151,9 @@
             Console.WriteLine(c.Print());
         }
 
+        /// <summary>
+        /// Imprime a lista de clientes.
+        /// </summary>
         public void Imprimir()
         {
             var clientes = Recuperar();
@@ -151,19 +173,27 @@
         }
 
 
-        // Metodos privados
-        private void CriarDiretorioArquivo(string caminho, string arquivo)
-        {
-            if (!Directory.Exists(caminho))
-                Directory.CreateDirectory(caminho);
 
-            if (!File.Exists(caminho + arquivo))
+
+        /// <summary>
+        /// Cria o diretório e o arquivo se não existirem.
+        /// </summary>
+        private void CriarDiretorioArquivo()
+        {
+            if (!Directory.Exists(_caminho))
+                Directory.CreateDirectory(_caminho);
+
+            if (!File.Exists(_caminho + _arquivo))
             {
-                var file = File.Create(caminho + arquivo);
+                var file = File.Create(_caminho + _arquivo);
                 file.Close();
             }
         }
 
+        /// <summary>
+        /// Lê o sexo do cliente.
+        /// </summary>
+        /// <returns>O sexo do cliente.</returns>
         private char LerSexo()
         {
             char sexo;
@@ -178,6 +208,10 @@
             return sexo;
         }
 
+        /// <summary>
+        /// Lê o CPF do cliente.
+        /// </summary>
+        /// <returns>O CPF do cliente.</returns>
         private string LerCpf()
         {
             string cpf;
@@ -193,6 +227,11 @@
             return cpf;
         }
 
+        /// <summary>
+        /// Exibe o menu de edição do cliente.
+        /// </summary>
+        /// <param name="nomeCliente">O nome do cliente.</param>
+        /// <returns>A opção selecionada.</returns>
         private int MenuEditar(string nomeCliente)
         {
             Console.Clear();

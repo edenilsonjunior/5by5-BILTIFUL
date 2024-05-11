@@ -23,6 +23,12 @@
         public DateOnly DataCadastro { get; set; }    //8 (80-87)
         public char Situacao { get; set; }            //1 (88-88)
 
+        /// <summary>
+        /// Construtor da classe Fornecedor.
+        /// </summary>
+        /// <param name="cnpj">O CNPJ do fornecedor.</param>
+        /// <param name="razaoSocial">A razão social do fornecedor.</param>
+        /// <param name="dataAbertura">A data de abertura do fornecedor.</param>
         public Fornecedor(string cnpj, string razaoSocial, DateOnly dataAbertura)
         {
             Cnpj = cnpj;
@@ -33,6 +39,10 @@
             Situacao = 'A';
         }
 
+        /// <summary>
+        /// Construtor da classe Fornecedor.
+        /// </summary>
+        /// <param name="data">Os dados do fornecedor em formato de string.</param>
         public Fornecedor(string data)
         {
             Cnpj = data.Substring(0, 14);
@@ -45,7 +55,12 @@
             Situacao = char.Parse(data.Substring(88, 1));
         }
 
-        // Metodos publicos
+
+
+        /// <summary>
+        /// Formata os dados do fornecedor para serem salvos em um arquivo.
+        /// </summary>
+        /// <returns>Os dados formatados do fornecedor.</returns>
         public string FormatarParaArquivo()
         {
             string data = "";
@@ -60,20 +75,32 @@
             return data;
         }
 
+        /// <summary>
+        /// Retorna uma string formatada com os dados do fornecedor.
+        /// </summary>
+        /// <returns>A string formatada com os dados do fornecedor.</returns>
         public string Print()
         {
+            string situacao = Situacao == 'A' ? "Ativo" : "Inativo";
             string data = "";
+
             data += $"CNPJ.........: {Cnpj}\n";
             data += $"Razão Social.: {RazaoSocial}\n";
             data += $"Data Abertura: {DataAbertura:dd/MM/yyyy}\n";
             data += $"Ultima Compra: {UltimaCompra:dd/MM/yyyy}\n";
             data += $"Data Cadastro: {DataCadastro:dd/MM/yyyy}\n";
-            data += $"Situação.....: {Situacao}";
+            data += $"Situação.....: {situacao}";
             return data;
         }
 
 
-        // Metodos privados
+
+        /// <summary>
+        /// Formata uma string para um tamanho específico.
+        /// </summary>
+        /// <param name="n">A string a ser formatada.</param>
+        /// <param name="tamanho">O tamanho desejado da string formatada.</param>
+        /// <returns>A string formatada.</returns>
         private string Formatar(string n, int tamanho)
         {
             string formatado = n;
@@ -89,7 +116,12 @@
         }
 
 
-        // Metodos Estaticos
+
+        /// <summary>
+        /// Verifica se o CNPJ é válido.
+        /// </summary>
+        /// <param name="cnpj">O CNPJ a ser verificado.</param>
+        /// <returns>True se o CNPJ for válido, False caso contrário.</returns>
         public static bool VerificarCnpj(string cnpj)
         {
             cnpj = RemoverCaractere(cnpj);
@@ -103,6 +135,11 @@
             return !repetido && digitoUm && digitoDois;
         }
 
+        /// <summary>
+        /// Valida o primeiro dígito verificador do CNPJ.
+        /// </summary>
+        /// <param name="str">O CNPJ a ser validado.</param>
+        /// <returns>True se o dígito for válido, False caso contrário.</returns>
         private static bool ValidacaoDigitoUm(string str)
         {
             int total = 0;
@@ -128,6 +165,11 @@
             return false;
         }
 
+        /// <summary>
+        /// Valida o segundo dígito verificador do CNPJ.
+        /// </summary>
+        /// <param name="cnpj">O CNPJ a ser validado.</param>
+        /// <returns>True se o dígito for válido, False caso contrário.</returns>
         private static bool ValidacaoDigitoDois(string cnpj)
         {
             int total = 0;
@@ -152,6 +194,11 @@
             return false;
         }
 
+        /// <summary>
+        /// Verifica se há dígitos repetidos no CNPJ.
+        /// </summary>
+        /// <param name="cnpj">O CNPJ a ser verificado.</param>
+        /// <returns>True se houver dígitos repetidos, False caso contrário.</returns>
         private static bool IsRepetido(string cnpj)
         {
             cnpj = RemoverCaractere(cnpj);
@@ -169,7 +216,12 @@
             return nroRepetidos == cnpj.Length - 1;
         }
 
-        static private string RemoverCaractere(string cnpj)
+        /// <summary>
+        /// Remove caracteres especiais do CNPJ.
+        /// </summary>
+        /// <param name="cnpj">O CNPJ a ser formatado.</param>
+        /// <returns>O CNPJ formatado.</returns>
+        private static string RemoverCaractere(string cnpj)
         {
             cnpj = cnpj.Replace(".", "");
             cnpj = cnpj.Replace("/", "");
