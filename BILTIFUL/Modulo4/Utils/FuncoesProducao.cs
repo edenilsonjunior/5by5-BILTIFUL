@@ -3,9 +3,9 @@ using BILTIFUL.Modulo4.Entidades;
 using System.IO;
 namespace BILTIFUL.Modulo4.Utils
 {
-    internal class ManipularProducao
+    internal class FuncoesProducao
     {
-        public ManipularProducao()
+        public FuncoesProducao()
         {
 
         }
