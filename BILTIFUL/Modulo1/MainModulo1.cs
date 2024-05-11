@@ -40,6 +40,7 @@ namespace BILTIFUL.Modulo1
             int opcao = 0;
             do
             {
+                opcao = MenuPrincipal();
                 switch (opcao)
                 {
                     case 1:
@@ -68,8 +69,12 @@ namespace BILTIFUL.Modulo1
 
         private void MenuCliente()
         {
+            
+
             throw new NotImplementedException();
         }
+
+
         private void MenuFornecedor()
         {
             throw new NotImplementedException();

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class Cliente
     {
@@ -22,8 +16,7 @@ namespace BILTIFUL.Modulo1
         {
             get => _nome;
             set { _nome = FormatarNome(value); }
-        }               
-
+        }
 
         public DateOnly DataNascimento { get; set; }    //8  (61-68)
         public char Sexo { get; set; }                  //1  (69-69)
@@ -73,8 +66,23 @@ namespace BILTIFUL.Modulo1
             return data;
         }
 
+        public string Print()
+        {
+            string result = "";
 
-        // metodos privates
+            result += $"CPF..............: {Cpf}\n";
+            result += $"Nome.............: {Nome}\n";
+            result += $"Data de nasc.....: {DataNascimento}\n";
+            result += $"Sexo.............: {Sexo}\n";
+            result += $"Ultima Compra....: {UltimaCompra}\n";
+            result += $"Data de cadastro.: {DataCadastro}\n";
+            result += $"Situacao.........: {Situacao}";
+
+            return result;
+        }
+
+
+        // metodos privados
         private string FormatarNome(string n)
         {
             string nomeFormatado = n;
@@ -90,7 +98,6 @@ namespace BILTIFUL.Modulo1
 
             return nomeFormatado;
         }
-
 
         // Metodos estaticos
         public static bool VerificarCpf(string cpf)
@@ -116,7 +123,8 @@ namespace BILTIFUL.Modulo1
         private static string RemoverCaractere(string cpf)
         {
             cpf.Replace(".", "");
-            cpf.Replace(".", "-");
+            cpf.Replace("-", "");
+
             return cpf;
         }
 
@@ -177,22 +185,6 @@ namespace BILTIFUL.Modulo1
             int digito2 = int.Parse(str.Substring(10, 1));
 
             return resto == digito2;
-        }
-
-
-        public string Print()
-        {
-            string result = "";
-
-            result += $"CPF..............: {Cpf}\n";
-            result += $"Nome.............: {Nome}\n";
-            result += $"Data de nasc.....: {DataNascimento}\n";
-            result += $"Sexo.............: {Sexo}\n";
-            result += $"Ultima Compra....: {UltimaCompra}\n";
-            result += $"Data de cadastro.: {DataCadastro}\n";
-            result += $"Situacao.........: {Situacao}";
-
-            return result;
         }
     }
 }

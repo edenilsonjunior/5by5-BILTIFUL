@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class Fornecedor
     {
@@ -63,6 +57,18 @@ namespace BILTIFUL.Modulo1
             data += DataCadastro.ToString().Replace("/", "");
             data += Situacao;
 
+            return data;
+        }
+
+        public string Print()
+        {
+            string data = "";
+            data += $"CNPJ.........: {Cnpj}\n";
+            data += $"Razão Social.: {RazaoSocial}\n";
+            data += $"Data Abertura: {DataAbertura:dd/MM/yyyy}\n";
+            data += $"Ultima Compra: {UltimaCompra:dd/MM/yyyy}\n";
+            data += $"Data Cadastro: {DataCadastro:dd/MM/yyyy}\n";
+            data += $"Situação.....: {Situacao}";
             return data;
         }
 

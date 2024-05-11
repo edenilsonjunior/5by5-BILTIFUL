@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class MPrima
     {
@@ -54,6 +48,18 @@ namespace BILTIFUL.Modulo1
             data += UltimaCompra.ToString().Replace("/", "");
             data += DataCadastro.ToString().Replace("/", "");
             data += Situacao;
+
+            return data;
+        }
+
+        public string Print()
+        {
+            string data = "";
+            data += $"Id...........: {Id}\n";
+            data += $"Nome.........: {Nome}\n";
+            data += $"Ultima Compra: {UltimaCompra:dd/MM/yyyy}\n";
+            data += $"Data Cadastro: {DataCadastro:dd/MM/yyyy}\n";
+            data += $"Situacao.....: {Situacao}";
 
             return data;
         }
