@@ -36,17 +36,100 @@ internal class ManipuladorArquivoCompra
 
     static Fornecedor importarFornecedorAux(string conteudo)
     {
-        Fornecedor tempProducao = new(conteudo);
+        Fornecedor tempFornecedor = new Fornecedor(conteudo);
         try
         {
-            tempProducao = new(conteudo); // constructor que recebe a linha do arquivo
+            tempFornecedor = new(conteudo); // constructor que recebe a linha do arquivo
         }
         catch (Exception e)
         {
             Console.WriteLine("Erro inesperado.");
             Console.WriteLine(e.Message);
         }
-        return tempProducao;
+        return tempFornecedor;
+    }
+
+    public static List<Compra> importarCompra(string path, string file)
+    {
+        List<Compra> templista = new();
+        try
+        {
+            //string path = @"C:\BILTIFUL\", file = "Producao.dat";
+            if (File.Exists(path + file))
+            {
+                foreach (string item in File.ReadLines(path + file))
+                {
+                    templista.Add(importarCompraAux(item));
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Arquivo {path}{file} inexistente!");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro inesperado!");
+            Console.WriteLine(e.Message);
+        }
+        return templista; // retorno essa lista para a Main e importo a minha agenda
+    }
+
+
+    static Compra importarCompraAux(string conteudo)
+    {
+        Compra tempCompra = new Compra(conteudo);
+        try
+        {
+            tempCompra = new(conteudo); // constructor que recebe a linha do arquivo
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro inesperado.");
+            Console.WriteLine(e.Message);
+        }
+        return tempCompra;
+    }
+
+    public static List<ItemCompra> importarItemCompra(string path, string file)
+    {
+        List<ItemCompra> templista = new();
+        try
+        {
+            if (File.Exists(path + file))
+            {
+                foreach (string item in File.ReadLines(path + file))
+                {
+                    templista.Add(importarItemCompraAux(item));
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Arquivo {path}{file} inexistente!");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro inesperado!");
+            Console.WriteLine(e.Message);
+        }
+        return templista;
+    }
+
+
+    static ItemCompra importarItemCompraAux(string conteudo)
+    {
+        ItemCompra tempItemCompra = new ItemCompra(conteudo);
+        try
+        {
+            tempItemCompra = new(conteudo);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro inesperado.");
+            Console.WriteLine(e.Message);
+        }
+        return tempItemCompra;
     }
 
     public static List<string> importarFornecedorBloqueado(string path, string file)

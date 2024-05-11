@@ -29,6 +29,28 @@ namespace BILTIFUL.Modulo3
             ValorTotalItem = valorTotalItem;
         }
 
+        public ItemCompra(string data)
+        {
+            Id = int.Parse(data.Substring(0, 5));
+            DataCompra = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy");
+            MateriaPrimaID = data.Substring(13, 6);
+            Quantidade = int.Parse(data.Substring(19, 5));
+            ValorUnitarioItem = int.Parse(data.Substring(24, 5));
+            ValorTotalItem = int.Parse(data.Substring(25, 6));
+        }
+
+        public string ImprimirItemCompraNaTela()
+        {
+            string texto = "";
+            texto = $"Id: [{Id}] |";
+            texto += $" DATA DE COMPRA: {DataCompra}";
+            texto += $" ID DA MATERIA PRIMA: {MateriaPrimaID}";
+            texto += $" QUANTIDADE DA MATERIA PRIMA: {Quantidade}";
+            texto += $" VALOR UNITARIO DA MATERIA PRIMA: {ValorUnitarioItem}";
+            texto += $" VALOR TOTAL DA MATERIA PRIMA: {ValorTotalItem}";
+            return texto;
+        }
+
         public override string? ToString()
         {
             return Id.ToString().PadLeft(5, '0') +

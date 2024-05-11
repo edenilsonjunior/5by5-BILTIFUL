@@ -8,18 +8,26 @@ namespace BILTIFUL.Modulo3
         {
             //Variavel global
             int valorTotal = 0, Id = 1;
+            string path = @"C:\Teste\";
 
             //Listas para acessar as propriedades das classes necessarias
-            List<Fornecedor> listFornecedor = new List<Fornecedor>(ManipuladorArquivoCompra.importarFornecedor(@"C:\Teste\", "Fornecedor.dat"));
-            List<string> listFornecedorBloqueados = new List<string>(ManipuladorArquivoCompra.importarFornecedorBloqueado(@"C:\Teste\", "Bloqueado.dat"));
-            List<MPrima> listMPrima = new List<MPrima>(ManipuladorArquivoCompra.importarMPrima(@"C:\Teste\", "Materia.dat"));
+            List<Fornecedor> listFornecedor = new(ManipuladorArquivoCompra.importarFornecedor(path, "Fornecedor.dat"));
+            List<string> listFornecedorBloqueados = new(ManipuladorArquivoCompra.importarFornecedorBloqueado(path, "Bloqueado.dat"));
+            List<MPrima> listMPrima = new(ManipuladorArquivoCompra.importarMPrima(path, "Materia.dat"));
+            List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(@"C:\BILTIFUL\", "Compra.dat"));
+            List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(@"C:\BILTIFUL\", "ItemCompra.dat"));
 
-            List<Compra> RealizarCompra()
+            void RealizarCompra()
             {
                 Compra compra;
-                List<Compra> listaCompra = new();
+
                 var data = DateOnly.FromDateTime(DateTime.Now);
                 string tempCNPJ, mensagem = "";
+
+                if (listaCompra.Count != 0)
+                {
+                    Id = listaCompra.Last().Id + 1;
+                }
 
                 bool podeCadastrar = true;
                 do
@@ -74,29 +82,23 @@ namespace BILTIFUL.Modulo3
                 if (podeCadastrar)
                 {
                     PegarMateriaPrima();
-
-                    //if (listaCompra.Count != 0)
-                    //{
-                    //    Id = listaCompra.Last().Id + 1;
-                    //}
-
                     compra = new(Id, data, tempCNPJ, valorTotal);
                     listaCompra.Add(compra);
                     EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
-
-                    return listaCompra;
                 }
-                return null;
             }
 
-            List<ItemCompra> PegarMateriaPrima()
+            void PegarMateriaPrima()
             {
                 ItemCompra item = new();
-                List<ItemCompra> listaItemCompra = new();
+
                 bool podeCadastrar = true;
-                string mensagem = "", materiaPrimaTemp = "";
+
+                string materiaPrimaTemp = "";
+
                 var dataAtual = DateOnly.FromDateTime(DateTime.Now);
-                int valorMateriaPrima = 0, valorTotalPorMateria = 0, idMPrima = Id, quantidadeCompraMPrima = 0;
+
+                int valorUnitario = 0, valorTotalPorMateria = 0, idMPrima = Id, quantidadeCompraMPrima = 0;
 
                 Console.Write("Informe quantas matérias primas deseja comprar: ");
                 int quantidadeMPrima = int.Parse(Console.ReadLine());
@@ -128,7 +130,6 @@ namespace BILTIFUL.Modulo3
                                 podeCadastrar = true;
                             }
                         } while (podeCadastrar == false);
-
                         do
                         {
                             Console.Write("Digite quantas matérias prima desse tipo voce deseja comprar: ");
@@ -146,40 +147,38 @@ namespace BILTIFUL.Modulo3
                             }
                             else
                             {
-                                do
-                                {
-                                    Console.Write("Digite o valor da matéria prima escolhida: ");
-                                    valorMateriaPrima = int.Parse(Console.ReadLine());
-
-                                    if (valorMateriaPrima > 99999)
-                                    {
-                                        podeCadastrar = false;
-                                        Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
-                                    }
-                                    else if (valorMateriaPrima <= 0)
-                                    {
-                                        podeCadastrar = false;
-                                        Console.WriteLine("O valor unitario precisa ser acima de 0.");
-                                    }
-                                    else
-                                    {
-                                        podeCadastrar = true;
-                                    }
-                                } while (podeCadastrar == false);
-
-
-                                valorTotalPorMateria = quantidadeCompraMPrima * valorMateriaPrima;
-                                valorTotal += valorTotalPorMateria;
                                 podeCadastrar = true;
+                            }
+                        }
+                        while (podeCadastrar == false);
+                        do
+                        {
+                            Console.Write("Digite o valor da matéria prima escolhida: ");
+                            valorUnitario = int.Parse(Console.ReadLine());
+
+                            if (valorUnitario > 99999)
+                            {
+                                podeCadastrar = false;
+                                Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
+                            }
+                            else if (valorUnitario <= 0)
+                            {
+                                podeCadastrar = false;
+                                Console.WriteLine("O valor unitario precisa ser acima de 0.");
+                            }
+                            else
+                            {
+                                podeCadastrar = true;
+                                valorTotalPorMateria = quantidadeCompraMPrima * valorUnitario;
+                                valorTotal += valorTotalPorMateria;
                             }
                         } while (podeCadastrar == false);
 
-                        item = new(idMPrima, dataAtual, materiaPrimaTemp, quantidadeCompraMPrima, valorMateriaPrima, valorTotalPorMateria);
+                        item = new(idMPrima, dataAtual, materiaPrimaTemp, quantidadeCompraMPrima, valorUnitario, valorTotalPorMateria);
                         listaItemCompra.Add(item);
                     }
+                    EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
                 }
-                EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
-                return listaItemCompra;
             }
 
             static int Menu()
@@ -195,17 +194,28 @@ namespace BILTIFUL.Modulo3
                 Console.WriteLine("0- Exit");
                 Console.Write("R: ");
 
-                if (int.TryParse(Console.ReadLine(), out int option))
+                int option = retornarInt();
+                return option;
+            }
+
+            static int retornarInt()
+            {
+                int Inteiro = 0;
+                bool ex = false;
+
+                while (!ex)
                 {
-                    return option;
+                    if (int.TryParse(Console.ReadLine(), out int varint))
+                    {
+                        Inteiro = varint;
+                        ex = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Formato inválido. Informe números inteiros apenas.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Voce deve digitar um numero!");
-                    Console.Write("Aperte enter para continuar...");
-                    Console.ReadKey();
-                    return Menu();
-                }
+                return Inteiro;
             }
 
             void EscreverNoArquivo<T>(List<T> l, string file)
@@ -216,7 +226,7 @@ namespace BILTIFUL.Modulo3
                     Directory.CreateDirectory(path);
                 }
 
-                StreamWriter conteudoArquivo = new(path + file, true);
+                StreamWriter conteudoArquivo = new(path + file);
                 foreach (var item in l)
                 {
                     conteudoArquivo.WriteLine(item.ToString());
@@ -224,11 +234,25 @@ namespace BILTIFUL.Modulo3
                 conteudoArquivo.Close();
             }
 
+
             //Programa em si
             switch (Menu())
             {
                 case 1:
                     RealizarCompra();
+                    break;
+                case 2:
+                    var objCompra = listaCompra.Find(x => x.Id == Id);
+                    Console.WriteLine(objCompra.ImprimirCompraNaTela());
+                    var objItemCompra = listaItemCompra.Find(x => x.Id == Id);
+                    Console.WriteLine(objItemCompra.ImprimirItemCompraNaTela());
+                    //LocalizarCompra();
+                    break;
+                case 3:
+                    //ExcluirCompra();
+                    break;
+                case 4:
+                    //ImprimirCompra();
                     break;
             }
         }
