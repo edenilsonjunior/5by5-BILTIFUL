@@ -1,15 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class Cliente
     {
-        public string Cpf { get; set; }                 //11 (0-10)
-        public string Nome { get; set; }                //50 (11-60)
+        private string _cpf;    //11 (0-10)
+        private string _nome;   //50 (11-60)
+
+
+        public string Cpf
+        {
+            get => _cpf;
+            set { _cpf = RemoverCaractere(value); }
+        }
+
+        public string Nome
+        {
+            get => _nome;
+            set { _nome = FormatarNome(value); }
+        }
+
         public DateOnly DataNascimento { get; set; }    //8  (61-68)
         public char Sexo { get; set; }                  //1  (69-69)
         public DateOnly UltimaCompra { get; set; }      //8  (70-77)
@@ -19,8 +27,7 @@ namespace BILTIFUL.Modulo1
         public Cliente(string cpf, string nome, DateOnly dataNascimento, char sexo)
         {
             Cpf = cpf;
-            Nome = FormatarNome(nome);
-
+            Nome = nome;
             DataNascimento = dataNascimento;
             Sexo = sexo;
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -59,8 +66,23 @@ namespace BILTIFUL.Modulo1
             return data;
         }
 
+        public string Print()
+        {
+            string result = "";
 
-        // metodos privates
+            result += $"CPF..............: {Cpf}\n";
+            result += $"Nome.............: {Nome}\n";
+            result += $"Data de nasc.....: {DataNascimento}\n";
+            result += $"Sexo.............: {Sexo}\n";
+            result += $"Ultima Compra....: {UltimaCompra}\n";
+            result += $"Data de cadastro.: {DataCadastro}\n";
+            result += $"Situacao.........: {Situacao}";
+
+            return result;
+        }
+
+
+        // metodos privados
         private string FormatarNome(string n)
         {
             string nomeFormatado = n;
@@ -77,11 +99,33 @@ namespace BILTIFUL.Modulo1
             return nomeFormatado;
         }
 
-
         // Metodos estaticos
         public static bool VerificarCpf(string cpf)
         {
+            cpf = RemoverCaractere(cpf);
+
+            if (cpf.Length != 11)
+                return false;
+
+
+            bool v1 = IsRepetido(cpf);
+            bool v2 = ValidacaoDigitoUm(cpf);
+            bool v3 = ValidacaoDigitoDois(cpf);
+
+            Console.WriteLine(cpf);
+            Console.WriteLine(v1);
+            Console.WriteLine(v2);
+            Console.WriteLine(v3);
+
             return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
+        }
+
+        private static string RemoverCaractere(string cpf)
+        {
+            cpf.Replace(".", "");
+            cpf.Replace("-", "");
+
+            return cpf;
         }
 
         private static bool IsRepetido(string str)
@@ -104,20 +148,24 @@ namespace BILTIFUL.Modulo1
 
         private static bool ValidacaoDigitoUm(string str)
         {
-            if (str.Length < 11)
-            {
-                return false;
-            }
-
             int resultado = 0;
-            for (int i = 0, multiplica = 10; i < 9; i++, multiplica--)
+            int multiplica = 10;
+
+            for (int i = 0; i < 9; i++)
             {
                 int digito = int.Parse(str.Substring(i, 1));
                 resultado += digito * multiplica;
+                multiplica--;
             }
 
             // O resto deve ser igual ao primeiro digito verificador
             int resto = (resultado * 10) % 11;
+
+            if (resto == 10)
+            {
+                resto = 0;
+            }
+
             int digitoUm = int.Parse(str.Substring(9, 1));
 
             return resto == digitoUm;
@@ -125,11 +173,6 @@ namespace BILTIFUL.Modulo1
 
         private static bool ValidacaoDigitoDois(string str)
         {
-            if (str.Length < 11)
-            {
-                return false;
-            }
-
             int resultado = 0;
             for (int i = 0, multiplica = 11; i < 10; i++, multiplica--)
             {
@@ -143,6 +186,5 @@ namespace BILTIFUL.Modulo1
 
             return resto == digito2;
         }
-
     }
 }

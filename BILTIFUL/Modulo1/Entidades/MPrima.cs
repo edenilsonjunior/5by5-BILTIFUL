@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class MPrima
     {
-        public string Id { get; set; }              //6  (0-5)
-        public string Nome { get; set; }            //20 (6-25)
+        private string _id;                         //6  (0-5)
+        private string _nome;                       //20 (6-25)
+
+        public string Id
+        {
+            get => _id;
+            set { _id = Formatar(value, 6); }
+        }
+        public string Nome
+        {
+            get => _nome;
+            set { _nome = Formatar(value, 20); }
+        }
+
         public DateOnly UltimaCompra { get; set; }  //8 (26-33)
         public DateOnly DataCadastro { get; set; }  //8 (34-41)
         public char Situacao { get; set; }          //1 (42)
@@ -17,7 +23,7 @@ namespace BILTIFUL.Modulo1
         public MPrima(string id, string nome)
         {
             Id = id;
-            Nome = FormatarNome(nome);
+            Nome = nome;
             UltimaCompra = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
             Situacao = 'A';
@@ -46,27 +52,41 @@ namespace BILTIFUL.Modulo1
             return data;
         }
 
-        private string FormatarNome(string n)
+        public string Print()
         {
-            string nomeFormatado = n;
+            string data = "";
+            data += $"Id...........: {Id}\n";
+            data += $"Nome.........: {Nome}\n";
+            data += $"Ultima Compra: {UltimaCompra:dd/MM/yyyy}\n";
+            data += $"Data Cadastro: {DataCadastro:dd/MM/yyyy}\n";
+            data += $"Situacao.....: {Situacao}";
 
-            // caso o nome tenha menos que 20
-            while (nomeFormatado.Length < 20)
-            {
-                nomeFormatado += ' ';
-            }
-
-            // caso o nome tenha mais que 20
-            nomeFormatado = nomeFormatado.Substring(0, 20);
-
-            return nomeFormatado;
+            return data;
         }
 
+
+        // Metodos privados
+        private string Formatar(string n, int tamanho)
+        {
+            string formatado = n;
+
+            while (formatado.Length < tamanho)
+            {
+                formatado += ' ';
+            }
+
+            formatado = formatado.Substring(0, tamanho);
+
+            return formatado;
+        }
+
+
+        // Metodos estaticos
         public static bool VerificarId(string id)
         {
-            if(id.Length != 6)
+            if (id.Length != 6)
                 return false;
-            
+
             string mp = id.Substring(0, 2);
             if (mp[0] != 'M' || mp[1] != 'P')
                 return false;
@@ -75,7 +95,7 @@ namespace BILTIFUL.Modulo1
             if (!conversao)
                 return false;
 
-            return true;            
+            return true;
         }
     }
 }

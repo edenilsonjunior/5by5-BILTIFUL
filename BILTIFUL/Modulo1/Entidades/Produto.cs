@@ -1,15 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class Produto
     {
-        public string CodigoBarras { get; set; }   //13  (0-12)
-        public string Nome { get; set; }           //20  (13-32)
+        private string _codigoBarras; //13  (0-12)
+        private string _nome;//20  (13-32)
+
+
+        public string CodigoBarras
+        {
+            get => _codigoBarras;
+            set { _codigoBarras = Formatar(value, 13); }
+        }
+
+        public string Nome
+        {
+            get => _nome;
+            set { _nome = Formatar(value, 20); }
+        }
+
+
         public float ValorVenda { get; set; }      //5   (33-37)
         public DateOnly UltimaVenda { get; set; }  //8   (38-45)
         public DateOnly DataCadastro { get; set; } //8   (46-53)
@@ -18,7 +27,7 @@ namespace BILTIFUL.Modulo1
         public Produto(string codigoBarras, string nome, float valorVenda)
         {
             CodigoBarras = codigoBarras;
-            Nome = FormatarNome(nome);
+            Nome = nome;
             ValorVenda = valorVenda;
             UltimaVenda = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -39,7 +48,7 @@ namespace BILTIFUL.Modulo1
         }
 
 
-        // Metodos
+        // Metodos public
         public string FormatarParaArquivo()
         {
             string data = "";
@@ -57,6 +66,7 @@ namespace BILTIFUL.Modulo1
             return data;
         }
 
+        // Metodos private
         private float RecuperarValorVenda(string data)
         {
             string valorVendaStr = data.Substring(33, 5);
@@ -64,17 +74,18 @@ namespace BILTIFUL.Modulo1
             return float.Parse(valorVendaStr);
         }
 
-        private string FormatarNome(string n)
+        // Metodos estaticos
+        private string Formatar(string n, int tamanho)
         {
             string nomeFormatado = n;
-            // caso o nome tenha menos que 20
-            while (nomeFormatado.Length < 20)
+            // caso o nome tenha menos que tamanho
+            while (nomeFormatado.Length < tamanho)
             {
                 nomeFormatado += ' ';
             }
 
-            // caso o nome tenha mais que 20
-            nomeFormatado = nomeFormatado.Substring(0, 20);
+            // caso o nome tenha mais que tamanho
+            nomeFormatado = nomeFormatado.Substring(0, tamanho);
 
             return nomeFormatado;
         }
@@ -86,7 +97,7 @@ namespace BILTIFUL.Modulo1
 
             bool resultadoTry = int.TryParse(cod.Substring(0, 3), out int inicio);
 
-            if (!resultadoTry) 
+            if (!resultadoTry)
                 return false;
 
             return inicio == 789;
