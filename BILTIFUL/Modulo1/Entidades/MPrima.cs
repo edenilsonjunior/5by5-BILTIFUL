@@ -1,28 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1
+﻿namespace BILTIFUL.Modulo1
 {
     internal class MPrima
     {
-        public string Id { get; set; }              //6  (0-5)
-        public string Nome { get; set; }            //20 (6-25)
+        private string _id;                         //6  (0-5)
+        private string _nome;                       //20 (6-25)
+
+        public string Id
+        {
+            get => _id;
+            set { _id = Formatar(value, 6); }
+        }
+        public string Nome
+        {
+            get => _nome;
+            set { _nome = Formatar(value, 20); }
+        }
+
         public DateOnly UltimaCompra { get; set; }  //8 (26-33)
         public DateOnly DataCadastro { get; set; }  //8 (34-41)
         public char Situacao { get; set; }          //1 (42)
 
+        /// <summary>
+        /// Inicializa uma nova instância da classe MPrima com o ID e nome especificados.
+        /// </summary>
+        /// <param name="id">O ID.</param>
+        /// <param name="nome">O nome.</param>
         public MPrima(string id, string nome)
         {
             Id = id;
-            Nome = FormatarNome(nome);
+            Nome = nome;
             UltimaCompra = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
             Situacao = 'A';
         }
 
+        /// <summary>
+        /// Inicializa uma nova instância da classe MPrima com base nos dados fornecidos.
+        /// </summary>
+        /// <param name="data">Os dados.</param>
         public MPrima(string data)
         {
             Id = data.Substring(0, 6);
@@ -32,7 +47,11 @@ namespace BILTIFUL.Modulo1
             Situacao = char.Parse(data.Substring(42, 1));
         }
 
-        // Metodos 
+
+        /// <summary>
+        /// Formata os dados da instância para serem gravados em um arquivo.
+        /// </summary>
+        /// <returns>Os dados formatados.</returns>
         public string FormatarParaArquivo()
         {
             string data = "";
@@ -46,27 +65,59 @@ namespace BILTIFUL.Modulo1
             return data;
         }
 
-        private string FormatarNome(string n)
+        /// <summary>
+        /// Retorna uma representação em string da instância.
+        /// </summary>
+        /// <returns>A representação em string da instância.</returns>
+        public string Print()
         {
-            string nomeFormatado = n;
+            string situacao = Situacao == 'A' ? "Ativo" : "Inativo";
+            string data = "";
 
-            // caso o nome tenha menos que 20
-            while (nomeFormatado.Length < 20)
-            {
-                nomeFormatado += ' ';
-            }
+            data += $"Id...........: {Id}\n";
+            data += $"Nome.........: {Nome}\n";
+            data += $"Ultima Compra: {UltimaCompra:dd/MM/yyyy}\n";
+            data += $"Data Cadastro: {DataCadastro:dd/MM/yyyy}\n";
+            data += $"Situacao.....: {situacao}";
 
-            // caso o nome tenha mais que 20
-            nomeFormatado = nomeFormatado.Substring(0, 20);
-
-            return nomeFormatado;
+            return data;
         }
 
+
+
+
+        /// <summary>
+        /// Formata uma string para o tamanho especificado.
+        /// </summary>
+        /// <param name="n">A string a ser formatada.</param>
+        /// <param name="tamanho">O tamanho desejado.</param>
+        /// <returns>A string formatada.</returns>
+        private string Formatar(string n, int tamanho)
+        {
+            string formatado = n;
+
+            while (formatado.Length < tamanho)
+            {
+                formatado += ' ';
+            }
+
+            formatado = formatado.Substring(0, tamanho);
+
+            return formatado;
+        }
+
+
+
+        /// <summary>
+        /// Verifica se o ID fornecido é válido.
+        /// </summary>
+        /// <param name="id">O ID a ser verificado.</param>
+        /// <returns>True se o ID for válido, caso contrário, False.</returns>
         public static bool VerificarId(string id)
         {
-            if(id.Length != 6)
+            if (id.Length != 6)
                 return false;
-            
+
             string mp = id.Substring(0, 2);
             if (mp[0] != 'M' || mp[1] != 'P')
                 return false;
@@ -75,7 +126,7 @@ namespace BILTIFUL.Modulo1
             if (!conversao)
                 return false;
 
-            return true;            
+            return true;
         }
     }
 }
