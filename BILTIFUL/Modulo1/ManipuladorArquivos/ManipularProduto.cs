@@ -96,7 +96,6 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         public void Editar()
         {
-            string codigoBarras;
             List<Produto> produtos = Recuperar();
 
             Produto produto = EscolherProduto();
@@ -106,6 +105,19 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             {
                 switch (MenuEditar(produto.Nome))
                 {
+                    case 1:
+                        produto.Nome = MainModulo1.LerString("Digite o novo nome: ");
+                        break;
+                    case 2:
+                        float valor;
+                        do
+                        {
+                            valor = MainModulo1.LerFloat("Digite o novo valor de venda: ");
+                            if (valor < 0 || valor > 999.99)
+                                Console.WriteLine("Valor de venda inválido!");
+                        } while (valor < 0 || valor > 999.99);
+                        produto.ValorVenda = valor;
+                        break;
                     case 0:
                         terminouEdicao = true;
                         break;
@@ -125,11 +137,11 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         /// <param name="codigoBarras">O código de barras.</param>
         /// <returns>O produto encontrado.</returns>
-        public Produto BuscarPorCB(string codigoBarras)
+        public Produto? BuscarPorCB(string codigoBarras)
         {
             List<Produto> produtos = Recuperar();
 
-            Produto produto = produtos.Find(p => p.CodigoBarras == codigoBarras);
+            Produto? produto = produtos.Find(p => p.CodigoBarras == codigoBarras);
 
             return produto;
         }
@@ -139,24 +151,10 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         public void Localizar()
         {
-            string termo;
-            List<Produto> produtos = Recuperar();
+            var p = EscolherProduto();
 
-            termo = MainModulo1.LerString("Digite o termo de busca: ");
-
-            List<Produto> resultados = produtos.FindAll(p => p.Nome.Contains(termo));
-
-            if (resultados.Count == 0)
-            {
-                Console.WriteLine("Nenhum produto encontrado!");
-                return;
-            }
-
-            Console.WriteLine("Produtos encontrados:");
-            foreach (var produto in resultados)
-            {
-                Console.WriteLine(produto);
-            }
+            Console.WriteLine("Produto encontrados:");
+            Console.WriteLine(p.Print());
         }
 
         /// <summary>
@@ -165,6 +163,12 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         public void Imprimir()
         {
             List<Produto> produtos = Recuperar();
+
+            if (produtos.Count == 0)
+            {
+                Console.WriteLine("Nenhum produto cadastrado!");
+                return;
+            }
 
             Console.WriteLine("Lista de Produtos:");
             foreach (var produto in produtos)
@@ -182,8 +186,38 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         private Produto EscolherProduto()
         {
             var produtos = Recuperar();
+            var codigosBarras = new List<string>();
 
-            return null;
+            foreach (var produto in produtos)
+            {
+                codigosBarras.Add(produto.CodigoBarras);
+            }
+
+            Console.WriteLine("Escolha um produto pelo código de barras:");
+
+            for (int i = 0; i < codigosBarras.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {codigosBarras[i]}");
+            }
+
+            int escolha;
+            do
+            {
+                Console.Write("Digite o número correspondente ao código de barras: ");
+                if (int.TryParse(Console.ReadLine(), out escolha))
+                {
+                    if (escolha < 1 || escolha > codigosBarras.Count)
+                    {
+                        Console.WriteLine("Índice inválido! Digite um número correspondente ao código de barras.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Digite um número válido!");
+                }
+            } while (escolha < 1 || escolha > codigosBarras.Count);
+
+            return produtos[escolha - 1];
         }
 
         /// <summary>

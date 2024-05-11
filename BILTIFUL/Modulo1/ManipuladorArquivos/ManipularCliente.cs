@@ -100,6 +100,9 @@
                     case 4:
                         c.Situacao = (c.Situacao == 'A') ? 'I' : 'A';
                         break;
+                    case 5:
+
+
                     default:
                         Console.WriteLine("Opcao invalida!");
                         break;
@@ -244,6 +247,7 @@
             Console.WriteLine("2- Editar Data de nascimento");
             Console.WriteLine("3- Editar o sexo");
             Console.WriteLine("4- Inverter situacao");
+            Console.WriteLine("5- Adicionar ou remover na lista de risco!");
             Console.WriteLine("0- Parar edicao");
             Console.Write("R: ");
 
