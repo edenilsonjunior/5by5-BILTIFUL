@@ -1,11 +1,6 @@
 ﻿using BILTIFUL.Modulo4.Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BILTIFUL.Modulo1;
-
+//**
 namespace BILTIFUL.Modulo2.ManipuladorArquivos
 {
     internal class ArquivoVenda
@@ -36,12 +31,12 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                 Console.WriteLine("Erro inesperado!");
                 Console.WriteLine(e.Message);
             }
-            return templista; // retorno essa lista para a Main e importo a minha agenda
+            return templista; 
         }
         static Cliente importarClienteAux(string conteudo)
         {
-            Cliente tempProducao = new Cliente(conteudo);
-            return tempProducao;
+            Cliente tempCliente = new Cliente(conteudo);
+            return tempCliente;
         }
         public static List<Venda> importarVenda(string path, string file)
         {
@@ -72,12 +67,42 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
             Venda tempProducao = new Venda(conteudo);
             return tempProducao;
         }
+
+        public static List<Cliente> importarBloquado(string path, string file)
+        {
+            List<Cliente> templista = new();
+            try
+            {
+                if (File.Exists(path + file))
+                {
+                    foreach (string item in File.ReadLines(path + file))
+                    {
+                        templista.Add(importarBloquado(item));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro inesperado!");
+                Console.WriteLine(e.Message);
+            }
+            return templista; 
+        }
+        static Cliente importarBloquado(string conteudo)
+        {
+            Cliente tempbloqueado = new Cliente(conteudo);
+            return tempbloqueado;
+        }
         public static List<Produto> importarProduto(string path, string file)
         {
             List<Produto> templista = new();
             try
             {
-                //string path = @"C:\BILTIFUL\", file = "Cosmetico.dat";
+                
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
@@ -99,8 +124,8 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
         }
         static Produto importarProdutoAux(string conteudo)
         {
-            Produto tempProducao = new(conteudo);
-            return tempProducao;
+            Produto tempProduto = new(conteudo);
+            return tempProduto;
         }
         public static void salvarArquivo<T>(List<T> lista, string file)
         {

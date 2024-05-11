@@ -1,6 +1,6 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo2.ManipuladorArquivos;
-
+//**
 namespace BILTIFUL.Modulo2
 {
     internal class MainModulo2
@@ -38,16 +38,16 @@ namespace BILTIFUL.Modulo2
         }
         public void ChamarMenu()
         {
-            Venda.ChecarCaminho(@"C:\Biltiful\", "Venda.dat");
             List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(@"C:\Biltiful\", "Cliente.dat"));
             List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(@"C:\Biltiful\", "Venda.dat"));
             List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(@"C:\Biltiful\", "Cosmetico.dat"));
+            List<Cliente> listaBloqueados = new List<Cliente>(ArquivoVenda.importarBloquado(@"C:\Biltiful\", "Risco.dat"));
             do
             {
                 switch (Menu())
                 {
                     case 1:
-                        ManipularVenda.CadastrarVenda(listaVenda, listaCliente);
+                        ManipularVenda.CadastrarVenda(listaVenda, listaCliente, listaBloqueados);
                         break;
                     case 2:
                         //ExcluirVenda();
