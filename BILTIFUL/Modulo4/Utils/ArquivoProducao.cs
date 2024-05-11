@@ -1,7 +1,7 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo4.Entidades;
 
-namespace BILTIFUL.Modulo4.ManipuladorArquivos
+namespace BILTIFUL.Modulo4.Utils
 {
     internal class ArquivoProducao
     {
@@ -9,17 +9,20 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
         {
 
         }
+        /// <summary>
+        /// Importa o arquivo Produção.
+        /// </summary>
         public static List<Producao> importarProducao(string path, string file)
         {
             List<Producao> templista = new();
             try
             {
-                //string path = @"C:\BILTIFUL\", file = "Producao.dat";
                 if (File.Exists(path + file))
                 {
                     foreach (string item in File.ReadLines(path + file))
                     {
-                        templista.Add(importarProducaoAux(item));
+                        Producao tempProducao = new(item);
+                        templista.Add(tempProducao);
                     }
                 }
                 else
@@ -32,22 +35,11 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 Console.WriteLine("Erro inesperado!");
                 Console.WriteLine(e.Message);
             }
-            return templista; // retorno essa lista para a Main e importo a minha agenda
+            return templista;
         }
-        static Producao importarProducaoAux(string conteudo)
-        {
-            Producao tempProducao = new();
-            try
-            {
-                tempProducao = new(conteudo); // constructor que recebe a linha do arquivo
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Erro inesperado.");
-                Console.WriteLine(e.Message);
-            }
-            return tempProducao;
-        }
+        /// <summary>
+        /// Importa o arquivo Item Produção.
+        /// </summary>
         public static List<ItemProducao> importarItemProducao(string path, string file)
         {
             List<ItemProducao> templista = new();
@@ -57,7 +49,8 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 {
                     foreach (string item in File.ReadLines(path + file))
                     {
-                        templista.Add(importarItemProducaoAux(item));
+                        ItemProducao tempItemProducao = new(item);
+                        templista.Add(tempItemProducao);
                     }
                 }
                 else
@@ -70,22 +63,11 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 Console.WriteLine("Erro inesperado!");
                 Console.WriteLine(e.Message);
             }
-            return templista; // retorno essa lista para a Main e importo a minha agenda
+            return templista;
         }
-        static ItemProducao importarItemProducaoAux(string conteudo)
-        {
-            ItemProducao tempItemProducao = new();
-            try
-            {
-                tempItemProducao = new(conteudo); // constructor que recebe a linha do arquivo
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Erro inesperado.");
-                Console.WriteLine(e.Message);
-            }
-            return tempItemProducao;
-        }
+        /// <summary>
+        /// Importa o arquivo de Matéria Prima.
+        /// </summary>
         public static List<MPrima> importarMPrima(string path, string file)
         {
             List<MPrima> templista = new();
@@ -95,7 +77,8 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 {
                     foreach (string item in File.ReadLines(path + file))
                     {
-                        templista.Add(importarMPrimaAux(item));
+                        MPrima tempProducao = new(item);
+                        templista.Add(tempProducao);
                     }
                 }
                 else
@@ -110,12 +93,9 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             }
             return templista;
         }
-        static MPrima importarMPrimaAux(string conteudo)
-        {
-            MPrima tempProducao = new(conteudo);
-            return tempProducao;
-        }
-
+        /// <summary>
+        /// Importa o arquivo de Produtos.
+        /// </summary>
         public static List<Produto> importarProduto(string path, string file)
         {
             List<Produto> templista = new();
@@ -125,7 +105,8 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
                 {
                     foreach (string item in File.ReadLines(path + file))
                     {
-                        templista.Add(importarProdutoAux(item));
+                        Produto tempProducao = new(item);
+                        templista.Add(tempProducao);
                     }
                 }
                 else
@@ -140,11 +121,9 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             }
             return templista;
         }
-        static Produto importarProdutoAux(string conteudo)
-        {
-            Produto tempProducao = new(conteudo);
-            return tempProducao;
-        }
+        /// <summary>
+        /// Salva uma lista genérica em um arquivo de texto.
+        /// </summary>
         public static void salvarArquivo<T>(List<T> lista, string path, string file)
         {
             if (!Directory.Exists(path))
@@ -158,6 +137,9 @@ namespace BILTIFUL.Modulo4.ManipuladorArquivos
             }
             filecontent.Close();
         }
+        /// <summary>
+        /// Verifica se o caminho existe no computador do usuário.
+        /// </summary>
         public static void ChecarCaminho(string path)
         {
             string file = "";
