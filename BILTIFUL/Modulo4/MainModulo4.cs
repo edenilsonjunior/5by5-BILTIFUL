@@ -1,5 +1,6 @@
-﻿using BILTIFUL.Modulo4.Entidades;
-using BILTIFUL.Modulo1;
+﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo1.ManipuladorArquivos;
+using BILTIFUL.Modulo4.Entidades;
 using BILTIFUL.Modulo4.Utils;
 namespace BILTIFUL.Modulo4
 {
@@ -8,14 +9,16 @@ namespace BILTIFUL.Modulo4
         public MainModulo4()
         {
             string path = @"C:\BILTIFUL\";
-
             // Cria Listas como variável global
             // Carrega os dados na chamada da MainModulo4, buscando os arquivos na pasta designada.
             ArquivoProducao.ChecarCaminho(path);
             List<Producao> listaProducao = new(ArquivoProducao.importarProducao(path, "Producao.dat"));
             List<ItemProducao> listaItemProducao = new(ArquivoProducao.importarItemProducao(path, "ItemProducao.dat"));
-            List<MPrima> listaMPrima = new(ArquivoProducao.importarMPrima(path, "Materia.dat"));
-            List<Produto> listaProduto = new(ArquivoProducao.importarProduto(path, "Cosmetico.dat"));
+            //List<MPrima> listaMPrima = new(ArquivoProducao.importarMPrima(path, "Materia.dat"));
+            //List<Produto> listaProduto = new(ArquivoProducao.importarProduto(path, "Cosmetico.dat"));
+            var listaMPrima = new ManipularMPrima(path, "Materia.dat").Recuperar();
+            var listaProduto = new ManipularProduto(path, "Cosmetico.dat").Recuperar();
+
 
             // Chama a função do Menu que carrega as demais funções
             Menu(listaProducao, listaItemProducao, listaMPrima, listaProduto);

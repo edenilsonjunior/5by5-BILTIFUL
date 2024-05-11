@@ -4,7 +4,7 @@ namespace BILTIFUL
     {
         static void Main(string[] args)
         {
-
+            new Modulo4.MainModulo4();
         }
     }
 }

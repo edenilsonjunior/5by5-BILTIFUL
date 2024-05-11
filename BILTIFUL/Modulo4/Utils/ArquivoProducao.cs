@@ -65,65 +65,6 @@ namespace BILTIFUL.Modulo4.Utils
             }
             return templista;
         }
-        /// <summary>
-        /// Importa o arquivo de Matéria Prima.
-        /// </summary>
-        public static List<MPrima> importarMPrima(string path, string file)
-        {
-            List<MPrima> templista = new();
-            try
-            {
-                if (File.Exists(path + file))
-                {
-                    foreach (string item in File.ReadLines(path + file))
-                    {
-                        MPrima tempProducao = new(item);
-                        templista.Add(tempProducao);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Erro inesperado!");
-                Console.WriteLine(e.Message);
-            }
-            return templista;
-        }
-        /// <summary>
-        /// Importa o arquivo de Produtos.
-        /// </summary>
-        public static List<Produto> importarProduto(string path, string file)
-        {
-            List<Produto> templista = new();
-            try
-            {
-                if (File.Exists(path + file))
-                {
-                    foreach (string item in File.ReadLines(path + file))
-                    {
-                        Produto tempProducao = new(item);
-                        templista.Add(tempProducao);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Erro inesperado!");
-                Console.WriteLine(e.Message);
-            }
-            return templista;
-        }
-        /// <summary>
-        /// Salva uma lista genérica em um arquivo de texto.
-        /// </summary>
         public static void salvarArquivo<T>(List<T> lista, string path, string file)
         {
             if (!Directory.Exists(path))
