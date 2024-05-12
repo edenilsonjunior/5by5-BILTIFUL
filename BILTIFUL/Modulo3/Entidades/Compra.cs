@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BILTIFUL.Modulo1;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,12 +34,16 @@ namespace BILTIFUL.Modulo3
             ValorTotal = float.Parse((data.Substring(27, 7))) / 100;
         }
 
-        public string ImprimirCompraNaTela()
+        public string ImprimirCompraNaTela(List<Fornecedor> l)
         {
             string texto = "";
-            texto = $"Id: [{Id}]";
-            texto += $"DATA DE COMPRA: {DataCompra}";
-            texto += $"CNPJ DO FORNECEDOR: {CnpjFornecedor}";
+            texto = $"Id: [{Id}]\n";
+            texto += $"DATA DE COMPRA: {DataCompra}\n";
+            texto += $"CNPJ DO FORNECEDOR: {CnpjFornecedor}\n";
+            if (l.Find(x => x.Cnpj == CnpjFornecedor) != null)
+            {
+                texto += $"RAZAO SOCIAL: {l.Find(x => x.Cnpj == CnpjFornecedor).RazaoSocial}\n";
+            }
             texto += $"VALOR TOTAL COMPRA: {ValorTotal}";
             return texto;
         }
@@ -47,7 +52,7 @@ namespace BILTIFUL.Modulo3
             return Id.ToString().PadLeft(5, '0') +
                 DataCompra.ToString("ddMMyyyy") +
                 CnpjFornecedor +
-                ValorTotal.ToString("N2").Replace(",", "").PadLeft(7, '0');
+                ValorTotal.ToString("N2").Replace(",", "").Replace(".", "").PadLeft(7, '0');
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo3.ManipuladorArquivos;
+using System.Reflection;
 namespace BILTIFUL.Modulo3
 {
     internal class MainModulo3
@@ -7,23 +8,27 @@ namespace BILTIFUL.Modulo3
         public MainModulo3()
         {
             //Variavel global
-            string path = @"C:\Biltiful\";
+            string path = @"C:\BILTIFUL\";
 
             //Listas para acessar as propriedades das classes necessarias
-            List<Fornecedor> listFornecedor = new(ManipuladorArquivoCompra.importarFornecedor(@"C:\Teste\", "Fornecedor.dat"));
-            List<string> listFornecedorBloqueados = new(ManipuladorArquivoCompra.importarFornecedorBloqueado(@"C:\Teste\", "Bloqueado.dat"));
-            List<MPrima> listMPrima = new(ManipuladorArquivoCompra.importarMPrima(@"C:\Teste\", "Materia.dat"));
+            List<Fornecedor> listFornecedor = new(ManipuladorArquivoCompra.importarFornecedor(path, "Fornecedor.dat"));
+            List<string> listFornecedorBloqueados = new(ManipuladorArquivoCompra.importarFornecedorBloqueado(path, "Bloqueado.dat"));
+            List<MPrima> listMPrima = new(ManipuladorArquivoCompra.importarMPrima(path, "Materia.dat"));
             List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(path, "Compra.dat"));
             List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(path, "ItemCompra.dat"));
 
             void RealizarCompra()
             {
                 Compra compra;
-                int Id = 1;
+                int Id = 0;
                 var data = DateOnly.FromDateTime(DateTime.Now);
                 string tempCNPJ, mensagem = "";
 
-                if (listaCompra.Count != 0)
+                if (listaCompra.Count == 0)
+                {
+                    Id = 1;
+                }
+                else
                 {
                     Id = listaCompra.Last().Id + 1;
                 }
@@ -84,6 +89,7 @@ namespace BILTIFUL.Modulo3
                     listaCompra.Add(compra);
                     PegarMateriaPrima(Id);
                     EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
+                    Console.WriteLine("Compra cadastrada e escrita no arquivo com sucesso!");
                 }
             }
 
@@ -93,114 +99,267 @@ namespace BILTIFUL.Modulo3
                 bool podeCadastrar = true;
                 string materiaPrimaTemp = "";
                 var dataAtual = DateOnly.FromDateTime(DateTime.Now);
-                float valorUnitario = 0, valorTotalPorMateria = 0, quantidadeCompraMPrima = 0, valorTotal = 0;
+                float valorUnitario = 0, valorTotalPorMateria = 0, quantidadeCompraMPrima = 0, valorTotal = 0, quantidadeMPrima = 0;
 
-                Console.Write("Informe quantas matérias primas deseja comprar: ");
-                int quantidadeMPrima = retornarInt();
+                do
+                {
+                    Console.Write("Informe quantas matérias primas deseja comprar: ");
+                    quantidadeMPrima = retornarInt();
+                    if (quantidadeMPrima > 3)
+                    {
+                        podeCadastrar = false;
+                        Console.WriteLine("Não pode comprar mais de 3 materias primas de uma vez");
+                    }
+                    else if (quantidadeMPrima <= 0)
+                    {
+                        podeCadastrar = false;
+                        Console.WriteLine("Precisa compra pelo menos uma materia prima.");
+                    }
+                    else
+                    {
+                        podeCadastrar = true;
+                        Console.Clear();
+                    }
+                } while (podeCadastrar == false);
 
-                if (quantidadeMPrima > 3)
+                for (int i = 0; i < quantidadeMPrima; i++)
                 {
-                    Console.WriteLine("Não pode comprar mais de 3 matérias primas de uma vez");
-                }
-                else
-                {
-                    for (int i = 0; i < quantidadeMPrima; i++)
+                    do
+                    {
+                        Console.Write("Digite o ID da materia prima que deseja comprar: ");
+                        materiaPrimaTemp = Console.ReadLine().ToUpper();
+                        if (listMPrima.Find(x => x.Id == materiaPrimaTemp) == null)
+                        {
+                            podeCadastrar = false;
+                            Console.WriteLine("Matéria prima inexistente, cadastre uma válida!!");
+                        }
+                        else if ((listMPrima.Find(x => x.Id == materiaPrimaTemp && x.Situacao.ToString() == "I") != null))
+                        {
+                            podeCadastrar = false;
+                            Console.WriteLine("Matéria prima informada consta inativa!! Informe uma que esteja ativa.");
+                        }
+                        else
+                        {
+                            podeCadastrar = true;
+                            Console.Clear();
+                        }
+                    } while (podeCadastrar == false);
+                    do
                     {
                         do
                         {
-                            Console.Write("Digite o ID da materia prima que deseja comprar: ");
-                            materiaPrimaTemp = Console.ReadLine().ToUpper();
-                            if (listMPrima.Find(x => x.Id == materiaPrimaTemp) == null)
+                            Console.Write("Digite quantas matérias prima desse tipo voce deseja comprar: ");
+                            quantidadeCompraMPrima = retornarFloat();
+
+                            if (quantidadeCompraMPrima > 99999)
                             {
                                 podeCadastrar = false;
-                                Console.WriteLine("Matéria prima inexistente, cadastre uma válida!!");
+                                Console.WriteLine("Passou da quantidade permitida de produtos comprados. Max: 99999");
                             }
-                            else if ((listMPrima.Find(x => x.Id == materiaPrimaTemp && x.Situacao.ToString() == "I") != null))
+                            else if (quantidadeCompraMPrima <= 0)
                             {
                                 podeCadastrar = false;
-                                Console.WriteLine("Matéria prima informada consta inativa!! Informe uma que esteja ativa.");
+                                Console.WriteLine("É preciso comprar pelo menos 1");
                             }
                             else
                             {
                                 podeCadastrar = true;
+                                Console.Clear();
                             }
-                        } while (podeCadastrar == false);
+                        }
+                        while (podeCadastrar == false);
                         do
                         {
-                            do
-                            {
-                                Console.Write("Digite quantas matérias prima desse tipo voce deseja comprar: ");
-                                quantidadeCompraMPrima = retornarFloat();
+                            Console.Write("Digite o valor da matéria prima escolhida: ");
+                            valorUnitario = retornarFloat();
 
-                                if (quantidadeCompraMPrima > 99999)
-                                {
-                                    podeCadastrar = false;
-                                    Console.WriteLine("Passou da quantidade permitida de produtos comprados. Max: 99999");
-                                }
-                                else if (quantidadeCompraMPrima <= 0)
-                                {
-                                    podeCadastrar = false;
-                                    Console.WriteLine("É preciso comprar pelo menos 1");
-                                }
-                                else
-                                {
-                                    podeCadastrar = true;
-                                }
-                            }
-                            while (podeCadastrar == false);
-                            do
-                            {
-                                Console.Write("Digite o valor da matéria prima escolhida: ");
-                                valorUnitario = retornarFloat();
-
-                                if (valorUnitario > 99999)
-                                {
-                                    podeCadastrar = false;
-                                    Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
-                                }
-                                else if (valorUnitario <= 0)
-                                {
-                                    podeCadastrar = false;
-                                    Console.WriteLine("O valor unitario precisa ser acima de 0.");
-                                }
-                                else
-                                {
-                                    podeCadastrar = true;
-                                    valorTotalPorMateria = quantidadeCompraMPrima * valorUnitario;
-                                    valorTotal += valorTotalPorMateria;
-                                }
-                            } while (podeCadastrar == false);
-                            if (valorTotalPorMateria > 999999)
+                            if (valorUnitario > 99999)
                             {
                                 podeCadastrar = false;
-                                Console.WriteLine("O valor total ultrapassou o limite, digite valor e/ou quantidade menores.");
+                                Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
+                            }
+                            else if (valorUnitario <= 0)
+                            {
+                                podeCadastrar = false;
+                                Console.WriteLine("O valor unitario precisa ser acima de 0.");
                             }
                             else
                             {
                                 podeCadastrar = true;
+                                valorTotalPorMateria = quantidadeCompraMPrima * valorUnitario;
+                                valorTotal += valorTotalPorMateria;
+                                Console.Clear();
                             }
                         } while (podeCadastrar == false);
-                        item = new(idMPrima, dataAtual, materiaPrimaTemp, quantidadeCompraMPrima, valorUnitario, valorTotalPorMateria);
-                        listaItemCompra.Add(item);
-                    }
-                    EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
-                    listaCompra.Find(x => x.Id == idMPrima).ValorTotal = valorTotal;
+                        if (valorTotalPorMateria > 999999)
+                        {
+                            podeCadastrar = false;
+                            Console.WriteLine("O valor total ultrapassou o limite, digite valor e/ou quantidade menores.");
+                        }
+                        else
+                        {
+                            podeCadastrar = true;
+                            Console.Clear();
+                        }
+                    } while (podeCadastrar == false);
+                    item = new(idMPrima, dataAtual, materiaPrimaTemp, quantidadeCompraMPrima, valorUnitario, valorTotalPorMateria);
+                    listaItemCompra.Add(item);
                 }
+                EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
+                listaCompra.Find(x => x.Id == idMPrima).ValorTotal = valorTotal;
             }
 
             void LocalizarCompra()
             {
-                Console.Write("Informe o ID da compra que deseja localizar: ");
-                int Id = retornarInt();
-
-                var compraLocalizada = listaCompra.Find(x => x.Id == Id);
-                var itemCompraLocalizado = listaItemCompra.Find(x => x.Id == Id);
-
-                Console.WriteLine(compraLocalizada.ImprimirCompraNaTela());
-
-                foreach (var item in listaItemCompra)
+                int opc;
+                do
                 {
-                    Console.WriteLine(itemCompraLocalizado.ImprimirItemCompraNaTela());
+                    Console.Clear();
+                    Console.Write("Informe o ID da compra que deseja localizar: ");
+                    int Id = retornarInt();
+
+                    var compraLocalizada = listaCompra.Find(x => x.Id == Id);
+                    var itemCompraLocalizado = listaItemCompra.FindAll(x => x.Id == Id);
+
+                    if (compraLocalizada != null)
+                    {
+                        Console.WriteLine("======Compra======");
+                        Console.WriteLine(compraLocalizada.ImprimirCompraNaTela(listFornecedor));
+
+                        Console.WriteLine("======Item Compra======");
+                        foreach (var itemCompra in itemCompraLocalizado)
+                        {
+                            Console.WriteLine(itemCompra.ImprimirItemCompraNaTela());
+                            Console.WriteLine("-".PadLeft(115, '-'));
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nao foi possivel localizar o Id informado.");
+                    }
+                    Console.Write("Informe 1 para localizar mais algum Id ou 0 para sair: ");
+                    opc = retornarInt();
+                } while (opc != 0);
+            }
+
+            void ExcluirCompra()
+            {
+                int opc = 0;
+                do
+                {
+                    Console.Write("Informe o ID da compra que deseja excluir: ");
+                    int Id = retornarInt();
+
+                    var compraLocalizada = listaCompra.RemoveAll(x => x.Id == Id);
+                    var itemCompraLocalizado = listaItemCompra.RemoveAll(x => x.Id == Id);
+
+                    if (compraLocalizada != null)
+                    {
+                        Console.WriteLine($"Compra do Id {Id} excluida com sucesso!");
+
+                        EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
+                        EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nao foi possivel localizar o Id informado.");
+                    }
+                    Console.Write("Informe 1 para excluir mais algum Id ou 0 para sair: ");
+                    opc = retornarInt();
+                } while (opc != 0);
+            }
+
+            void ImprimirCompra()
+            {
+                int opc, Id = 0;
+
+                Console.Write("Informe o ID da compra que deseja localizar: ");
+                Id = retornarInt();
+                MostrarDetalhesCompra(Id);
+
+                do
+                {
+                    Console.WriteLine("Escolha uma opcão:");
+                    Console.WriteLine("1 - Voltar para o o ID anterior");
+                    Console.WriteLine("2 - Ir para o proximo ID");
+                    Console.WriteLine("3 - Voltar para o primeiro ID");
+                    Console.WriteLine("4 - Ir para o ultimo ID");
+                    Console.WriteLine("0 - Sair");
+                    Console.Write("R: ");
+                    opc = retornarInt();
+
+                    switch (opc)
+                    {
+                        case 1:
+                            if (Id > listaCompra.Min(x => x.Id))
+                            {
+                                Id -= 1;
+                                MostrarDetalhesCompra(Id);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Voce ja esta no primeiro Id.");
+                                Console.Clear();
+                            }
+                            break;
+                        case 2:
+                            if (Id < listaCompra.Max(x => x.Id))
+                            {
+                                Id += 1;
+                                MostrarDetalhesCompra(Id);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Voce ja esta no ultimo ID.");
+                                Console.Clear();
+                            }
+                            break;
+                        case 3:
+                            var primeiroId = listaCompra.Min(x => x.Id);
+                            if (primeiroId != null)
+                            {
+                                Id = primeiroId;
+                                MostrarDetalhesCompra(Id);
+                            }
+                            break;
+                        case 4:
+                            var ultimoId = listaCompra.Max(x => x.Id);
+                            if (ultimoId != null)
+                            {
+                                Id = ultimoId;
+                                MostrarDetalhesCompra(Id);
+                            }
+                            break;
+                        case 0:
+                            Console.WriteLine("Saindo...");
+                            break;
+                        default:
+                            Console.WriteLine("Opção inválida.");
+                            break;
+                    }
+                } while (opc != 0);
+            }
+
+            void MostrarDetalhesCompra(int Id)
+            {
+                var compraLocalizada = listaCompra.Find(x => x.Id == Id);
+                var itemCompraLocalizado = listaItemCompra.FindAll(x => x.Id == Id);
+
+                if (compraLocalizada != null)
+                {
+                    Console.WriteLine("======Compra======");
+                    Console.WriteLine(compraLocalizada.ImprimirCompraNaTela(listFornecedor));
+
+                    Console.WriteLine("======Item Compra======");
+                    foreach (var itemCompra in itemCompraLocalizado)
+                    {
+                        Console.WriteLine(itemCompra.ImprimirItemCompraNaTela());
+                        Console.WriteLine("-".PadLeft(115, '-'));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Nao foi possivel localizar o Id informado.");
                 }
             }
 
@@ -279,21 +438,28 @@ namespace BILTIFUL.Modulo3
             }
 
             //Programa em si
-            switch (Menu())
+            do
             {
-                case 1:
-                    RealizarCompra();
-                    break;
-                case 2:
-                    LocalizarCompra();
-                    break;
-                case 3:
-                    //ExcluirCompra();
-                    break;
-                case 4:
-                    //ImprimirCompra();
-                    break;
-            }
+                switch (Menu())
+                {
+                    case 1:
+                        RealizarCompra();
+                        break;
+                    case 2:
+                        LocalizarCompra();
+                        break;
+                    case 3:
+                        ExcluirCompra();
+                        break;
+                    case 4:
+                        ImprimirCompra();
+                        break;
+                }
+                Console.WriteLine("Deseja fazer mais alguma operacao?");
+                Console.WriteLine("Se sim digite 1");
+                Console.WriteLine("Se nao digite 0");
+                Console.Write("R: ");
+            } while (Menu() != 0);
         }
     }
 }

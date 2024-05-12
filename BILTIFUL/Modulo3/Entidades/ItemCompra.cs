@@ -36,29 +36,32 @@ namespace BILTIFUL.Modulo3
             MateriaPrimaID = data.Substring(13, 6);
             Quantidade = float.Parse(data.Substring(19, 5)) / 100;
             ValorUnitarioItem = float.Parse(data.Substring(24, 5)) / 100;
-            ValorTotalItem = float.Parse(data.Substring(25, 6)) / 100;
+            ValorTotalItem = float.Parse(data.Substring(29, 6)) / 100;
         }
 
         public string ImprimirItemCompraNaTela()
         {
             string texto = "";
-            texto = $"Id: [{Id}] |";
-            texto += $" DATA DE COMPRA: {DataCompra}";
-            texto += $" ID DA MATERIA PRIMA: {MateriaPrimaID}";
-            texto += $" QUANTIDADE DA MATERIA PRIMA: {Quantidade}";
-            texto += $" VALOR UNITARIO DA MATERIA PRIMA: {ValorUnitarioItem}";
-            texto += $" VALOR TOTAL DA MATERIA PRIMA: {ValorTotalItem}";
+            texto = $"Id: [{Id}]\n";
+            texto += $"DATA DE COMPRA: {DataCompra}\n";
+            texto += $"ID DA MATERIA PRIMA: {MateriaPrimaID}\n";
+            texto += $"QUANTIDADE DA MATERIA PRIMA: {Quantidade}\n";
+            texto += $"VALOR UNITARIO DA MATERIA PRIMA: {ValorUnitarioItem}\n";
+            texto += $"VALOR TOTAL DA MATERIA PRIMA: {ValorTotalItem}\n";
             return texto;
         }
 
         public override string? ToString()
         {
-            return Id.ToString().PadLeft(5, '0') +
+            string texto = "";
+            texto = Id.ToString().PadLeft(5, '0') +
                 DataCompra.ToString("ddMMyyyy") +
                 MateriaPrimaID +
-                Quantidade.ToString("N2").Replace(",", "").PadLeft(5, '0') +
-                ValorUnitarioItem.ToString("N2").Replace(",", "").PadLeft(6, '0') +
-                ValorTotalItem.ToString("N2").Replace(",", "").PadLeft(6, '0');
+                Quantidade.ToString("N2").Replace(",", "").Replace(".", "").PadLeft(5, '0') +
+                ValorUnitarioItem.ToString("N2").Replace(",", "").Replace(".", "").PadLeft(5, '0') +
+                ValorTotalItem.ToString("N2").Replace(",", "").Replace(".", "").PadLeft(6, '0');
+
+            return texto;
         }
     }
 }
