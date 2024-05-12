@@ -32,8 +32,8 @@
         /// <param name="sexo">O sexo do cliente.</param>
         public Cliente(string cpf, string nome, DateOnly dataNascimento, char sexo)
         {
-            Cpf = cpf;
-            Nome = nome;
+            _cpf = RemoverCaractere(cpf);
+            _nome = FormatarNome(nome);
             DataNascimento = dataNascimento;
             Sexo = sexo;
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -47,8 +47,8 @@
         /// <param name="data">Os dados do cliente em formato de string.</param>
         public Cliente(string data)
         {
-            Cpf = data.Substring(0, 11);
-            Nome = data.Substring(11, 50);
+            _cpf = RemoverCaractere(data.Substring(0, 11));
+            _nome = FormatarNome(data.Substring(11, 50));
 
             DataNascimento = DateOnly.ParseExact(data.Substring(61, 8), "ddMMyyyy", null);
             Sexo = char.Parse(data.Substring(69, 1));
@@ -137,16 +137,6 @@
             if (cpf.Length != 11)
                 return false;
 
-
-            bool v1 = IsRepetido(cpf);
-            bool v2 = ValidacaoDigitoUm(cpf);
-            bool v3 = ValidacaoDigitoDois(cpf);
-
-            Console.WriteLine(cpf);
-            Console.WriteLine(v1);
-            Console.WriteLine(v2);
-            Console.WriteLine(v3);
-
             return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
         }
 
@@ -157,8 +147,8 @@
         /// <returns>O CPF formatado.</returns>
         private static string RemoverCaractere(string cpf)
         {
-            cpf.Replace(".", "");
-            cpf.Replace("-", "");
+            cpf = cpf.Replace(".", "");
+            cpf = cpf.Replace("-", "");
 
             return cpf;
         }

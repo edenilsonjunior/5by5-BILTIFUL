@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1.ManipuladorArquivos
+﻿namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
     internal class ManipularBloqueados
     {
         private string _caminho;
         private string _arquivo;
+        private ManipularFornecedor _fornecedores;
 
         public ManipularBloqueados(string caminho, string arquivo)
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo();
+            _fornecedores = new ManipularFornecedor(_caminho, "Fornecedor.dat");
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
 
         /// <summary>
@@ -55,27 +51,29 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         public void Adicionar()
         {
-            List<Fornecedor> fornecedores = new ManipularFornecedor(_caminho, "Fornecedor.dat").Recuperar();
-            List<string> bloqueados = Recuperar();
-            string cnpj;
+            Console.Clear();
+            Console.WriteLine("=====Adicionar cnpj bloqueado=====");
 
-            cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
+            var bloqueados = Recuperar();
+            string cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
 
-            if (!fornecedores.Exists(f => f.Cnpj.Equals(cnpj)))
+            // Se nao existe esse fornecedor, nao adiciona
+            if (!ExisteFornecedor(cnpj))
             {
                 Console.WriteLine("Fornecedor não encontrado!");
                 return;
             }
 
+            // se o cnpj ja esta na lista de bloqueados, nao adiciona
             if (bloqueados.Contains(cnpj))
             {
                 Console.WriteLine("Fornecedor já está na lista de bloqueados!");
                 return;
             }
 
-            // Adiciona o cnpj na lista de bloqueados
             bloqueados.Add(cnpj);
             Salvar(bloqueados);
+            Console.WriteLine(">>>>Cnpj adicionado a lista de bloqueados!<<<<");
         }
 
 
@@ -84,28 +82,33 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         public void Remover()
         {
-            List<Fornecedor> fornecedores = new ManipularFornecedor(_caminho, "Fornecedor.dat").Recuperar();
-            List<string> bloqueados = Recuperar();
-            string cnpj;
+            Console.Clear();
+            Console.WriteLine("=====Remover cnpj bloqueado=====");
 
-            cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
+            var fornecedores = _fornecedores.Recuperar();
+            var bloqueados = Recuperar();
 
-            if (!fornecedores.Exists(f => f.Cnpj.Equals(cnpj)))
+            string cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
+
+            // se o fornecedor nao existe, nao remove
+            if (!ExisteFornecedor(cnpj))
             {
                 Console.WriteLine("Fornecedor não encontrado!");
                 return;
             }
 
+            // se o cnpj nao esta na lista de bloqueados, nao remove
             if (!bloqueados.Contains(cnpj))
             {
-                Console.WriteLine("Nao foi possivel remover.");
-                Console.WriteLine("-->Fornecedor não está na lista de bloqueados!");
+                Console.WriteLine("Fornecedor não está na lista de bloqueados!");
                 return;
             }
 
             bloqueados.Remove(cnpj);
             Salvar(bloqueados);
+            Console.WriteLine(">>>>Cnpj removido da lista de bloqueados!<<<<");
         }
+
 
         /// <summary>
         /// Busca um fornecedor pelo CNPJ na lista de bloqueados.
@@ -113,15 +116,14 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// <returns>O fornecedor encontrado ou null se não encontrado.</returns>
         public Fornecedor? BuscarPorCnpj()
         {
-            List<Fornecedor> fornecedores = new ManipularFornecedor(_caminho, "Fornecedor.dat").Recuperar();
-            List<string> bloqueados = Recuperar();
+            var fornecedores = _fornecedores.Recuperar();
+            var bloqueados = Recuperar();
             string cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
 
             // retorna nulo caso o cnpj nao esteja na lista de bloqueados
             if (!bloqueados.Contains(cnpj))
-            {
                 return null;
-            }
+
 
             return fornecedores.Find(f => f.Cnpj.Equals(cnpj));
         }
@@ -132,17 +134,19 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         public void Localizar()
         {
+            Console.Clear();
+            Console.WriteLine("=====Imprimir fornecedor especifico=====");
+
             Fornecedor? fornecedor = BuscarPorCnpj();
 
-            if (fornecedor == null)
-            {
-                Console.WriteLine("Fornecedor não encontrado!");
-            }
-            else
+            if (fornecedor != null)
             {
                 Console.WriteLine("Fornecedor correspondente:");
                 Console.WriteLine(fornecedor.Print());
+                return;
             }
+
+            Console.WriteLine("Fornecedor não encontrado!");
         }
 
         /// <summary>
@@ -150,36 +154,27 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// </summary>
         public void Imprimir()
         {
-            List<string> bloqueados = Recuperar();
+            var bloqueados = Recuperar();
 
-            if (bloqueados.Count == 0)
+            Console.Clear();
+            Console.WriteLine("=====Imprimir todos os fornecedores=====");
+            Console.WriteLine("Lista de cpnj's bloqueados:");
+
+            if (bloqueados.Count != 0)
             {
-                Console.WriteLine("Nenhum fornecedor bloqueado!");
-            }
-            else
-            {
-                Console.WriteLine("Lista de cpnj's bloqueados:");
                 foreach (var item in bloqueados)
-                {
                     Console.WriteLine(item);
-                }
+
+                return;
             }
+
+            Console.WriteLine("Nenhum fornecedor bloqueado!");
         }
 
-
-        /// <summary>
-        /// Cria o diretório e o arquivo se não existirem.
-        /// </summary>
-        private void CriarDiretorioArquivo()
+        private bool ExisteFornecedor(string cnpj)
         {
-            if (!Directory.Exists(_caminho))
-                Directory.CreateDirectory(_caminho);
-
-            if (!File.Exists(_caminho + _arquivo))
-            {
-                var file = File.Create(_caminho + _arquivo);
-                file.Close();
-            }
+            var fornecedores = _fornecedores.Recuperar();
+            return fornecedores.Exists(f => f.Cnpj.Equals(cnpj));
         }
 
     }

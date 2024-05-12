@@ -9,8 +9,10 @@
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo();
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
+
+
 
         /// <summary>
         /// Recupera a lista de clientes a partir do arquivo.
@@ -22,12 +24,13 @@
 
             foreach (string linha in File.ReadAllLines(_caminho + _arquivo))
             {
-                Cliente aux = new(linha);
+                var aux = new Cliente(linha);
                 clientes.Add(aux);
             }
 
             return clientes;
         }
+
 
         /// <summary>
         /// Salva a lista de clientes no arquivo.
@@ -44,49 +47,63 @@
             }
         }
 
-        /// <summary>
+
+        /// <summary>m
         /// Cadastra um novo cliente.
         /// </summary>
         public void Cadastrar()
         {
-            string cpf, nome;
-            char sexo;
-            DateOnly dataNascimento;
-            List<Cliente> clientes = Recuperar();
+            Console.Clear();
+            Console.WriteLine("======Cadastrar Cliente======");
 
-            cpf = LerCpf();
-            nome = MainModulo1.LerString("Digite o nome: ");
-            sexo = LerSexo();
+            var clientes = Recuperar();
+            string cpf;
+            bool cpfExiste = true;
+            do
+            {
+                cpf = LerCpf();
 
-            clientes.Add(new(cpf, nome, dataNascimento, sexo));
+                if (clientes.Exists(clientes => clientes.Cpf == cpf))
+                {
+                    Console.WriteLine("CPF já cadastrado!");
+                }
+                else
+                {
+                    cpfExiste = false;
+                }
+
+            } while (cpfExiste);
+
+            string nome = MainModulo1.LerString("Digite o nome: ");
+            char sexo = LerSexo();
+            DateOnly dataNascimento = MainModulo1.LerData("Digite a data de nascimento: ");
+
+            clientes.Add(new Cliente(cpf, nome, dataNascimento, sexo));
             Salvar(clientes);
+
+            Console.WriteLine(">>>Cliente cadastrado com sucesso!<<<");
         }
+
 
         /// <summary>
         /// Edita um cliente existente.
         /// </summary>
         public void Editar()
         {
-            List<Cliente> clientes = Recuperar();
-            string cpf;
+            Console.Clear();
+            Console.WriteLine("======Editar Cliente======");
 
-            cpf = LerCpf();
+            var clientes = Recuperar();
 
-            Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
-
+            Cliente? c = BuscarPorCpf();
             if (c == null)
-            {
-                Console.WriteLine("O cpf digitado nao existe nos registros!");
                 return;
-            }
 
-            int opcao;
-
+            bool terminouMenu = false;
             do
             {
-                opcao = MenuEditar(c.Nome);
 
-                switch (opcao)
+                switch (MenuEditar(c.Nome))
                 {
                     case 1:
                         c.Nome = MainModulo1.LerString("Digite o novo nome: ");
@@ -100,20 +117,22 @@
                     case 4:
                         c.Situacao = (c.Situacao == 'A') ? 'I' : 'A';
                         break;
-                    case 5:
-
-
+                    case 0:
+                        terminouMenu = true;
+                        break;
                     default:
                         Console.WriteLine("Opcao invalida!");
                         break;
                 }
 
-            } while (opcao != 0);
+            } while (!terminouMenu);
 
             Console.WriteLine("Usuario atualizado:");
             Console.WriteLine(c.Print());
 
+            Salvar(clientes);
         }
+
 
         /// <summary>
         /// Busca um cliente pelo CPF.
@@ -123,16 +142,7 @@
         {
             string cpf = LerCpf();
 
-            var clientes = Recuperar();
-            Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
-
-            if (c == null)
-            {
-                Console.WriteLine("O cpf digitado nao existe nos registros!");
-                return null;
-            }
-
-            return c;
+            return Recuperar().Find(c => c.Cpf.Equals(cpf));
         }
 
         /// <summary>
@@ -140,19 +150,18 @@
         /// </summary>
         public void Localizar()
         {
-            string cpf = LerCpf();
+            Console.Clear();
+            Console.WriteLine("=====Imprimir Cliente especifico");
 
-            var clientes = Recuperar();
-            Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
+            Cliente? c = BuscarPorCpf();
 
             if (c == null)
-            {
-                Console.WriteLine("O cpf digitado nao existe nos registros!");
                 return;
-            }
+
             Console.WriteLine("Dados do cliente localizado: ");
             Console.WriteLine(c.Print());
         }
+
 
         /// <summary>
         /// Imprime a lista de clientes.
@@ -160,38 +169,22 @@
         public void Imprimir()
         {
             var clientes = Recuperar();
+            Console.WriteLine("Lista de Clientes:");
 
-            if (clientes.Count == 0)
+            if (clientes.Count != 0)
             {
-                Console.WriteLine("Nenhum cliente cadastrado!");
+                foreach (var item in clientes)
+                {
+                    Console.WriteLine(item.Print());
+                    Console.WriteLine("-------------------------");
+                }
                 return;
             }
 
-            Console.WriteLine("Lista de Clientes:");
-            foreach (var item in clientes)
-            {
-                Console.WriteLine(item.Print());
-                Console.WriteLine();
-            }
+            Console.WriteLine("Nenhum cliente cadastrado!");
         }
 
 
-
-
-        /// <summary>
-        /// Cria o diretório e o arquivo se não existirem.
-        /// </summary>
-        private void CriarDiretorioArquivo()
-        {
-            if (!Directory.Exists(_caminho))
-                Directory.CreateDirectory(_caminho);
-
-            if (!File.Exists(_caminho + _arquivo))
-            {
-                var file = File.Create(_caminho + _arquivo);
-                file.Close();
-            }
-        }
 
         /// <summary>
         /// Lê o sexo do cliente.
@@ -221,7 +214,7 @@
 
             do
             {
-                cpf = MainModulo1.LerString("Digite o cpf da pessoa que deseja editar: ");
+                cpf = MainModulo1.LerString("Digite o cpf: ");
 
                 if (!Cliente.VerificarCpf(cpf)) Console.WriteLine("O cpf digitado é invalido");
 
@@ -247,7 +240,6 @@
             Console.WriteLine("2- Editar Data de nascimento");
             Console.WriteLine("3- Editar o sexo");
             Console.WriteLine("4- Inverter situacao");
-            Console.WriteLine("5- Adicionar ou remover na lista de risco!");
             Console.WriteLine("0- Parar edicao");
             Console.Write("R: ");
 
@@ -263,6 +255,5 @@
                 return MenuEditar(nomeCliente);
             }
         }
-
     }
 }

@@ -29,8 +29,8 @@
         /// <param name="valorVenda">O valor de venda do produto.</param>
         public Produto(string codigoBarras, string nome, float valorVenda)
         {
-            CodigoBarras = codigoBarras;
-            Nome = nome;
+            _codigoBarras = Formatar(codigoBarras, 13);
+            _nome = Formatar(nome, 20);
             ValorVenda = valorVenda;
             UltimaVenda = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -43,14 +43,12 @@
         /// <param name="data">Uma string contendo os dados do produto.</param>
         public Produto(string data)
         {
-            CodigoBarras = data.Substring(0, 13);
-
-            Nome = data.Substring(13, 20);
+            _codigoBarras = Formatar(data.Substring(0, 13), 13);
+            _nome = Formatar(data.Substring(13, 20), 20);
             ValorVenda = RecuperarValorVenda(data);
 
             UltimaVenda = DateOnly.ParseExact(data.Substring(38, 8), "ddMMyyyy", null);
             DataCadastro = DateOnly.ParseExact(data.Substring(46, 8), "ddMMyyyy", null);
-
             Situacao = char.Parse(data.Substring(54, 1));
         }
 

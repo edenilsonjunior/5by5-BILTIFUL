@@ -9,7 +9,7 @@
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo();
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
 
         /// <summary>
@@ -18,16 +18,17 @@
         /// <returns>A lista de fornecedores.</returns>
         public List<Fornecedor> Recuperar()
         {
-            List<Fornecedor> fornecedores = new();
+            var fornecedores = new List<Fornecedor>();
 
             foreach (string linha in File.ReadAllLines(_caminho + _arquivo))
             {
-                Fornecedor aux = new(linha);
+                var aux = new Fornecedor(linha);
                 fornecedores.Add(aux);
             }
 
             return fornecedores;
         }
+
 
         /// <summary>
         /// Salva a lista de fornecedores no arquivo.
@@ -46,47 +47,61 @@
             }
         }
 
+
         /// <summary>
         /// Cadastra um novo fornecedor.
         /// </summary>
         public void Cadastrar()
         {
-            string cnpj, razaoSocial;
-            DateOnly dataAbertura;
-            List<Fornecedor> fornecedores = Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Cadastrar Fornecedor=====");
 
+            var fornecedores = Recuperar();
+
+            string cnpj;
+
+            bool existeCnpj = true;
             do
             {
                 cnpj = LerCnpj();
 
-                if (fornecedores.Exists(c => c.Cnpj == cnpj))
+                if(!fornecedores.Exists(c => c.Cnpj == cnpj))
+                {
+                    existeCnpj = false;
+                }
+                else
+                {
                     Console.WriteLine("CNPJ já cadastrado!");
+                }
+            } while (existeCnpj);
 
-            } while (fornecedores.Exists(c => c.Cnpj == cnpj));
-
-            razaoSocial = MainModulo1.LerString("Digite a razão social: ");
-            dataAbertura = MainModulo1.LerData("Digite a data de abertura: ");
+            string razaoSocial = MainModulo1.LerString("Digite a razão social: ");
+            var dataAbertura = MainModulo1.LerData("Digite a data de abertura: ");
 
             fornecedores.Add(new(cnpj, razaoSocial, dataAbertura));
             Salvar(fornecedores);
+            Console.WriteLine(">>>Fornecedor adicionado!<<<");
         }
+
 
         /// <summary>
         /// Edita um fornecedor existente.
         /// </summary>
         public void Editar()
         {
-            List<Fornecedor> fornecedores = Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Cadastrar Fornecedor=====");
 
             Fornecedor? f = BuscarPorCnpj();
-
             if (f == null)
             {
                 Console.WriteLine("Fornecedor não encontrado!");
                 return;
             }
 
+            List<Fornecedor> fornecedores = Recuperar();
             bool continuar = true;
+
             do
             {
                 switch (MenuEditar(f.RazaoSocial))
@@ -99,7 +114,7 @@
                         break;
                     case 0:
                         continuar = false;
-                        return;
+                        break;
                     default:
                         Console.WriteLine("Opção inválida!");
                         break;
@@ -108,6 +123,7 @@
 
             Salvar(fornecedores);
         }
+
 
         /// <summary>
         /// Busca um fornecedor pelo CNPJ.
@@ -121,22 +137,27 @@
             return fornecedores.Find(f => f.Cnpj.Equals(cnpj));
         }
 
+
         /// <summary>
         /// Localiza um fornecedor pelo CNPJ e exibe suas informações.
         /// </summary>
         public void Localizar()
         {
+            Console.Clear();
+            Console.WriteLine("=====Imprimir Fornecedor especifico");
+
             Fornecedor? fornecedor = BuscarPorCnpj();
 
-            if (fornecedor == null)
+            if (fornecedor != null)
             {
-                Console.WriteLine("Fornecedor não encontrado!");
+                Console.WriteLine("\nFornecedor encontrado:");
+                Console.WriteLine(fornecedor.Print());
                 return;
             }
 
-            Console.WriteLine("Fornecedor encontrado:");
-            Console.WriteLine(fornecedor.Print());
+            Console.WriteLine("Fornecedor não encontrado!");
         }
+
 
         /// <summary>
         /// Imprime a lista de fornecedores.
@@ -145,19 +166,21 @@
         {
             List<Fornecedor> fornecedores = Recuperar();
 
-            if (fornecedores.Count == 0)
+            Console.WriteLine("Lista de fornecedores");
+
+            if (fornecedores.Count != 0)
             {
-                Console.WriteLine("Nenhum fornecedor cadastrado!");
+                foreach (var item in fornecedores)
+                {
+                    Console.WriteLine(item.Print());
+                    Console.WriteLine("-------------------------");
+                }
                 return;
             }
 
-            Console.WriteLine("Lista de fornecedores");
-            foreach (var item in fornecedores)
-            {
-                Console.WriteLine(item.Print());
-                Console.WriteLine();
-            }
+            Console.WriteLine("Nenhum fornecedor cadastrado!");
         }
+
 
 
 
@@ -167,18 +190,38 @@
         /// <returns>O CNPJ lido.</returns>
         private string LerCnpj()
         {
+            var fornecedores = Recuperar();
             string cnpj;
+
+            bool valido = false;
+            bool existe = false;
             do
             {
                 cnpj = MainModulo1.LerString("Digite o CNPJ: ");
 
                 if (!Fornecedor.VerificarCnpj(cnpj))
+                {
                     Console.WriteLine("CNPJ inválido!");
+                }
+                else
+                {
+                    valido = true;
+                }
 
-            } while (!Fornecedor.VerificarCnpj(cnpj));
+                if (fornecedores.Exists(c => c.Cnpj == cnpj))
+                {
+                    Console.WriteLine("CNPJ já cadastrado!");
+                }
+                else
+                {
+                    existe = true;
+                }
+
+            } while (!valido || !existe);
 
             return cnpj;
         }
+
 
         /// <summary>
         /// Exibe o menu de edição do fornecedor.
@@ -211,20 +254,6 @@
             }
         }
 
-        /// <summary>
-        /// Cria o diretório e o arquivo se não existirem.
-        /// </summary>
-        private void CriarDiretorioArquivo()
-        {
-            if (!Directory.Exists(_caminho))
-                Directory.CreateDirectory(_caminho);
-
-            if (!File.Exists(_caminho + _arquivo))
-            {
-                var file = File.Create(_caminho + _arquivo);
-                file.Close();
-            }
-        }
     }
 
 }

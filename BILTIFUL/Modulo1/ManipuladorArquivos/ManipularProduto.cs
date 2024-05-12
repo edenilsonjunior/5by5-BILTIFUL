@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1.ManipuladorArquivos
+﻿namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
     internal class ManipularProduto
     {
@@ -20,8 +14,10 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo();
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
+
+
 
         /// <summary>
         /// Recupera a lista de produtos do arquivo.
@@ -29,15 +25,17 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// <returns>A lista de produtos.</returns>
         public List<Produto> Recuperar()
         {
-            List<Produto> produtos = new();
+            var produtos = new List<Produto>();
 
             foreach (string linha in File.ReadAllLines(_caminho + _arquivo))
             {
-                produtos.Add(new Produto(linha));
+                var aux = new Produto(linha);
+                produtos.Add(aux);
             }
 
             return produtos;
         }
+
 
         /// <summary>
         /// Salva a lista de produtos no arquivo.
@@ -53,50 +51,47 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             }
         }
 
+
         /// <summary>
         /// Cadastra um novo produto.
         /// </summary>
         public void Cadastrar()
         {
-            string codigoBarras, nome;
-            float valorVenda;
-            List<Produto> produtos = Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Cadastrar novo produto=====");
 
+            var produtos = Recuperar();
+            string codigoBarras;
+
+            bool existeCodigoBarras = true;
             do
             {
-                codigoBarras = MainModulo1.LerString("Digite o código de barras: ");
+                codigoBarras = LerCodigoBarras();
 
-                if (!Produto.VerificarCodigoBarras(codigoBarras))
+                if(produtos.Exists(p => p.CodigoBarras.Equals(codigoBarras)))
                     Console.WriteLine("Código de barras inválido!");
+                else
+                    existeCodigoBarras = false;
 
-            } while (!Produto.VerificarCodigoBarras(codigoBarras));
+            } while (existeCodigoBarras);
 
-            if (produtos.Exists(p => p.CodigoBarras == codigoBarras))
-            {
-                Console.WriteLine("Código de barras já cadastrado!");
-                return;
-            }
 
-            nome = MainModulo1.LerString("Digite o nome: ");
-
-            do
-            {
-                valorVenda = MainModulo1.LerFloat("Digite o valor de venda: ");
-                if (valorVenda < 0 || valorVenda > 999.99)
-                    Console.WriteLine("Valor de venda inválido!");
-
-            } while (valorVenda < 0 || valorVenda > 999.99);
+            string nome = MainModulo1.LerString("Digite o nome: ");
+            float valorVenda = LerValorVenda();
 
             produtos.Add(new Produto(codigoBarras, nome, valorVenda));
             Salvar(produtos);
+
+            Console.WriteLine(">>>Produto cadastrado!<<<");
         }
+
 
         /// <summary>
         /// Edita um produto existente.
         /// </summary>
         public void Editar()
         {
-            List<Produto> produtos = Recuperar();
+            var produtos = Recuperar();
 
             Produto produto = EscolherProduto();
 
@@ -109,16 +104,10 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
                         produto.Nome = MainModulo1.LerString("Digite o novo nome: ");
                         break;
                     case 2:
-                        float valor;
-                        do
-                        {
-                            valor = MainModulo1.LerFloat("Digite o novo valor de venda: ");
-                            if (valor < 0 || valor > 999.99)
-                                Console.WriteLine("Valor de venda inválido!");
-                        } while (valor < 0 || valor > 999.99);
-                        produto.ValorVenda = valor;
+                        produto.ValorVenda = LerValorVenda();
                         break;
                     case 0:
+                        Console.WriteLine("Opcao de voltar...");
                         terminouEdicao = true;
                         break;
                     default:
@@ -126,11 +115,12 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
                 }
             } while (!terminouEdicao);
 
-            Console.WriteLine("Produto editado:");
+            Console.WriteLine("\nProduto editado:");
             Console.WriteLine(produto.Print());
 
             Salvar(produtos);
         }
+
 
         /// <summary>
         /// Busca um produto pelo código de barras.
@@ -146,16 +136,21 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             return produto;
         }
 
+
         /// <summary>
         /// Localiza produtos pelo termo de busca.
         /// </summary>
         public void Localizar()
         {
+            Console.Clear();
+            Console.WriteLine("Imprimir um produto especifico");
+
             var p = EscolherProduto();
 
-            Console.WriteLine("Produto encontrados:");
+            Console.WriteLine("Produto encontrado:");
             Console.WriteLine(p.Print());
         }
+
 
         /// <summary>
         /// Imprime a lista de produtos.
@@ -164,17 +159,20 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         {
             List<Produto> produtos = Recuperar();
 
-            if (produtos.Count == 0)
+            Console.Clear();
+            Console.WriteLine("=====Lista de Produtos=====");
+
+            if (produtos.Count != 0)
             {
-                Console.WriteLine("Nenhum produto cadastrado!");
+                foreach (var produto in produtos)
+                {
+                    Console.WriteLine(produto);
+                    Console.WriteLine("-------------------------");
+                }
                 return;
             }
 
-            Console.WriteLine("Lista de Produtos:");
-            foreach (var produto in produtos)
-            {
-                Console.WriteLine(produto);
-            }
+            Console.WriteLine("Nenhum produto cadastrado!");
         }
 
 
@@ -187,38 +185,34 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         {
             var produtos = Recuperar();
             var codigosBarras = new List<string>();
+            int escolha;
 
+            // Adiciona os códigos de barras dos produtos à lista
             foreach (var produto in produtos)
-            {
                 codigosBarras.Add(produto.CodigoBarras);
-            }
+
+
 
             Console.WriteLine("Escolha um produto pelo código de barras:");
 
             for (int i = 0; i < codigosBarras.Count; i++)
-            {
                 Console.WriteLine($"{i + 1}. {codigosBarras[i]}");
-            }
 
-            int escolha;
             do
             {
                 Console.Write("Digite o número correspondente ao código de barras: ");
+
                 if (int.TryParse(Console.ReadLine(), out escolha))
-                {
                     if (escolha < 1 || escolha > codigosBarras.Count)
-                    {
                         Console.WriteLine("Índice inválido! Digite um número correspondente ao código de barras.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("Digite um número válido!");
-                }
+                    else
+                        Console.WriteLine("Digite um número válido!");
+
             } while (escolha < 1 || escolha > codigosBarras.Count);
 
             return produtos[escolha - 1];
         }
+
 
         /// <summary>
         /// Exibe o menu de edição do produto.
@@ -252,19 +246,61 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             }
         }
 
-        /// <summary>
-        /// Cria o diretório e o arquivo se não existirem.
-        /// </summary>
-        private void CriarDiretorioArquivo()
-        {
-            if (!Directory.Exists(_caminho))
-                Directory.CreateDirectory(_caminho);
 
-            if (!File.Exists(_caminho + _arquivo))
+        /// <summary>
+        /// Le o valor de venda
+        /// </summary>
+        /// <returns>
+        /// O valor de venda digitado pelo usuario
+        /// </returns>
+        private float LerValorVenda()
+        {
+            float valorVenda;
+
+            do
             {
-                var file = File.Create(_caminho + _arquivo);
-                file.Close();
-            }
+                valorVenda = MainModulo1.LerFloat("Digite o valor de venda: ");
+                if (valorVenda < 0 || valorVenda > 999.99)
+                    Console.WriteLine("Valor de venda inválido!");
+
+            } while (valorVenda < 0 || valorVenda > 999.99);
+
+            return valorVenda;
+        }
+
+
+        /// <summary>
+        /// Le o codigo de barras
+        /// </summary>
+        /// <returns>
+        /// O codigo de barras digitado pelo usuario
+        /// </returns>
+        private string LerCodigoBarras()
+        {
+            string codigoBarras;
+            bool valido = false;
+            bool existe = true;
+            var produtos = Recuperar();
+
+            do
+            {
+                codigoBarras = MainModulo1.LerString("Digite o código de barras: ");
+
+                if (!Produto.VerificarCodigoBarras(codigoBarras))
+                    Console.WriteLine("Código de barras inválido!");
+                else
+                    valido = true;
+
+
+                if (produtos.Exists(p => p.CodigoBarras == codigoBarras))
+                    Console.WriteLine("Código de barras já cadastrado!");
+                else
+                    existe = false;
+
+
+            } while (!valido || existe);
+
+            return codigoBarras;
         }
     }
 }
