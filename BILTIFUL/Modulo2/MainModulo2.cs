@@ -1,6 +1,7 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo2.ManipuladorArquivos;
-//**
+
+//****
 namespace BILTIFUL.Modulo2
 {
     internal class MainModulo2
@@ -41,7 +42,7 @@ namespace BILTIFUL.Modulo2
             List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(@"C:\Biltiful\", "Cliente.dat"));
             List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(@"C:\Biltiful\", "Venda.dat"));
             List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(@"C:\Biltiful\", "Cosmetico.dat"));
-            List<Cliente> listaBloqueados = new List<Cliente>(ArquivoVenda.importarBloquado(@"C:\Biltiful\", "Risco.dat"));
+            List<Cliente> listaBloqueados = new List<Cliente>(ArquivoVenda.importarBloqueado(@"C:\Biltiful\", "Risco.dat"));
             do
             {
                 switch (Menu())
@@ -50,13 +51,13 @@ namespace BILTIFUL.Modulo2
                         ManipularVenda.CadastrarVenda(listaVenda, listaCliente, listaBloqueados);
                         break;
                     case 2:
-                        //ExcluirVenda();
+                        ManipularVenda.ExcluirVenda();
                         break;
                     case 3:
-                        //LocalizarVenda();
+                        ManipularVenda.LocalizarVenda();
                         break;
                     case 4:
-                        //ImprimirRegisVenda();
+                        ManipularVenda.ImprimirRegisVenda(listaVenda);
                         break;
                     case 0:
                         Console.WriteLine("Encerrando o programa.");

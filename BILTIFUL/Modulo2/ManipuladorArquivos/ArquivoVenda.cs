@@ -1,6 +1,6 @@
 ﻿using BILTIFUL.Modulo4.Entidades;
 using BILTIFUL.Modulo1;
-//**
+//****
 namespace BILTIFUL.Modulo2.ManipuladorArquivos
 {
     internal class ArquivoVenda
@@ -60,7 +60,7 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                 Console.WriteLine("Erro inesperado!");
                 Console.WriteLine(e.Message);
             }
-            return templista; // retorno essa lista para a Main e importo a minha agenda
+            return templista; 
         }
         static Venda importarVendaAux(string conteudo)
         {
@@ -68,7 +68,7 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
             return tempProducao;
         }
 
-        public static List<Cliente> importarBloquado(string path, string file)
+        public static List<Cliente> importarBloqueado(string path, string file)
         {
             List<Cliente> templista = new();
             try
@@ -77,7 +77,7 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                 {
                     foreach (string item in File.ReadLines(path + file))
                     {
-                        templista.Add(importarBloquado(item));
+                        templista.Add(importarBloqueado(item));
                     }
                 }
                 else
@@ -92,7 +92,7 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
             }
             return templista; 
         }
-        static Cliente importarBloquado(string conteudo)
+        static Cliente importarBloqueado(string conteudo)
         {
             Cliente tempbloqueado = new Cliente(conteudo);
             return tempbloqueado;
@@ -126,6 +126,32 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
         {
             Produto tempProduto = new(conteudo);
             return tempProduto;
+        }
+
+        public static List<ItemVenda> importarItemVenda(string path, string file)
+        {
+            List<ItemVenda> templista = new();
+            try
+            {
+                if (File.Exists(path + file))
+                {
+                    foreach (string item in File.ReadLines(path + file))
+                    {
+                        ItemVenda aux=new (item);
+                        templista.Add(aux);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Erro inesperado!");
+                Console.WriteLine(e.Message);
+            }
+            return templista; 
         }
         public static void salvarArquivo<T>(List<T> lista, string file)
         {

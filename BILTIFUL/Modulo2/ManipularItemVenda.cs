@@ -1,37 +1,37 @@
 ﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo2;
+using BILTIFUL.Modulo4.Entidades;
 
-//**
 namespace BILTIFUL.Modulo2
 {
     internal class ManipularItemVenda
     {
-        /*public void CalcularTotalItem(List<Produto> listaProduto,  List<Venda> listaVenda)
+        static public ItemVenda CriarItemVenda(int idVenda, List<Produto> listaProduto)
         {
-            totalItem = qtd * valorUnitario;
+            Console.WriteLine("Digite o código de barras do produto desejado: ");
+            string codigoBarras = Console.ReadLine();
+
+            Produto produto = listaProduto.Find(x => x.CodigoBarras == codigoBarras);
+            if (produto == null)
+            {
+                Console.WriteLine("Produto não encontrado.");
+                return null;
+            }
+            Console.WriteLine("Digite a quantidade do produto desejado: ");
+            int qtd = int.Parse(Console.ReadLine());
+
+            if (qtd <= 0 || qtd > 999)
+            {
+                Console.WriteLine("Quantidade inválida.");
+            }
+
+          ItemVenda item = new ItemVenda(idVenda, produto.CodigoBarras,qtd,produto.ValorVenda);
+
+            return item;
         }
 
-
-        public ItemVenda(Venda venda, int idVenda, string produto, int qtd, int valorUnitario)
-        {
-            this.idVenda = venda.idVenda;
-            this.produto = produto;
-            this.qtd = qtd;
-            valorUnitario = valorUnitario;
-
-            Console.WriteLine("Digite o código de barras do produto desejado: ");
-            produto = Console.ReadLine();
-
-            Console.WriteLine("Digite a quantidade do produto desejado: ");
-            if (qtd != 0 && qtd < 999)
-            {
-                Console.WriteLine("A quantidade não pode ser superior a 3 unidades por venda.");
-            }
-            else
-            {
-                qtd = int.Parse(Console.ReadLine());
-            }
-
-            CalcularTotalItem();
-        }*/
+       
     }
 }
+
+

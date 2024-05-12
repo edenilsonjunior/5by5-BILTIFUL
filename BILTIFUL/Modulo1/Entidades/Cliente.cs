@@ -86,23 +86,13 @@ namespace BILTIFUL.Modulo1
             if (cpf.Length != 11)
                 return false;
 
-
-            bool v1 = IsRepetido(cpf);
-            bool v2 = ValidacaoDigitoUm(cpf);
-            bool v3 = ValidacaoDigitoDois(cpf);
-
-            Console.WriteLine(cpf);
-            Console.WriteLine(v1);
-            Console.WriteLine(v2);
-            Console.WriteLine(v3);
-
             return !IsRepetido(cpf) && ValidacaoDigitoUm(cpf) && ValidacaoDigitoDois(cpf);
         }
 
         private static string RemoverCaractere(string cpf)
         {
-            cpf.Replace(".", "");
-            cpf.Replace(".", "-");
+            cpf=cpf.Replace(".", "");
+            cpf=cpf.Replace(".", "-");
             return cpf;
         }
 
