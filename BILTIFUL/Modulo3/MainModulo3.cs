@@ -17,7 +17,7 @@ namespace BILTIFUL.Modulo3
             List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(path, "Compra.dat"));
             List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(path, "ItemCompra.dat"));
 
-            void RealizarCompra()
+            static void RealizarCompra()
             {
                 Compra compra;
                 int Id = 0;
@@ -88,12 +88,12 @@ namespace BILTIFUL.Modulo3
                     compra = new(Id, data, tempCNPJ, 0);
                     listaCompra.Add(compra);
                     PegarMateriaPrima(Id);
+                    Console.WriteLine("Compra cadastrada com sucesso!");
                     EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
-                    Console.WriteLine("Compra cadastrada e escrita no arquivo com sucesso!");
                 }
             }
 
-            void PegarMateriaPrima(int idMPrima)
+            static void PegarMateriaPrima(int idMPrima)
             {
                 ItemCompra item = new();
                 bool podeCadastrar = true;
@@ -209,7 +209,7 @@ namespace BILTIFUL.Modulo3
                 listaCompra.Find(x => x.Id == idMPrima).ValorTotal = valorTotal;
             }
 
-            void LocalizarCompra()
+            static void LocalizarCompra()
             {
                 int opc;
                 do
@@ -242,105 +242,129 @@ namespace BILTIFUL.Modulo3
                 } while (opc != 0);
             }
 
-            void ExcluirCompra()
+            static void ExcluirCompra()
             {
                 int opc = 0;
-                do
+                if (listaCompra.Count == 0 || listaItemCompra.Count == 0)
                 {
-                    Console.Write("Informe o ID da compra que deseja excluir: ");
-                    int Id = retornarInt();
-
-                    var compraLocalizada = listaCompra.RemoveAll(x => x.Id == Id);
-                    var itemCompraLocalizado = listaItemCompra.RemoveAll(x => x.Id == Id);
-
-                    if (compraLocalizada != null)
+                    Console.WriteLine("Não há compra/item compra cadastrado.");
+                }
+                else
+                {
+                    do
                     {
-                        Console.WriteLine($"Compra do Id {Id} excluida com sucesso!");
+                        Console.Write("Informe o ID da compra que deseja excluir: ");
+                        int Id = retornarInt();
 
-                        EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
-                        EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Nao foi possivel localizar o Id informado.");
-                    }
-                    Console.Write("Informe 1 para excluir mais algum Id ou 0 para sair: ");
-                    opc = retornarInt();
-                } while (opc != 0);
+                        var compraLocalizada = listaCompra.RemoveAll(x => x.Id == Id);
+                        var itemCompraLocalizado = listaItemCompra.RemoveAll(x => x.Id == Id);
+
+                        if (compraLocalizada != null)
+                        {
+                            Console.WriteLine($"Compra do Id {Id} excluida com sucesso!");
+
+                            EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
+                            EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nao foi possivel localizar o Id informado.");
+                        }
+                        Console.Write("Informe 1 para excluir mais algum Id ou 0 para sair: ");
+                        opc = retornarInt();
+                    } while (opc != 0);
+                }
             }
 
-            void ImprimirCompra()
+            static void ImprimirCompra()
             {
                 int opc, Id = 0;
 
-                Console.Write("Informe o ID da compra que deseja localizar: ");
-                Id = retornarInt();
-                MostrarDetalhesCompra(Id);
-
-                do
+                if (listaCompra.Count == 0 || listaItemCompra.Count == 0)
                 {
-                    Console.WriteLine("Escolha uma opcão:");
-                    Console.WriteLine("1 - Voltar para o o ID anterior");
-                    Console.WriteLine("2 - Ir para o proximo ID");
-                    Console.WriteLine("3 - Voltar para o primeiro ID");
-                    Console.WriteLine("4 - Ir para o ultimo ID");
-                    Console.WriteLine("0 - Sair");
-                    Console.Write("R: ");
-                    opc = retornarInt();
+                    Console.WriteLine("Não há compra/item compra cadastrado.");
+                }
+                else
+                {
 
-                    switch (opc)
+                    Console.Write("Informe o ID da compra que deseja localizar: ");
+                    Id = retornarInt();
+                    MostrarDetalhesCompra(Id);
+                    Compra tempIdLista;
+                    do
                     {
-                        case 1:
-                            if (Id > listaCompra.Min(x => x.Id))
-                            {
-                                Id -= 1;
-                                MostrarDetalhesCompra(Id);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Voce ja esta no primeiro Id.");
-                                Console.Clear();
-                            }
-                            break;
-                        case 2:
-                            if (Id < listaCompra.Max(x => x.Id))
-                            {
-                                Id += 1;
-                                MostrarDetalhesCompra(Id);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Voce ja esta no ultimo ID.");
-                                Console.Clear();
-                            }
-                            break;
-                        case 3:
-                            var primeiroId = listaCompra.Min(x => x.Id);
-                            if (primeiroId != null)
-                            {
-                                Id = primeiroId;
-                                MostrarDetalhesCompra(Id);
-                            }
-                            break;
-                        case 4:
-                            var ultimoId = listaCompra.Max(x => x.Id);
-                            if (ultimoId != null)
-                            {
-                                Id = ultimoId;
-                                MostrarDetalhesCompra(Id);
-                            }
-                            break;
-                        case 0:
-                            Console.WriteLine("Saindo...");
-                            break;
-                        default:
-                            Console.WriteLine("Opção inválida.");
-                            break;
-                    }
-                } while (opc != 0);
+                        Console.WriteLine("Escolha uma opcão:");
+                        Console.WriteLine("1 - Voltar para o o ID anterior");
+                        Console.WriteLine("2 - Ir para o proximo ID");
+                        Console.WriteLine("3 - Voltar para o primeiro ID");
+                        Console.WriteLine("4 - Ir para o ultimo ID");
+                        Console.WriteLine("0 - Sair");
+                        Console.Write("R: ");
+                        opc = retornarInt();
+                        int IdInicial = listaCompra.First().Id;
+                        int IdFinal = listaCompra.Last().Id;
+                        switch (opc)
+                        {
+                            case 1:
+                                if (Id > IdInicial)
+                                {
+                                    do
+                                    {
+                                        Id -= 1;
+                                        tempIdLista = listaCompra.Find(x => x.Id == Id);
+                                    } while (tempIdLista == null);
+                                    //enquanto o anterior nao existir, ele decrementa ate achar
+                                    MostrarDetalhesCompra(Id);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Voce ja esta no primeiro Id.");
+                                    Console.Clear();
+                                }
+                                break;
+                            case 2:
+                                if (Id < IdFinal)
+                                {
+                                    do
+                                    {
+                                        Id += 1;
+                                        tempIdLista = listaCompra.Find(x => x.Id == Id);
+                                    } while (tempIdLista == null);
+                                    //enquanto o proximo nao existir, ele vai incrementar ate achar
+                                    MostrarDetalhesCompra(Id);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Voce ja esta no ultimo ID.");
+                                    Console.Clear();
+                                }
+                                break;
+                            case 3:
+                                if (IdInicial != null)
+                                {
+                                    Id = IdInicial;
+                                    MostrarDetalhesCompra(Id);
+                                }
+                                break;
+                            case 4:
+                                if (IdFinal != null)
+                                {
+                                    Id = IdFinal;
+                                    MostrarDetalhesCompra(Id);
+                                }
+                                break;
+                            case 0:
+                                Console.WriteLine("Saindo...");
+                                break;
+                            default:
+                                Console.WriteLine("Opção inválida.");
+                                break;
+                        }
+                    } while (opc != 0);
+                }
             }
 
-            void MostrarDetalhesCompra(int Id)
+            static void MostrarDetalhesCompra(int Id)
             {
                 var compraLocalizada = listaCompra.Find(x => x.Id == Id);
                 var itemCompraLocalizado = listaItemCompra.FindAll(x => x.Id == Id);
@@ -421,7 +445,7 @@ namespace BILTIFUL.Modulo3
                 return Quantidade;
             }
 
-            void EscreverNoArquivo<T>(List<T> l, string file)
+            static void EscreverNoArquivo<T>(List<T> l, string file)
             {
                 string path = @"C:\BILTIFUL\";
                 if (!Directory.Exists(path))

@@ -5,14 +5,12 @@ internal class ManipuladorArquivoCompra
 {
     public ManipuladorArquivoCompra()
     {
-
     }
     public static List<Fornecedor> importarFornecedor(string path, string file)
     {
         List<Fornecedor> templista = new();
         try
         {
-            //string path = @"C:\BILTIFUL\", file = "Producao.dat";
             if (File.Exists(path + file))
             {
                 foreach (string item in File.ReadLines(path + file))
@@ -30,16 +28,14 @@ internal class ManipuladorArquivoCompra
             Console.WriteLine("Erro inesperado!");
             Console.WriteLine(e.Message);
         }
-        return templista; // retorno essa lista para a Main e importo a minha agenda
+        return templista;
     }
-
-
     static Fornecedor importarFornecedorAux(string conteudo)
     {
         Fornecedor tempFornecedor = new Fornecedor(conteudo);
         try
         {
-            tempFornecedor = new(conteudo); // constructor que recebe a linha do arquivo
+            tempFornecedor = new(conteudo);
         }
         catch (Exception e)
         {
@@ -48,13 +44,11 @@ internal class ManipuladorArquivoCompra
         }
         return tempFornecedor;
     }
-
     public static List<Compra> importarCompra(string path, string file)
     {
         List<Compra> templista = new();
         try
         {
-            //string path = @"C:\BILTIFUL\", file = "Producao.dat";
             if (File.Exists(path + file))
             {
                 foreach (string item in File.ReadLines(path + file))
@@ -72,16 +66,14 @@ internal class ManipuladorArquivoCompra
             Console.WriteLine("Erro inesperado!");
             Console.WriteLine(e.Message);
         }
-        return templista; // retorno essa lista para a Main e importo a minha agenda
+        return templista;
     }
-
-
     static Compra importarCompraAux(string conteudo)
     {
         Compra tempCompra = new Compra(conteudo);
         try
         {
-            tempCompra = new(conteudo); // constructor que recebe a linha do arquivo
+            tempCompra = new(conteudo);
         }
         catch (Exception e)
         {
@@ -115,8 +107,6 @@ internal class ManipuladorArquivoCompra
         }
         return templista;
     }
-
-
     static ItemCompra importarItemCompraAux(string conteudo)
     {
         ItemCompra tempItemCompra = new ItemCompra(conteudo);
@@ -131,7 +121,6 @@ internal class ManipuladorArquivoCompra
         }
         return tempItemCompra;
     }
-
     public static List<string> importarFornecedorBloqueado(string path, string file)
     {
         List<string> tempLista = new();
@@ -156,7 +145,6 @@ internal class ManipuladorArquivoCompra
         }
         return tempLista;
     }
-
     static string importarFornecedorBloqueadoAux(string conteudo)
     {
         string tempFornecedorBloqueado = new(conteudo);
@@ -171,7 +159,6 @@ internal class ManipuladorArquivoCompra
         }
         return tempFornecedorBloqueado;
     }
-
     public static List<MPrima> importarMPrima(string path, string file)
     {
         List<MPrima> templista = new();
@@ -196,7 +183,6 @@ internal class ManipuladorArquivoCompra
         }
         return templista;
     }
-
     static MPrima importarMPrimaAux(string conteudo)
     {
         MPrima tempMPrima = new(conteudo);
@@ -211,19 +197,4 @@ internal class ManipuladorArquivoCompra
         }
         return tempMPrima;
     }
-    public static void salvarArquivo<T>(List<T> lista, string file)
-    {
-        string path = @"C:\BILTIFUL\";
-        if (!Directory.Exists(path))
-        {
-            Directory.CreateDirectory(path);
-        }
-        StreamWriter filecontent = new(path + file);
-        foreach (var item in lista)
-        {
-            filecontent.WriteLine(item.ToString());
-        }
-        filecontent.Close();
-    }
-
 }

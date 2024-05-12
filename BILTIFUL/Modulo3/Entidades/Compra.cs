@@ -44,7 +44,7 @@ namespace BILTIFUL.Modulo3
             {
                 texto += $"RAZAO SOCIAL: {l.Find(x => x.Cnpj == CnpjFornecedor).RazaoSocial}\n";
             }
-            texto += $"VALOR TOTAL COMPRA: {ValorTotal}";
+            texto += $"VALOR TOTAL COMPRA: {ValorTotal}\n";
             return texto;
         }
         public override string? ToString()
