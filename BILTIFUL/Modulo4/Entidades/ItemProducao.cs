@@ -26,7 +26,6 @@ namespace BILTIFUL.Modulo4.Entidades
             DataProducao = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy");
             MateriaPrima = data.Substring(13, 6);
             QuantidadeMateriaPrima = float.Parse((data.Substring(19, 5))) / 100;
-            ItemProducao tempProducao = new(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
         }
         public override string? ToString()
         {
