@@ -1,246 +1,64 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
+﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo1.ManipuladorArquivos;
 using BILTIFUL.Modulo4.Entidades;
 using BILTIFUL.Modulo4.Utils;
-
+using BILTIFUL.Modulo4.ManipuladorArquivos;
 namespace BILTIFUL.Modulo4
 {
     internal class MainModulo4
     {
         public MainModulo4()
         {
-            // carrega listas pelos arquivos da pasta
-            List<Producao> listaProducao = new(Utils.ManipuladorArquivos.importarProducao());
-            List<ItemProducao> listaItemProducao = new(Utils.ManipuladorArquivos.importarItemProducao());
-            List<MPrima> listaMPrima = new(Utils.ManipuladorArquivos.importarMPrima());
-            List<Produto> listaProduto = new(Utils.ManipuladorArquivos.importarProduto());
+            string path = @"C:\BILTIFUL\";
+            // Cria Listas como variável global
+            // Carrega os dados na chamada da MainModulo4, buscando os arquivos na pasta designada.
+            var listaProducao = new ManipuladorProducao(path, "Producao.dat").Recuperar();
+            var listaItemProducao = new ManipuladorItemProducao(path, "ItemProducao.dat").Recuperar();
+            var listaMPrima = new ManipularMPrima(path, "Materia.dat").Recuperar();
+            var listaProduto = new ManipularProduto(path, "Cosmetico.dat").Recuperar();
 
-            Menu(listaProducao, listaItemProducao);
-        }
-        static void Menu(List<Producao> listaProducao, List<ItemProducao> listaItemProducao)
-        {
-            int opcao = -1;
-            while (opcao != 0)
+            // Chama a função do Menu que carrega as demais funções
+            Menu(listaProducao, listaItemProducao, listaMPrima, listaProduto);
+
+            void Menu(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
             {
-                Console.Clear();
-                Console.WriteLine("Escolha sua opçao:");
-                Console.WriteLine("1 - Cadastrar Producao");
-                Console.WriteLine("2 - Localizar Producao");
-                Console.WriteLine("3 - Excluir Producao");
-                Console.WriteLine("4 - Impressao Producao");
-                Console.WriteLine("0 - Voltar ao Menu Inicial");
-                opcao = int.Parse(Console.ReadLine());
-                switch (opcao)
+                int opcao = -1;
+                while (opcao != 0)
                 {
-                    // sair
-                    case 0:
-                        break;
-                    // cadastrar
-                    case 1:
-                        inserirProducao();
-                        break;
-                    // localizar
-                    case 2:
-                        localizarProducao();
-                        break;
-                    // excluir
-                    case 3:
-                        excluirProducao();
-                        break;
-                    // impressao
-                    case 4:
-                        imprimirProducao();
-                        break;
-                    default:
-                        Console.WriteLine("Opcao invalida");
-                        break;
-                }
-            }
+                    Console.Clear();
+                    Console.WriteLine("======Produção======");
+                    Console.WriteLine("Opção:");
+                    Console.WriteLine("1 - Cadastrar Produção");
+                    Console.WriteLine("2 - Localizar Produção");
+                    Console.WriteLine("3 - Excluir Produção");
+                    Console.WriteLine("4 - Impressao Produção");
+                    Console.WriteLine("0 - Voltar ao Menu Inicial");
+                    Console.Write("R: ");
+                    opcao = Extra.retornarInt();
 
-            void inserirProducao()
-            {
-                int Id, contador = 0;
-                DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
-                string Produto = "", opcao = "";
-                float Quantidade = 0;
-
-                Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
-                Produto = Console.ReadLine();
-                Console.WriteLine("Informe a quantidade a ser produzida:");
-                Quantidade = float.Parse(Console.ReadLine());
-                Id = listaProducao.Last().Id + 1;
-
-                // Add na lista item producao os itens de materia prima
-                do
-                {
-                    if (contador > 1)
-                    {
-                        Console.WriteLine("Deseja inserir mais uma matéria prima?\nS - Sim\nN - Nao\nX - Anular insercao");
-                        opcao = Console.ReadLine();
-                        if (opcao.ToLower() == "s")
-                        {
-                            listaItemProducao.Add(inserirItemProducao(Id));
-                        }
-                    }
-                    else
-                    {
-                        listaItemProducao.Add(inserirItemProducao(Id));
-                    }
-                    contador++;
-                } while (opcao.ToLower() != "n" && opcao.ToLower() != "x");
-
-                // Por fim cria a producao em si
-                if (opcao.ToLower() != "x")
-                {
-                    Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
-                    listaProducao.Add(tempProducao);
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaProducao, "Producao.txt");
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaItemProducao, "ItemProducao.txt");
-                    Console.WriteLine("Produção criada com suceso!");
-                }
-                else
-                {
-                    listaItemProducao.RemoveAll(x => x.Id == Id); // se for escolhido anular, exclui da lista producao item os itens
-                    Console.WriteLine("Produção anulada!");
-                }
-                Console.WriteLine("Pressione qualquer tecla para continuar.");
-                Console.ReadKey();
-            }
-            ItemProducao inserirItemProducao(int Id)
-            {
-                DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
-                string MateriaPrima = "";
-                float QuantidadeMateriaPrima = 0;
-
-                Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
-                MateriaPrima = Console.ReadLine();
-                Console.WriteLine("Informe a quantidade da matéria prima a ser inserida");
-                QuantidadeMateriaPrima = float.Parse(Console.ReadLine());
-
-                ItemProducao itemProducao = new ItemProducao(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
-                return itemProducao;
-            }
-            void localizarProducao()
-            {
-                int Id;
-                Console.WriteLine("Informe o Id da produção que deseja localizar:");
-                Id = int.Parse(Console.ReadLine());
-                imprimirProducaoAux(Id);
-                Console.WriteLine("Pressione qualquer tecla para continuar.");
-                Console.ReadKey();
-            }
-            void excluirProducao()
-            {
-                int Id;
-                Console.WriteLine("Informe o Id da produção que deseja EXCLUIR:");
-                Id = int.Parse(Console.ReadLine());
-
-                var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
-
-                if (producaoLocalizada != null)
-                {
-                    listaItemProducao.RemoveAll(x => x.Id == Id);
-                    listaProducao.Remove(producaoLocalizada);
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaProducao, "Producao.txt");
-                    Modulo4.Utils.ManipuladorArquivos.salvarArquivo(listaItemProducao, "ItemProducao.txt");
-                    Console.WriteLine($"Exclusão do Id [ {Id} ] realizada com sucesso!");
-                }
-                else
-                {
-                    Console.WriteLine("Não foi localizado uma Produção com esse Id, tente novamente.");
-                }
-                Console.WriteLine("Pressione qualquer tecla para continuar.");
-                Console.ReadKey();
-            }
-            void imprimirProducao()
-            {
-                int Id, IdInicial, IdFinal, opcao = 10;
-                Producao listaTemporaria;
-                IdInicial = listaProducao.First().Id;
-                Id = IdInicial;
-                IdFinal = listaProducao.Last().Id;
-                imprimirProducaoAux(IdInicial);
-                while (opcao != 9)
-                {
-                    Console.WriteLine("Digite:");
-                    Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
-                    Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
-                    Console.WriteLine("[ 9 - Sair ]");
-                    opcao = int.Parse(Console.ReadLine());
                     switch (opcao)
                     {
                         case 0:
-                            Id = IdInicial;
-                            imprimirProducaoAux(Id);
+                            Console.WriteLine("Saindo do módulo Produção");
                             break;
                         case 1:
-                            if (Id > IdInicial)
-                            {
-                                do
-                                {
-                                    Id--;
-                                    listaTemporaria = listaProducao.Find(x => x.Id == Id);
-                                } while (listaTemporaria == null);
-                                imprimirProducaoAux(Id);
-                            }
-                            else
-                            {
-                                imprimirProducaoAux(IdInicial);
-                                Console.WriteLine("Inicio da Lista!");
-                            }
+                            FuncoesProducao.inserirProducao(listaProducao, listaItemProducao, listaMPrima, listaProduto, path);
                             break;
                         case 2:
-                            if (Id < IdFinal)
-                            {
-                                do
-                                {
-                                    Id++;
-                                    listaTemporaria = listaProducao.Find(x => x.Id == Id);
-                                } while (listaTemporaria == null);
-                                imprimirProducaoAux(Id);
-                            }
-                            else
-                            {
-                                imprimirProducaoAux(IdFinal);
-                                Console.WriteLine("Fim da Lista!");
-                            }
+                            FuncoesProducao.localizarProducao(listaProducao, listaItemProducao, listaMPrima, listaProduto);
                             break;
                         case 3:
-                            Id = IdFinal;
-                            imprimirProducaoAux(Id);
+                            FuncoesProducao.excluirProducao(listaProducao, listaItemProducao, listaMPrima, listaProduto, path);
                             break;
-                        case 9:
+                        case 4:
+                            FuncoesProducao.imprimirProducao(listaProducao, listaItemProducao, listaMPrima, listaProduto);
                             break;
                         default:
                             Console.WriteLine("Opção inválida.");
+                            Console.Write("Pressione qualquer tecla para continuar...");
+                            Console.ReadKey();
                             break;
                     }
-                }
-            }
-            void imprimirProducaoAux(int Id)
-            {
-                var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
-                var producaoItemLocalizada = listaItemProducao.FindAll(x => x.Id == Id);
-
-                if (producaoLocalizada != null)
-                {
-                    Console.Clear();
-                    Console.WriteLine("-".PadLeft(110, '-'));
-                    Console.WriteLine(producaoLocalizada.imprimirNaTela());
-                    Console.WriteLine("-".PadLeft(110, '-'));
-                    foreach (ItemProducao item in producaoItemLocalizada)
-                    {
-                        Console.WriteLine(item.imprimirNaTela());
-                    }
-                    Console.WriteLine("-".PadLeft(110, '-'));
-                } else
-                {
-                    Console.WriteLine("Não foi localizada uma Produção com esse Id.");
                 }
             }
         }
