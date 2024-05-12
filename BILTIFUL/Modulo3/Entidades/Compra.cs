@@ -1,9 +1,4 @@
 ﻿using BILTIFUL.Modulo1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BILTIFUL.Modulo3
 {
@@ -26,12 +21,12 @@ namespace BILTIFUL.Modulo3
             ValorTotal = valorTotal;
         }
 
-        public Compra(string data)
+        public Compra(string conteudoArquivo)
         {
-            Id = int.Parse(data.Substring(0, 5));
-            DataCompra = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy");
-            CnpjFornecedor = data.Substring(13, 14);
-            ValorTotal = float.Parse((data.Substring(27, 7))) / 100;
+            Id = int.Parse(conteudoArquivo.Substring(0, 5));
+            DataCompra = DateOnly.ParseExact(conteudoArquivo.Substring(5, 8), "ddMMyyyy");
+            CnpjFornecedor = conteudoArquivo.Substring(13, 14);
+            ValorTotal = float.Parse((conteudoArquivo.Substring(27, 7))) / 100;
         }
 
         public string ImprimirCompraNaTela(List<Fornecedor> l)

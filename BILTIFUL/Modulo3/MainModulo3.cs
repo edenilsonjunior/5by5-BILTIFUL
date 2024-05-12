@@ -1,6 +1,6 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo3.ManipuladorArquivos;
-using System.Reflection;
+
 namespace BILTIFUL.Modulo3
 {
     internal class MainModulo3
@@ -17,7 +17,7 @@ namespace BILTIFUL.Modulo3
             List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(path, "Compra.dat"));
             List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(path, "ItemCompra.dat"));
 
-            static void RealizarCompra()
+            void RealizarCompra()
             {
                 Compra compra;
                 int Id = 0;
@@ -93,7 +93,7 @@ namespace BILTIFUL.Modulo3
                 }
             }
 
-            static void PegarMateriaPrima(int idMPrima)
+            void PegarMateriaPrima(int idMPrima)
             {
                 ItemCompra item = new();
                 bool podeCadastrar = true;
@@ -151,10 +151,10 @@ namespace BILTIFUL.Modulo3
                             Console.Write("Digite quantas matérias prima desse tipo voce deseja comprar: ");
                             quantidadeCompraMPrima = retornarFloat();
 
-                            if (quantidadeCompraMPrima > 99999)
+                            if (quantidadeCompraMPrima > 999.99)
                             {
                                 podeCadastrar = false;
-                                Console.WriteLine("Passou da quantidade permitida de produtos comprados. Max: 99999");
+                                Console.WriteLine("Passou da quantidade permitida de produtos comprados. Max: 999,99");
                             }
                             else if (quantidadeCompraMPrima <= 0)
                             {
@@ -173,10 +173,10 @@ namespace BILTIFUL.Modulo3
                             Console.Write("Digite o valor da matéria prima escolhida: ");
                             valorUnitario = retornarFloat();
 
-                            if (valorUnitario > 99999)
+                            if (valorUnitario > 999.99)
                             {
                                 podeCadastrar = false;
-                                Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
+                                Console.WriteLine("Valor Excedido!! Max: 999,99 por item.");
                             }
                             else if (valorUnitario <= 0)
                             {
@@ -188,10 +188,19 @@ namespace BILTIFUL.Modulo3
                                 podeCadastrar = true;
                                 valorTotalPorMateria = quantidadeCompraMPrima * valorUnitario;
                                 valorTotal += valorTotalPorMateria;
-                                Console.Clear();
+                                if (valorTotal > 99999.99)
+                                {
+                                    podeCadastrar = false;
+                                    Console.WriteLine("Valor total excedido. Max: 99999,99");
+                                }
+                                else
+                                {
+                                    podeCadastrar = true;
+                                    Console.Clear();
+                                }
                             }
                         } while (podeCadastrar == false);
-                        if (valorTotalPorMateria > 999999)
+                        if (valorTotalPorMateria > 9999.99)
                         {
                             podeCadastrar = false;
                             Console.WriteLine("O valor total ultrapassou o limite, digite valor e/ou quantidade menores.");
@@ -209,7 +218,7 @@ namespace BILTIFUL.Modulo3
                 listaCompra.Find(x => x.Id == idMPrima).ValorTotal = valorTotal;
             }
 
-            static void LocalizarCompra()
+            void LocalizarCompra()
             {
                 int opc;
                 do
@@ -242,7 +251,7 @@ namespace BILTIFUL.Modulo3
                 } while (opc != 0);
             }
 
-            static void ExcluirCompra()
+            void ExcluirCompra()
             {
                 int opc = 0;
                 if (listaCompra.Count == 0 || listaItemCompra.Count == 0)
@@ -276,7 +285,7 @@ namespace BILTIFUL.Modulo3
                 }
             }
 
-            static void ImprimirCompra()
+            void ImprimirCompra()
             {
                 int opc, Id = 0;
 
@@ -364,7 +373,7 @@ namespace BILTIFUL.Modulo3
                 }
             }
 
-            static void MostrarDetalhesCompra(int Id)
+            void MostrarDetalhesCompra(int Id)
             {
                 var compraLocalizada = listaCompra.Find(x => x.Id == Id);
                 var itemCompraLocalizado = listaItemCompra.FindAll(x => x.Id == Id);
@@ -397,9 +406,8 @@ namespace BILTIFUL.Modulo3
                 Console.WriteLine("2- Localizar uma compra");
                 Console.WriteLine("3- Excluir uma compra");
                 Console.WriteLine("4- Imprimir uma compra");
-                Console.WriteLine("5- Voltar ao inicio do programa");
-                Console.WriteLine("0- Exit");
-                Console.Write("R: ");
+                Console.WriteLine("0- Sair do programa");
+                Console.Write("Opcao desejada (0-4):< > \b\b\b");
 
                 int option = retornarInt();
                 return option;
@@ -445,7 +453,7 @@ namespace BILTIFUL.Modulo3
                 return Quantidade;
             }
 
-            static void EscreverNoArquivo<T>(List<T> l, string file)
+            void EscreverNoArquivo<T>(List<T> l, string file)
             {
                 string path = @"C:\BILTIFUL\";
                 if (!Directory.Exists(path))
@@ -464,6 +472,7 @@ namespace BILTIFUL.Modulo3
             //Programa em si
             do
             {
+
                 switch (Menu())
                 {
                     case 1:
@@ -479,10 +488,6 @@ namespace BILTIFUL.Modulo3
                         ImprimirCompra();
                         break;
                 }
-                Console.WriteLine("Deseja fazer mais alguma operacao?");
-                Console.WriteLine("Se sim digite 1");
-                Console.WriteLine("Se nao digite 0");
-                Console.Write("R: ");
             } while (Menu() != 0);
         }
     }
