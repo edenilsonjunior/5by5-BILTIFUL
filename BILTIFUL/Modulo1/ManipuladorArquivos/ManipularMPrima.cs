@@ -14,7 +14,7 @@
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo();
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
 
 
@@ -24,16 +24,17 @@
         /// <returns>A lista de matérias-primas.</returns>
         public List<MPrima> Recuperar()
         {
-            List<MPrima> materias = new();
+            var materias = new List<MPrima>();
 
             foreach (string linha in File.ReadAllLines(_caminho + _arquivo))
             {
-                MPrima aux = new(linha);
+                var aux = new MPrima(linha);
                 materias.Add(aux);
             }
 
             return materias;
         }
+
 
         /// <summary>
         /// Salva a lista de matérias-primas no arquivo.
@@ -53,35 +54,37 @@
             }
         }
 
+
         /// <summary>
         /// Cadastra uma nova matéria-prima.
         /// </summary>
         public void Cadastrar()
         {
-            string id, nome;
-            List<MPrima> materias = Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Cadastrar Matéria-prima=====");
+
+            string nome = MainModulo1.LerString("Digite o nome: ");
 
             int idInt = GetMaiorId();
+            string id = $"MP{idInt:0000}";
 
-            id = $"MP{idInt:0000}";
-
-            nome = MainModulo1.LerString("Digite o nome: ");
-
+            var materias = Recuperar();
             materias.Add(new(id, nome));
             Salvar(materias);
+            Console.WriteLine(">>>Materia prima cadastrada!<<<");
         }
+
 
         /// <summary>
         /// Edita uma matéria-prima existente.
         /// </summary>
         public void Editar()
         {
-            List<MPrima> materias = Recuperar();
+            Console.Clear();
+            Console.WriteLine("======Editar Matéria-prima======");
 
-            string id = LerId();
-
-            MPrima? materia = materias.Find(x => x.Id == id);
-
+            var materias = Recuperar();
+            MPrima? materia = BuscarPorId();
             if (materia == null)
             {
                 Console.WriteLine("Matéria-prima não encontrada.");
@@ -111,7 +114,13 @@
                 }
 
             } while (!parada);
+
+            Console.WriteLine("Matéria-prima editada:");
+            Console.WriteLine(materia.Print());
+
+            Salvar(materias);
         }
+
 
         /// <summary>
         /// Busca uma matéria-prima pelo seu ID.
@@ -121,47 +130,52 @@
         {
             string id = LerId();
 
-            List<MPrima> materias = Recuperar();
+            var materias = Recuperar();
 
-            MPrima? materia = materias.Find(x => x.Id == id);
-
-            return materia;
+            return materias.Find(x => x.Id == id);
         }
+
 
         /// <summary>
         /// Localiza uma matéria-prima pelo seu ID e exibe suas informações.
         /// </summary>
         public void Localizar()
         {
+            Console.Clear();
+            Console.WriteLine("=====Imprimir materia-prima especifica:");
+
             MPrima? materia = BuscarPorId();
 
-            if (materia == null)
+            if (materia != null)
             {
-                Console.WriteLine("Matéria-prima não encontrada.");
+                Console.WriteLine(materia.Print());
                 return;
             }
 
-            Console.WriteLine(materia);
+            Console.WriteLine("Matéria-prima não encontrada.");
         }
+
 
         /// <summary>
         /// Imprime a lista de matérias-primas.
         /// </summary>
         public void Imprimir()
         {
+            Console.Clear();
+            Console.WriteLine("=====Imprimir todas as matérias-primas=====");
             List<MPrima> materias = Recuperar();
 
-            if (materias.Count == 0)
+            if (materias.Count != 0)
             {
-                Console.WriteLine("Nenhuma matéria-prima cadastrada.");
+                foreach (var item in materias)
+                {
+                    Console.WriteLine(item.Print());
+                    Console.WriteLine("---------------");
+                }
                 return;
             }
 
-            Console.WriteLine("Lista de matérias-primas:");
-            foreach (var item in materias)
-            {
-                Console.WriteLine(item.Print());
-            }
+            Console.WriteLine("Nenhuma matéria-prima cadastrada.");
         }
 
 
@@ -176,17 +190,17 @@
             List<MPrima> materias = Recuperar();
 
             if (materias.Count == 0)
-            {
-                return 0;
-            }
-            int maior = 0;
+                return 1;
 
+            int maior = 0;
             foreach (var item in materias)
             {
-                int id = int.Parse(item.Id.Substring(2));
-                if (id > maior)
+                int id;
+
+                if (int.TryParse(item.Id.Substring(2), out id))
                 {
-                    maior = id;
+                    if (id > maior)
+                        maior = id;
                 }
             }
 
@@ -195,6 +209,7 @@
             return maior;
         }
 
+
         /// <summary>
         /// Lê o ID da matéria-prima.
         /// </summary>
@@ -202,17 +217,25 @@
         private string LerId()
         {
             string id;
+            bool valido = false;
             do
             {
                 id = MainModulo1.LerString("Digite o ID da matéria-prima: ");
 
                 if (!MPrima.VerificarId(id))
+                {
                     Console.WriteLine("ID inválido.");
+                }
+                else
+                {
+                    valido = true;
+                }
 
-            } while (MPrima.VerificarId(id));
+            } while (!valido);
 
             return id;
         }
+
 
         /// <summary>
         /// Exibe o menu de edição da matéria-prima.
@@ -224,8 +247,9 @@
             Console.Clear();
             Console.WriteLine("======Editar Matéria-prima======");
             Console.WriteLine($"Matéria-prima a ser editada: {nomeMP}");
-
             Console.WriteLine("==========================\n");
+
+            Console.WriteLine("Opcoes:");
             Console.WriteLine("1 - Editar nome");
             Console.WriteLine("2 - Editar situação");
             Console.WriteLine("0 - Sair");
@@ -235,19 +259,5 @@
             return opcao;
         }
 
-        /// <summary>
-        /// Cria o diretório e o arquivo se não existirem.
-        /// </summary>
-        private void CriarDiretorioArquivo()
-        {
-            if (!Directory.Exists(_caminho))
-                Directory.CreateDirectory(_caminho);
-
-            if (!File.Exists(_caminho + _arquivo))
-            {
-                var file = File.Create(_caminho + _arquivo);
-                file.Close();
-            }
-        }
     }
 }
