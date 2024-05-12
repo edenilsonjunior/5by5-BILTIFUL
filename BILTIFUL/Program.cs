@@ -1,4 +1,4 @@
-﻿using BILTIFUL.Modulo3;
+using BILTIFUL.Modulo3;
 
 namespace BILTIFUL
 {
@@ -10,5 +10,6 @@ namespace BILTIFUL
             //teste;
             new MainModulo3();
         }
+
     }
 }

@@ -1,9 +1,4 @@
 using BILTIFUL.Modulo1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BILTIFUL.Modulo4.Entidades
 {
@@ -15,7 +10,7 @@ namespace BILTIFUL.Modulo4.Entidades
         public float QuantidadeMateriaPrima { get; set; }
         public ItemProducao()
         {
-            
+
         }
 
         public ItemProducao(int id, DateOnly dataProducao, string materiaPrima, float quantidadeMateriaPrima)
@@ -31,23 +26,26 @@ namespace BILTIFUL.Modulo4.Entidades
             DataProducao = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy");
             MateriaPrima = data.Substring(13, 6);
             QuantidadeMateriaPrima = float.Parse((data.Substring(19, 5))) / 100;
-            ItemProducao tempProducao = new(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
         }
         public override string? ToString()
         {
             string texto = "";
             texto = Id.ToString().PadLeft(5, '0');
-            texto += DataProducao.ToString().Replace("/","");
+            texto += DataProducao.ToString().Replace("/", "");
             texto += MateriaPrima.ToUpper().PadLeft(6, '0');
             texto += QuantidadeMateriaPrima.ToString("N2").Replace(",", "").PadLeft(5, '0');
             return texto;
         }
-        public string imprimirNaTela()
+        public string imprimirNaTela(List<MPrima> listaMPrima)
         {
             string texto = "";
             texto += $"DATA DE PRODUÇÃO: {DataProducao}  |";
-            texto += $" MATÉRIA PRIMA UTILIZADA: {MateriaPrima}  |";
-            texto += $" QUANTIDADE UTILIZADA: " + QuantidadeMateriaPrima.ToString("N2");
+            texto += $" MATÉRIA PRIMA UTILIZADA: {MateriaPrima} ";
+            if (listaMPrima.Find(x => x.Id == MateriaPrima) != null)
+            {
+                texto += (listaMPrima.Find(x => x.Id == MateriaPrima).Nome);
+            }
+            texto += $" | QTDE UTILIZADA: " + QuantidadeMateriaPrima.ToString("N2");
             return texto;
         }
     }
