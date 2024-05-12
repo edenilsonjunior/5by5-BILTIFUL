@@ -60,11 +60,25 @@
             Console.Clear();
             Console.WriteLine("=====Cadastrar novo produto=====");
 
-            string codigoBarras = LerCodigoBarras();
+            var produtos = Recuperar();
+            string codigoBarras;
+
+            bool existeCodigoBarras = true;
+            do
+            {
+                codigoBarras = LerCodigoBarras();
+
+                if(produtos.Exists(p => p.CodigoBarras.Equals(codigoBarras)))
+                    Console.WriteLine("Código de barras inválido!");
+                else
+                    existeCodigoBarras = false;
+
+            } while (existeCodigoBarras);
+
+
             string nome = MainModulo1.LerString("Digite o nome: ");
             float valorVenda = LerValorVenda();
 
-            var produtos = Recuperar();
             produtos.Add(new Produto(codigoBarras, nome, valorVenda));
             Salvar(produtos);
 

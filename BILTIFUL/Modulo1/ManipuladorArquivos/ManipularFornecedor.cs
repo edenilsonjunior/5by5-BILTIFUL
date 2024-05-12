@@ -58,7 +58,23 @@
 
             var fornecedores = Recuperar();
 
-            string cnpj = LerCnpj();
+            string cnpj;
+
+            bool existeCnpj = true;
+            do
+            {
+                cnpj = LerCnpj();
+
+                if(!fornecedores.Exists(c => c.Cnpj == cnpj))
+                {
+                    existeCnpj = false;
+                }
+                else
+                {
+                    Console.WriteLine("CNPJ já cadastrado!");
+                }
+            } while (existeCnpj);
+
             string razaoSocial = MainModulo1.LerString("Digite a razão social: ");
             var dataAbertura = MainModulo1.LerData("Digite a data de abertura: ");
 

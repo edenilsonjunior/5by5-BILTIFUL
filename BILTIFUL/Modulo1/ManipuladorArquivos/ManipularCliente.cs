@@ -57,8 +57,23 @@
             Console.WriteLine("======Cadastrar Cliente======");
 
             var clientes = Recuperar();
+            string cpf;
+            bool cpfExiste = true;
+            do
+            {
+                cpf = LerCpf();
 
-            string cpf = LerCpf();
+                if (clientes.Exists(clientes => clientes.Cpf == cpf))
+                {
+                    Console.WriteLine("CPF já cadastrado!");
+                }
+                else
+                {
+                    cpfExiste = false;
+                }
+
+            } while (cpfExiste);
+
             string nome = MainModulo1.LerString("Digite o nome: ");
             char sexo = LerSexo();
             DateOnly dataNascimento = MainModulo1.LerData("Digite a data de nascimento: ");
