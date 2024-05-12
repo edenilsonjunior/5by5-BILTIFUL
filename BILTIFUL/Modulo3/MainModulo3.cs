@@ -7,20 +7,19 @@ namespace BILTIFUL.Modulo3
         public MainModulo3()
         {
             //Variavel global
-            int valorTotal = 0, Id = 1;
-            string path = @"C:\Teste\";
+            string path = @"C:\Biltiful\";
 
             //Listas para acessar as propriedades das classes necessarias
-            List<Fornecedor> listFornecedor = new(ManipuladorArquivoCompra.importarFornecedor(path, "Fornecedor.dat"));
-            List<string> listFornecedorBloqueados = new(ManipuladorArquivoCompra.importarFornecedorBloqueado(path, "Bloqueado.dat"));
-            List<MPrima> listMPrima = new(ManipuladorArquivoCompra.importarMPrima(path, "Materia.dat"));
-            List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(@"C:\BILTIFUL\", "Compra.dat"));
-            List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(@"C:\BILTIFUL\", "ItemCompra.dat"));
+            List<Fornecedor> listFornecedor = new(ManipuladorArquivoCompra.importarFornecedor(@"C:\Teste\", "Fornecedor.dat"));
+            List<string> listFornecedorBloqueados = new(ManipuladorArquivoCompra.importarFornecedorBloqueado(@"C:\Teste\", "Bloqueado.dat"));
+            List<MPrima> listMPrima = new(ManipuladorArquivoCompra.importarMPrima(@"C:\Teste\", "Materia.dat"));
+            List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(path, "Compra.dat"));
+            List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(path, "ItemCompra.dat"));
 
             void RealizarCompra()
             {
                 Compra compra;
-
+                int Id = 1;
                 var data = DateOnly.FromDateTime(DateTime.Now);
                 string tempCNPJ, mensagem = "";
 
@@ -64,9 +63,9 @@ namespace BILTIFUL.Modulo3
                         Console.WriteLine("A data de abertura do fornecedor informado consta: " + dataAberturaFornecedor);
                         Console.Write("Informe se deseja prosseguir com as informacoes acima (S/N): ");
 
-                        char opcaoUsuario = char.Parse(Console.ReadLine());
+                        string opcaoUsuario = Console.ReadLine();
 
-                        if (opcaoUsuario == 'S' || opcaoUsuario == 's')
+                        if (opcaoUsuario.ToLower() == "s")
                         {
                             podeCadastrar = true;
                         }
@@ -81,27 +80,23 @@ namespace BILTIFUL.Modulo3
 
                 if (podeCadastrar)
                 {
-                    PegarMateriaPrima();
-                    compra = new(Id, data, tempCNPJ, valorTotal);
+                    compra = new(Id, data, tempCNPJ, 0);
                     listaCompra.Add(compra);
+                    PegarMateriaPrima(Id);
                     EscreverNoArquivo<Compra>(listaCompra, "Compra.dat");
                 }
             }
 
-            void PegarMateriaPrima()
+            void PegarMateriaPrima(int idMPrima)
             {
                 ItemCompra item = new();
-
                 bool podeCadastrar = true;
-
                 string materiaPrimaTemp = "";
-
                 var dataAtual = DateOnly.FromDateTime(DateTime.Now);
-
-                int valorUnitario = 0, valorTotalPorMateria = 0, idMPrima = Id, quantidadeCompraMPrima = 0;
+                float valorUnitario = 0, valorTotalPorMateria = 0, quantidadeCompraMPrima = 0, valorTotal = 0;
 
                 Console.Write("Informe quantas matérias primas deseja comprar: ");
-                int quantidadeMPrima = int.Parse(Console.ReadLine());
+                int quantidadeMPrima = retornarInt();
 
                 if (quantidadeMPrima > 3)
                 {
@@ -114,7 +109,7 @@ namespace BILTIFUL.Modulo3
                         do
                         {
                             Console.Write("Digite o ID da materia prima que deseja comprar: ");
-                            materiaPrimaTemp = Console.ReadLine();
+                            materiaPrimaTemp = Console.ReadLine().ToUpper();
                             if (listMPrima.Find(x => x.Id == materiaPrimaTemp) == null)
                             {
                                 podeCadastrar = false;
@@ -132,52 +127,80 @@ namespace BILTIFUL.Modulo3
                         } while (podeCadastrar == false);
                         do
                         {
-                            Console.Write("Digite quantas matérias prima desse tipo voce deseja comprar: ");
-                            quantidadeCompraMPrima = int.Parse(Console.ReadLine());
+                            do
+                            {
+                                Console.Write("Digite quantas matérias prima desse tipo voce deseja comprar: ");
+                                quantidadeCompraMPrima = retornarFloat();
 
-                            if (quantidadeCompraMPrima > 99999)
-                            {
-                                podeCadastrar = false;
-                                Console.WriteLine("Passou da quantidade permitida de produtos comprados. Max: 99999");
+                                if (quantidadeCompraMPrima > 99999)
+                                {
+                                    podeCadastrar = false;
+                                    Console.WriteLine("Passou da quantidade permitida de produtos comprados. Max: 99999");
+                                }
+                                else if (quantidadeCompraMPrima <= 0)
+                                {
+                                    podeCadastrar = false;
+                                    Console.WriteLine("É preciso comprar pelo menos 1");
+                                }
+                                else
+                                {
+                                    podeCadastrar = true;
+                                }
                             }
-                            else if (quantidadeCompraMPrima <= 0)
+                            while (podeCadastrar == false);
+                            do
+                            {
+                                Console.Write("Digite o valor da matéria prima escolhida: ");
+                                valorUnitario = retornarFloat();
+
+                                if (valorUnitario > 99999)
+                                {
+                                    podeCadastrar = false;
+                                    Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
+                                }
+                                else if (valorUnitario <= 0)
+                                {
+                                    podeCadastrar = false;
+                                    Console.WriteLine("O valor unitario precisa ser acima de 0.");
+                                }
+                                else
+                                {
+                                    podeCadastrar = true;
+                                    valorTotalPorMateria = quantidadeCompraMPrima * valorUnitario;
+                                    valorTotal += valorTotalPorMateria;
+                                }
+                            } while (podeCadastrar == false);
+                            if (valorTotalPorMateria > 999999)
                             {
                                 podeCadastrar = false;
-                                Console.WriteLine("É preciso comprar pelo menos 1");
+                                Console.WriteLine("O valor total ultrapassou o limite, digite valor e/ou quantidade menores.");
                             }
                             else
                             {
                                 podeCadastrar = true;
-                            }
-                        }
-                        while (podeCadastrar == false);
-                        do
-                        {
-                            Console.Write("Digite o valor da matéria prima escolhida: ");
-                            valorUnitario = int.Parse(Console.ReadLine());
-
-                            if (valorUnitario > 99999)
-                            {
-                                podeCadastrar = false;
-                                Console.WriteLine("Valor Excedido!! Max: 99999 por item.");
-                            }
-                            else if (valorUnitario <= 0)
-                            {
-                                podeCadastrar = false;
-                                Console.WriteLine("O valor unitario precisa ser acima de 0.");
-                            }
-                            else
-                            {
-                                podeCadastrar = true;
-                                valorTotalPorMateria = quantidadeCompraMPrima * valorUnitario;
-                                valorTotal += valorTotalPorMateria;
                             }
                         } while (podeCadastrar == false);
-
                         item = new(idMPrima, dataAtual, materiaPrimaTemp, quantidadeCompraMPrima, valorUnitario, valorTotalPorMateria);
                         listaItemCompra.Add(item);
                     }
                     EscreverNoArquivo<ItemCompra>(listaItemCompra, "ItemCompra.dat");
+                    listaCompra.Find(x => x.Id == idMPrima).ValorTotal = valorTotal;
+                }
+            }
+
+            void LocalizarCompra()
+            {
+                Console.Write("Informe o ID da compra que deseja localizar: ");
+                int Id = retornarInt();
+
+                var compraLocalizada = listaCompra.Find(x => x.Id == Id);
+                var itemCompraLocalizado = listaItemCompra.Find(x => x.Id == Id);
+
+                Console.WriteLine(compraLocalizada.ImprimirCompraNaTela());
+
+                foreach (var item in listaItemCompra)
+                {
+                    Console.WriteLine(itemCompraLocalizado.ImprimirItemCompraNaTela());
                 }
             }
 
@@ -188,9 +211,10 @@ namespace BILTIFUL.Modulo3
 
                 Console.WriteLine("Opcoes: ");
                 Console.WriteLine("1- Cadastrar uma compra");
-                Console.WriteLine("2-");
-                Console.WriteLine("3-");
-                Console.WriteLine("4- Voltar ao inicio do programa");
+                Console.WriteLine("2- Localizar uma compra");
+                Console.WriteLine("3- Excluir uma compra");
+                Console.WriteLine("4- Imprimir uma compra");
+                Console.WriteLine("5- Voltar ao inicio do programa");
                 Console.WriteLine("0- Exit");
                 Console.Write("R: ");
 
@@ -218,6 +242,26 @@ namespace BILTIFUL.Modulo3
                 return Inteiro;
             }
 
+            static float retornarFloat()
+            {
+                float Quantidade = 0;
+                bool valor = false;
+
+                while (!valor)
+                {
+                    if (float.TryParse(Console.ReadLine(), out float qtde))
+                    {
+                        Quantidade = qtde;
+                        valor = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Formato inválido. Preencha por exemplo 0,01 1,00 10,00 100,00");
+                    }
+                }
+                return Quantidade;
+            }
+
             void EscreverNoArquivo<T>(List<T> l, string file)
             {
                 string path = @"C:\BILTIFUL\";
@@ -234,7 +278,6 @@ namespace BILTIFUL.Modulo3
                 conteudoArquivo.Close();
             }
 
-
             //Programa em si
             switch (Menu())
             {
@@ -242,11 +285,7 @@ namespace BILTIFUL.Modulo3
                     RealizarCompra();
                     break;
                 case 2:
-                    var objCompra = listaCompra.Find(x => x.Id == Id);
-                    Console.WriteLine(objCompra.ImprimirCompraNaTela());
-                    var objItemCompra = listaItemCompra.Find(x => x.Id == Id);
-                    Console.WriteLine(objItemCompra.ImprimirItemCompraNaTela());
-                    //LocalizarCompra();
+                    LocalizarCompra();
                     break;
                 case 3:
                     //ExcluirCompra();
