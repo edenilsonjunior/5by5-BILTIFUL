@@ -50,5 +50,21 @@
             }
             return Inteiro;
         }
+        /// <summary>
+        /// Salva uma lista genérica em um arquivo.
+        /// </summary>
+        public static void salvarArquivo<T>(List<T> lista, string path, string file)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            StreamWriter filecontent = new(path + file);
+            foreach (var item in lista)
+            {
+                filecontent.WriteLine(item.ToString());
+            }
+            filecontent.Close();
+        }
     }
 }

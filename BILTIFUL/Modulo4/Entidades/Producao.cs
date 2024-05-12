@@ -39,14 +39,14 @@ namespace BILTIFUL.Modulo4.Entidades
         public string imprimirNaTela(List<Produto> listaProduto)
         {
             string texto = "";
-            texto = $"Id: [ {Id} ] |";
-            texto += $" DATA DE PRODUÇÃO: {DataProducao}\n";
-            texto += $"COSMÉTICO PRODUZIDO: {Produto} ";
+            texto = $"Id: [ {Id} ]";
+            texto += $" [ DATA DE PRODUÇÃO: {DataProducao} ]\n";
+            texto += $"    [ COSMÉTICO PRODUZIDO: {Produto} - ";
             if (listaProduto.Find(x => x.CodigoBarras == Produto) != null)
             {
-                texto += (listaProduto.Find(x => x.CodigoBarras == Produto).Nome).Trim() + "| ";
+                texto += (listaProduto.Find(x => x.CodigoBarras == Produto).Nome).Trim();
             }
-            texto += $" | QTDE PRODUZIDA: {Quantidade.ToString("N2")}";
+            texto += $" ]  [ QTDE PRODUZIDA: {Quantidade.ToString("N2")} ]";
             return texto;
         }
     }

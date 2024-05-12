@@ -1,10 +1,17 @@
 ﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo1.ManipuladorArquivos;
 using BILTIFUL.Modulo4.Entidades;
-using System.IO;
+using BILTIFUL.Modulo4.ManipuladorArquivos;
+
 namespace BILTIFUL.Modulo4.Utils
 {
     internal class FuncoesProducao
     {
+        private string _path = @"C:\BILTIFUL\";
+        private List<Producao> _listaProducao = new ManipuladorProducao(@"C:\BILTIFUL\", "Producao.dat").Recuperar();
+        private List<ItemProducao> _listaItemProducao = new ManipuladorItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat").Recuperar();
+        private List<MPrima> _listaMPrima = new ManipularMPrima(@"C:\BILTIFUL\", "Materia.dat").Recuperar();
+        private List<Produto> _listaProduto = new ManipularProduto(@"C:\BILTIFUL\", "Cosmetico.dat").Recuperar();
         public FuncoesProducao()
         {
 
@@ -12,26 +19,27 @@ namespace BILTIFUL.Modulo4.Utils
         /// <summary>
         /// Método que insere a Produção na lista de Produção.
         /// </summary>
-        public static void inserirProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto, string path)
+        public void inserirProducao()
         {
-            int Id, Contador = 0;
+            int Id, Contador = 0, ContadorItem = 1;
             DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
             string Cosmetico = "", opcao = "";
             float Quantidade = 0;
             bool Abortar = false;
-            if (listaProducao.Count == 0)
+
+            if (_listaProducao.Count == 0)
             {
                 Id = 1;
             }
             else
             {
-                Id = listaProducao.Last().Id + 1;
+                Id = _listaProducao.Last().Id + 1;
             }
 
             Console.WriteLine("Informe o Produto a ser produzido (Cod.Barras):");
             Cosmetico = Console.ReadLine();
 
-            if (listaProduto.Find(x => x.CodigoBarras == Cosmetico && x.Situacao.ToString() == "A") == null)
+            if (_listaProduto.Find(x => x.CodigoBarras == Cosmetico && x.Situacao.ToString() == "A") == null)
             {
                 do
                 {
@@ -48,7 +56,7 @@ namespace BILTIFUL.Modulo4.Utils
                     {
                         Abortar = true;
                     }
-                } while ((listaProduto.Find(x => x.CodigoBarras == Cosmetico && x.Situacao.ToString() == "A") == null) && !Abortar);
+                } while ((_listaProduto.Find(x => x.CodigoBarras == Cosmetico && x.Situacao.ToString() == "A") == null) && !Abortar);
             }
             if (!Abortar)
             {
@@ -73,13 +81,14 @@ namespace BILTIFUL.Modulo4.Utils
                     opcao = Console.ReadLine();
                     if (opcao.ToLower() == "s")
                     {
-                        ItemProducao tempitem = inserirItemProducao(Id);
+                        ItemProducao tempitem = inserirItemProducao(Id, ContadorItem);
                         if (tempitem.MateriaPrima != null)
                         {
-                            listaItemProducao.Add(tempitem);
+                            _listaItemProducao.Add(tempitem);
                         }
                         else
                         {
+                            ContadorItem--;
                             Console.WriteLine("Matéria Prima não inserida.");
                         }
                     }
@@ -90,111 +99,118 @@ namespace BILTIFUL.Modulo4.Utils
                 }
                 else
                 {
-                    ItemProducao tempitem = inserirItemProducao(Id);
+                    ItemProducao tempitem = inserirItemProducao(Id, ContadorItem);
                     if (tempitem.MateriaPrima != null)
                     {
-                        listaItemProducao.Add(tempitem);
+                        _listaItemProducao.Add(tempitem);
                     }
                     else
                     {
                         Abortar = true;
                     }
                 }
+                ContadorItem++;
                 Contador++;
             }
-            if (opcao.ToLower() != "x" && !Abortar)
+            if (!Abortar)
             {
                 Producao tempProducao = new(Id, DataProducao, Cosmetico, Quantidade);
-                listaProducao.Add(tempProducao);
-                ArquivoProducao.salvarArquivo(listaProducao, path, "Producao.dat");
-                ArquivoProducao.salvarArquivo(listaItemProducao, path, "ItemProducao.dat");
+                _listaProducao.Add(tempProducao);
+                Extra.salvarArquivo(_listaProducao, _path, "Producao.dat");
+                Extra.salvarArquivo(_listaItemProducao, _path, "ItemProducao.dat");
                 Console.WriteLine("Produção criada com suceso!");
             }
             else
             {
-                listaItemProducao.RemoveAll(x => x.Id == Id); // se for escolhido anular, exclui da lista producao item os itens
+                _listaItemProducao.RemoveAll(x => x.Id == Id);
                 Console.WriteLine("Produção anulada!");
             }
             Console.WriteLine("Pressione qualquer tecla para continuar.");
             Console.ReadKey();
+        }
 
-            ItemProducao inserirItemProducao(int Id) // funcao dentro da funcao
+        /// <summary>
+        /// Método que insere a o item Produção na lista de ItemProdução.
+        /// </summary>
+        ItemProducao inserirItemProducao(int Id, int contadorItem)
+        {
+            string opcao = "";
+            bool Abortar = false;
+            DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
+            string MateriaPrima = "";
+            float QuantidadeMateriaPrima = 0;
+
+            ItemProducao itemProducao = new();
+            Console.WriteLine($"Informe a {contadorItem}a Matéria Prima a ser utilizada (MPxxxx):");
+            MateriaPrima = Console.ReadLine().ToUpper();
+
+            if (_listaMPrima.Find(x => x.Id == MateriaPrima && x.Situacao.ToString() == "A") == null)
             {
-                string opcao = "";
-                bool Abortar = false;
-                DateOnly DataProducao = DateOnly.FromDateTime(DateTime.Now);
-                string MateriaPrima = "";
-                float QuantidadeMateriaPrima = 0;
+                do
+                {
+                    Console.WriteLine("Atenção: A Matéria Prima não existe ou não se encontra na situação Ativa!");
+                    Console.WriteLine("Deseja tentar novamente?");
+                    Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
+                    opcao = Console.ReadLine();
+                    if (opcao.ToLower() == "s")
+                    {
+                        Console.WriteLine($"Informe a {contadorItem}a Matéria Prima a ser utilizada (MPxxxx):");
+                        MateriaPrima = Console.ReadLine().ToUpper();
+                    }
+                    else
+                    {
+                        Abortar = true;
+                    }
+                } while ((_listaMPrima.Find(x => x.Id == MateriaPrima && x.Situacao.ToString() == "A") == null) && !Abortar);
+            }
 
-                ItemProducao itemProducao = new();
-                Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
-                MateriaPrima = Console.ReadLine().ToUpper();
-
-                if (listaMPrima.Find(x => x.Id == MateriaPrima && x.Situacao.ToString() == "A") == null)
+            if (!Abortar)
+            {
+                Console.WriteLine("Informe a quantidade da matéria prima a ser utilizada:");
+                QuantidadeMateriaPrima = Extra.retornarFloat();
+                if (QuantidadeMateriaPrima >= 1000)
                 {
                     do
                     {
-                        Console.WriteLine("Atenção: A Matéria Prima não existe ou não se encontra na situação Ativa!");
-                        Console.WriteLine("Deseja tentar novamente?");
-                        Console.WriteLine("[ S - Sim ] [ Qualquer tecla - Não ]");
-                        opcao = Console.ReadLine();
-                        if (opcao.ToLower() == "s")
-                        {
-                            Console.WriteLine("Informe a Matéria Prima a ser utilizada (Código da MP):");
-                            MateriaPrima = Console.ReadLine().ToUpper();
-                        }
-                        else
-                        {
-                            Abortar = true;
-                        }
-                    } while ((listaMPrima.Find(x => x.Id == MateriaPrima && x.Situacao.ToString() == "A") == null) && !Abortar);
-                }
-
-                if (!Abortar)
-                {
-                    Console.WriteLine("Informe a quantidade da matéria prima a ser utilizada:");
-                    QuantidadeMateriaPrima = Extra.retornarFloat();
-                    if (QuantidadeMateriaPrima >= 1000)
-                    {
-                        do
-                        {
-                            Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
-                            Console.WriteLine("Informe a quantidade da matéria prima a ser utilizada:");
-                            QuantidadeMateriaPrima = Extra.retornarFloat();
-                        }
-                        while (QuantidadeMateriaPrima >= 1000);
+                        Console.WriteLine("Atenção: A quantidade máxima permitida é de 999,99.");
+                        Console.WriteLine("Informe a quantidade da matéria prima a ser utilizada:");
+                        QuantidadeMateriaPrima = Extra.retornarFloat();
                     }
-                    itemProducao = new ItemProducao(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
+                    while (QuantidadeMateriaPrima >= 1000);
                 }
-                return itemProducao;
+                itemProducao = new ItemProducao(Id, DataProducao, MateriaPrima, QuantidadeMateriaPrima);
             }
+            return itemProducao;
         }
+
         /// <summary>
         /// Método que localiza a Produção.
         /// </summary>
-        public static void localizarProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
+        public void localizarProducao()
         {
             int Id;
             Console.WriteLine("Informe o Id da produção que deseja localizar:");
             Id = Extra.retornarInt();
-            imprimirProducaoAux(Id, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+            imprimirProducaoAux(Id);
             Console.WriteLine("Pressione qualquer tecla para continuar.");
             Console.ReadKey();
         }
+
         /// <summary>
         /// Método que exclui a Produção da lista de Produção.
         /// </summary>
-        public static void excluirProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto, string path)
+        public void excluirProducao()
         {
             string opcao = "";
             int Id;
+
             Console.WriteLine("Informe o Id da produção que deseja EXCLUIR:");
             Id = Extra.retornarInt();
 
-            var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
+            var producaoLocalizada = _listaProducao.Find(x => x.Id == Id);
             if (producaoLocalizada != null)
             {
-                imprimirProducaoAux(Id, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                imprimirProducaoAux(Id);
                 Console.WriteLine("Pressione qualquer tecla para continuar.");
                 Console.ReadKey();
                 Console.WriteLine("Confirma exclusão da Produção?");
@@ -202,10 +218,10 @@ namespace BILTIFUL.Modulo4.Utils
                 opcao = Console.ReadLine();
                 if (opcao.ToLower() == "s")
                 {
-                    listaItemProducao.RemoveAll(x => x.Id == Id);
-                    listaProducao.Remove(producaoLocalizada);
-                    ArquivoProducao.salvarArquivo(listaProducao, path, "Producao.dat");
-                    ArquivoProducao.salvarArquivo(listaItemProducao, path, "ItemProducao.dat");
+                    _listaItemProducao.RemoveAll(x => x.Id == Id);
+                    _listaProducao.Remove(producaoLocalizada);
+                    Extra.salvarArquivo(_listaProducao, _path, "Producao.dat");
+                    Extra.salvarArquivo(_listaItemProducao, _path, "ItemProducao.dat");
                     Console.WriteLine($"Exclusão do Id [ {Id} ] realizada com sucesso!");
                 }
             }
@@ -215,16 +231,16 @@ namespace BILTIFUL.Modulo4.Utils
             }
             Console.WriteLine("Pressione qualquer tecla para continuar.");
             Console.ReadKey();
-
         }
         /// <summary>
         /// Método que imprime a lista de Produção.
         /// </summary>
-        public static void imprimirProducao(List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
+        public void imprimirProducao()
         {
             int Id, IdInicial, IdFinal, opcao = 10;
             Producao listaTemporaria;
-            if (listaProducao.Count == 0)
+
+            if (_listaProducao.Count == 0)
             {
                 Console.WriteLine("Não há Produção cadastrada!");
                 Console.WriteLine("Pressione qualquer tecla para continuar.");
@@ -232,10 +248,10 @@ namespace BILTIFUL.Modulo4.Utils
             }
             else
             {
-                IdInicial = listaProducao.First().Id;
+                IdInicial = _listaProducao.First().Id;
                 Id = IdInicial;
-                IdFinal = listaProducao.Last().Id;
-                imprimirProducaoAux(IdInicial, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                IdFinal = _listaProducao.Last().Id;
+                imprimirProducaoAux(IdInicial);
                 while (opcao != 9)
                 {
                     Console.WriteLine("Digite:");
@@ -247,7 +263,7 @@ namespace BILTIFUL.Modulo4.Utils
                     {
                         case 0:
                             Id = IdInicial;
-                            imprimirProducaoAux(Id, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                            imprimirProducaoAux(Id);
                             break;
                         case 1:
                             if (Id > IdInicial)
@@ -255,13 +271,13 @@ namespace BILTIFUL.Modulo4.Utils
                                 do
                                 {
                                     Id--;
-                                    listaTemporaria = listaProducao.Find(x => x.Id == Id);
+                                    listaTemporaria = _listaProducao.Find(x => x.Id == Id);
                                 } while (listaTemporaria == null);
-                                imprimirProducaoAux(Id, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                                imprimirProducaoAux(Id);
                             }
                             else
                             {
-                                imprimirProducaoAux(IdInicial, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                                imprimirProducaoAux(IdInicial);
                                 Console.WriteLine("Inicio da Lista!");
                             }
                             break;
@@ -271,19 +287,19 @@ namespace BILTIFUL.Modulo4.Utils
                                 do
                                 {
                                     Id++;
-                                    listaTemporaria = listaProducao.Find(x => x.Id == Id);
+                                    listaTemporaria = _listaProducao.Find(x => x.Id == Id);
                                 } while (listaTemporaria == null);
-                                imprimirProducaoAux(Id, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                                imprimirProducaoAux(Id);
                             }
                             else
                             {
-                                imprimirProducaoAux(IdFinal, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                                imprimirProducaoAux(IdFinal);
                                 Console.WriteLine("Fim da Lista!");
                             }
                             break;
                         case 3:
                             Id = IdFinal;
-                            imprimirProducaoAux(Id, listaProducao, listaItemProducao, listaMPrima, listaProduto);
+                            imprimirProducaoAux(Id);
                             break;
                         case 9:
                             break;
@@ -294,20 +310,20 @@ namespace BILTIFUL.Modulo4.Utils
                 }
             }
         }
-        public static void imprimirProducaoAux(int Id, List<Producao> listaProducao, List<ItemProducao> listaItemProducao, List<MPrima> listaMPrima, List<Produto> listaProduto)
+        void imprimirProducaoAux(int Id)
         {
-            var producaoLocalizada = listaProducao.Find(x => x.Id == Id);
-            var producaoItemLocalizada = listaItemProducao.FindAll(x => x.Id == Id);
+            var producaoLocalizada = _listaProducao.Find(x => x.Id == Id);
+            var producaoItemLocalizada = _listaItemProducao.FindAll(x => x.Id == Id);
 
             if (producaoLocalizada != null)
             {
                 Console.Clear();
                 Console.WriteLine("-".PadLeft(115, '-'));
-                Console.WriteLine(producaoLocalizada.imprimirNaTela(listaProduto));
+                Console.WriteLine(producaoLocalizada.imprimirNaTela(_listaProduto));
                 Console.WriteLine("-".PadLeft(115, '-'));
                 foreach (ItemProducao item in producaoItemLocalizada)
                 {
-                    Console.WriteLine(item.imprimirNaTela(listaMPrima));
+                    Console.WriteLine(item.imprimirNaTela(_listaMPrima));
                 }
                 Console.WriteLine("-".PadLeft(115, '-'));
             }
