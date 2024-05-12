@@ -27,8 +27,8 @@
         /// <param name="nome">O nome.</param>
         public MPrima(string id, string nome)
         {
-            Id = id;
-            Nome = nome;
+            _id = Formatar(id, 6);
+            _nome = Formatar(nome, 20);
             UltimaCompra = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
             Situacao = 'A';
@@ -40,8 +40,9 @@
         /// <param name="data">Os dados.</param>
         public MPrima(string data)
         {
-            Id = data.Substring(0, 6);
-            Nome = data.Substring(6, 20);
+            _id = Formatar(data.Substring(0, 6), 6);
+            _nome = Formatar(data.Substring(6, 20), 20);
+
             UltimaCompra = DateOnly.ParseExact(data.Substring(26, 8), "ddMMyyyy", null);
             DataCadastro = DateOnly.ParseExact(data.Substring(34, 8), "ddMMyyyy", null);
             Situacao = char.Parse(data.Substring(42, 1));

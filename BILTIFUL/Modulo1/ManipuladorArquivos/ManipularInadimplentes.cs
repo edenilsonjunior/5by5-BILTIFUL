@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1.ManipuladorArquivos
+﻿namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
     internal class ManipularInadimplentes
     {
@@ -20,8 +14,10 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo();
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
+
+
 
         /// <summary>
         /// Recupera a lista de inadimplentes do arquivo.
@@ -39,6 +35,7 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             return risco;
         }
 
+
         /// <summary>
         /// Salva a lista de inadimplentes no arquivo.
         /// </summary>
@@ -53,64 +50,56 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             }
         }
 
+
         /// <summary>
         /// Adiciona um cliente à lista de inadimplentes.
         /// </summary>
+        /// <param name="cpf">O CPF do cliente a ser adicionado.</param>
         public void Adicionar()
         {
-            List<Cliente> clientes = new ManipularCliente(_caminho, "Clientes.dat").Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Adicionar na lista de risco=====");
+
+            string cpf = LerCpf();
+
             List<string> risco = Recuperar();
-            string cpf;
 
-            cpf = MainModulo1.LerString("Digite o CPF do cliente: ");
-
-            // Verifica se o cliente existe
-            if (!clientes.Exists(c => c.Cpf.Equals(cpf)))
+            // Adiciona o cliente a lista de risco
+            if (!risco.Contains(cpf))
             {
-                Console.WriteLine("Cliente não encontrado!");
+                risco.Add(cpf);
+                Console.WriteLine(">>>Cliente adicionado na lista de risco!<<<");
+                Salvar(risco);
                 return;
             }
 
-            // Se a lista de risco já contém o cpf, não adiciona
-            if (risco.Contains(cpf))
-            {
-                Console.WriteLine("Cliente já está na tabela de risco!");
-            }
-            else
-            {
-                risco.Add(cpf);
-                Salvar(risco);
-            }
+            Console.WriteLine("Cliente já está na lista de risco!");
         }
+
 
         /// <summary>
         /// Remove um cliente da lista de inadimplentes.
         /// </summary>
+        /// <param name="cpf">O CPF do cliente a ser removido.</param>
         public void Remover()
         {
-            List<Cliente> clientes = new ManipularCliente(_caminho, "Clientes.dat").Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Remover da lista de risco=====");
+
+            string cpf = LerCpf();
             List<string> risco = Recuperar();
 
-            string cpf = MainModulo1.LerString("Digite o CPF do cliente: ");
-
-            // Verifica se o cliente existe
-            if (!clientes.Exists(f => f.Cpf.Equals(cpf)))
-            {
-                Console.WriteLine("Cliente não encontrado!");
-                return;
-            }
-
-            // Verifica se o cliente está na lista de risco
-            if (!risco.Contains(cpf))
-            {
-                Console.WriteLine("Cliente não está na lista de risco!");
-            }
-            else
+            // Se o cliente estiver na lista de risco, remove
+            if (risco.Contains(cpf))
             {
                 risco.Remove(cpf);
                 Salvar(risco);
+                return;
             }
+
+            Console.WriteLine("Cliente não está na lista de risco!");
         }
+
 
         /// <summary>
         /// Busca um cliente na lista de inadimplentes pelo CPF.
@@ -118,72 +107,93 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         /// <returns>O cliente encontrado ou null se não encontrado.</returns>
         public Cliente? BuscarPorCpf()
         {
-            List<string> risco = Recuperar();
+            var risco = Recuperar();
 
             string cpf = MainModulo1.LerString("Digite o CPF do cliente: ");
 
             // retorna nulo caso o cpf nao esteja na tabela de risco
             if (!risco.Contains(cpf))
-            {
                 return null;
-            }
+
 
             List<Cliente> clientes = new ManipularCliente(_caminho, "Clientes.dat").Recuperar();
 
             return clientes.Find(f => f.Cpf.Equals(cpf));
         }
 
+
         /// <summary>
         /// Localiza um cliente na lista de inadimplentes e exibe suas informações.
         /// </summary>
         public void Localizar()
         {
-            Cliente? Cliente = BuscarPorCpf();
+            Console.Clear();
+            Console.WriteLine("=====Imprimir Cliente especifico=====");
 
-            if (Cliente == null)
+            Cliente? c = BuscarPorCpf();
+
+            if (c != null)
             {
-                Console.WriteLine("Cliente não encontrado!");
+                Console.WriteLine("Dados do cliente inadimplente:");
+                Console.WriteLine(c.Print());
+                return;
             }
-            else
-            {
-                Console.WriteLine(Cliente.Print());
-            }
+
+            Console.WriteLine("Cliente não encontrado!");
         }
+
 
         /// <summary>
         /// Imprime a lista de inadimplentes.
         /// </summary>
         public void Imprimir()
         {
+            Console.Clear();
+            Console.WriteLine("=====Lista de clientes em risco=====");
+
             List<string> risco = Recuperar();
 
-            if (risco.Count == 0)
+            if (risco.Count != 0)
             {
-                Console.WriteLine("Nenhum cliente em risco!");
-            }
-            else
-            {
-                Console.WriteLine("Lista de cpf's em risco:");
                 foreach (var item in risco)
                 {
                     Console.WriteLine($"-->{item}");
                 }
+                return;
             }
+
+            Console.WriteLine("Nenhum cliente em risco!");
         }
 
-        /// <summary>
-        /// Cria o diretório e o arquivo se não existirem.
-        /// </summary>
-        private void CriarDiretorioArquivo()
-        {
-            if (!Directory.Exists(_caminho))
-                Directory.CreateDirectory(_caminho);
 
-            if (!File.Exists(_caminho + _arquivo))
+
+        /// <summary>
+        ///  Le o cpf do cliente
+        /// </summary>
+        /// <returns>
+        /// O cpf do cliente
+        /// </returns>
+        private string LerCpf()
+        {
+            string cpf;
+
+            bool valido = false;
+
+            do
             {
-                var file = File.Create(_caminho + _arquivo);
-                file.Close();
-            }
+                cpf = MainModulo1.LerString("Digite o CPF do cliente: ");
+
+                if (!Cliente.VerificarCpf(cpf))
+                {
+                    Console.WriteLine("CPF inválido!");
+                }
+                else
+                {
+                    valido = true;
+                }
+            } while (!valido);
+
+            return cpf;
         }
     }
 }

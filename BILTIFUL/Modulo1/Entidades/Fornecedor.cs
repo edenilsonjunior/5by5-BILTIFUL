@@ -31,8 +31,8 @@
         /// <param name="dataAbertura">A data de abertura do fornecedor.</param>
         public Fornecedor(string cnpj, string razaoSocial, DateOnly dataAbertura)
         {
-            Cnpj = cnpj;
-            RazaoSocial = razaoSocial;
+            _cnpj = Formatar(cnpj, 14);
+            _razaoSocial = Formatar(razaoSocial, 50);
             DataAbertura = dataAbertura;
             UltimaCompra = DateOnly.FromDateTime(DateTime.Now);
             DataCadastro = DateOnly.FromDateTime(DateTime.Now);
@@ -45,8 +45,8 @@
         /// <param name="data">Os dados do fornecedor em formato de string.</param>
         public Fornecedor(string data)
         {
-            Cnpj = data.Substring(0, 14);
-            RazaoSocial = data.Substring(14, 50);
+            _cnpj = Formatar(data.Substring(0, 14), 14);
+            _razaoSocial = Formatar(data.Substring(14, 50), 50);
             DataAbertura = DateOnly.ParseExact(data.Substring(64, 8), "ddMMyyyy", null);
 
             UltimaCompra = DateOnly.ParseExact(data.Substring(72, 8), "ddMMyyyy", null);
