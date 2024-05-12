@@ -25,7 +25,6 @@ namespace BILTIFUL.Modulo4.Entidades
             DataProducao = DateOnly.ParseExact(data.Substring(5, 8), "ddMMyyyy");
             Produto = data.Substring(13, 13);
             Quantidade = float.Parse((data.Substring(26, 5))) / 100;
-            Producao tempProducao = new(Id, DataProducao, Produto, Quantidade);
         }
         public override string? ToString()
         {
@@ -39,14 +38,14 @@ namespace BILTIFUL.Modulo4.Entidades
         public string imprimirNaTela(List<Produto> listaProduto)
         {
             string texto = "";
-            texto = $"Id: [ {Id} ] |";
-            texto += $" DATA DE PRODUÇÃO: {DataProducao}\n";
-            texto += $"COSMÉTICO PRODUZIDO: {Produto} ";
+            texto = $"Id: [ {Id} ]";
+            texto += $" [ DATA DE PRODUÇÃO: {DataProducao} ]\n";
+            texto += $"    [ COSMÉTICO PRODUZIDO: {Produto} - ";
             if (listaProduto.Find(x => x.CodigoBarras == Produto) != null)
             {
-                texto += (listaProduto.Find(x => x.CodigoBarras == Produto).Nome).Trim() + "| ";
+                texto += (listaProduto.Find(x => x.CodigoBarras == Produto).Nome).Trim();
             }
-            texto += $" | QTDE PRODUZIDA: {Quantidade.ToString("N2")}";
+            texto += $" ]  [ QTDE PRODUZIDA: {Quantidade.ToString("N2")} ]";
             return texto;
         }
     }
