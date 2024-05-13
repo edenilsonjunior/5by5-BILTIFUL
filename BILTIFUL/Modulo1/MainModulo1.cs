@@ -28,8 +28,13 @@ namespace BILTIFUL.Modulo1
             _materia = new(caminho, arquivoMPrima);
             _risco = new(caminho, arquivoRisco);
             _bloqueado = new(caminho, arquivoBloqueado);
+
+            Executar();
         }
 
+        /// <summary>
+        /// Executa o menu do módulo 1.
+        /// </summary>
         public void Executar()
         {
             string titulo = "Menu Modulo1";
@@ -63,6 +68,10 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+
+        /// <summary>
+        /// Menu do cliente.
+        /// </summary>
         private void MenuCliente()
         {
             string titulo = "Menu Cliente";
@@ -109,6 +118,10 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+
+        /// <summary>
+        /// Menu do fornecedor.
+        /// </summary>
         private void MenuFornecedor()
         {
             string titulo = "Menu Fornecedor";
@@ -154,6 +167,10 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+
+        /// <summary>
+        /// Menu de materia prima.
+        /// </summary>
         private void MenuMPrima()
         {
             string titulo = "Menu Materia Prima";
@@ -194,6 +211,10 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+
+        /// <summary>
+        /// Menu de produto.
+        /// </summary>
         private void MenuProduto()
         {
             string titulo = "Menu Produto";
@@ -234,6 +255,10 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+
+        /// <summary>
+        /// Menu dos clientes na lista de risco.
+        /// </summary>
         private void MenuRisco()
         {
             string titulo = "Menu Risco";
@@ -272,6 +297,10 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+
+        /// <summary>
+        /// Menu dos fornecedores com cnpj bloqueados.
+        /// </summary>
         private void MenuBloqueado()
         {
 
@@ -313,6 +342,9 @@ namespace BILTIFUL.Modulo1
             } while (!terminouMenu);
         }
 
+        /// <summary>
+        /// Menu generico que serve de apoio para os outros menus.
+        /// </summary>
         private int MenuGenerico(string titulo, string[] campos)
         {
             Console.Clear();
@@ -339,6 +371,12 @@ namespace BILTIFUL.Modulo1
             }
         }
 
+
+        /// <summary>
+        /// Lê uma string do console.
+        /// </summary>
+        /// <param name="texto">O titulo</param>
+        /// <returns></returns>
         public static string LerString(string texto)
         {
             Console.WriteLine(texto);
@@ -356,6 +394,12 @@ namespace BILTIFUL.Modulo1
             return s;
         }
 
+
+        /// <summary>
+        /// Lê um inteiro do console.
+        /// </summary>
+        /// <param name="texto"> O titulo</param>
+        /// <returns></returns>
         public static int LerInt(string texto)
         {
             Console.WriteLine(texto);
@@ -375,6 +419,12 @@ namespace BILTIFUL.Modulo1
             return numero;
         }
 
+
+        /// <summary>
+        /// Lê um float do console.
+        /// </summary>
+        /// <param name="texto">O titulo</param>
+        /// <returns></returns>
         public static float LerFloat(string texto)
         {
             Console.WriteLine(texto);
@@ -394,6 +444,12 @@ namespace BILTIFUL.Modulo1
             return numero;
         }
 
+
+        /// <summary>
+        /// Lê uma data do console.
+        /// </summary>
+        /// <param name="texto">O titulo</param>
+        /// <returns></returns>
         public static DateOnly LerData(string texto)
         {
             Console.WriteLine(texto);
@@ -414,6 +470,11 @@ namespace BILTIFUL.Modulo1
         }
 
 
+        /// <summary>
+        /// Lê um char do console.
+        /// </summary>
+        /// <param name="texto"></param>
+        /// <returns></returns>
         public static char LerChar(string texto)
         {
             Console.WriteLine(texto);
@@ -432,6 +493,7 @@ namespace BILTIFUL.Modulo1
 
             return caractere;
         }
+
 
         /// <summary>
         /// Cria o diretório e o arquivo se não existirem.

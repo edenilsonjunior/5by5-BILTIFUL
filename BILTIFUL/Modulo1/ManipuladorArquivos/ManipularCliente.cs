@@ -230,7 +230,7 @@
         /// Exibe o menu de impressão dos clientes.
         /// </summary>
         /// <param name="isNumero">Se o valor digitado é um número.</param>
-        /// <param name="opcaoValida">Se a opcao é valida</param>
+        /// <param name="opcaoValida">Se a opcao é valida</param> 
         private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
         {
             Console.WriteLine("Navegar pelos clientes:");

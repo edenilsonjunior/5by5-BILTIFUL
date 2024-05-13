@@ -212,7 +212,11 @@
         }
 
 
-
+        /// <summary>
+        ///  Exbir o menu de navegacao pelos cnpjs bloqueados.
+        /// </summary>
+        /// <param name="isNumero">Se o valor digitado é um número.</param>
+        /// <param name="opcaoValida">Se a opcao é valida</param> 
         private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
         {
 
@@ -232,7 +236,11 @@
             Console.Write("R: ");
         }
 
-
+        /// <summary>
+        /// Função que verifica se um fornecedor existe na lista de fornecedores.
+        /// </summary>
+        /// <param name="cnpj">O cnpj a ser procurado</param>
+        /// <returns></returns>
         private bool ExisteFornecedor(string cnpj)
         {
             var fornecedores = _fornecedores.Recuperar();

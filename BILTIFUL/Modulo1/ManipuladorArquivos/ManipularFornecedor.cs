@@ -223,6 +223,12 @@
             } while (opcao != 0);
         }
 
+
+        /// <summary>
+        /// Exibe o menu de impressão dos fornecedores.
+        /// </summary>
+        /// <param name="isNumero">Se o valor digitado é um número.</param>
+        /// <param name="opcaoValida">Se a opcao é valida</param> 
         private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
         {
             Console.WriteLine("Navegar pelos fornecedores:");

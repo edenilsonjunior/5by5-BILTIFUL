@@ -12,6 +12,10 @@ namespace BILTIFUL
             Executar();
         }
 
+
+        /// <summary>
+        /// Executa o programa
+        /// </summary>
         static void Executar()
         {
             bool terminouPrograma = false;
@@ -20,7 +24,7 @@ namespace BILTIFUL
                 switch (MenuPrincipal())
                 {
                     case 1:
-                        new MainModulo1().Executar();
+                        _ = new MainModulo1();
                         break;
                     case 2:
                         _ = new MainModulo2();
@@ -42,16 +46,21 @@ namespace BILTIFUL
             } while (!terminouPrograma);
         }
 
+
+        /// <summary>
+        /// Exibe o menu principal e retorna a opção escolhida
+        /// </summary>
+        /// <returns></returns>
         static private int MenuPrincipal()
         {
             Console.Clear();
-            Console.WriteLine("======BILTIFUL======");
+            Console.WriteLine("=========BILTIFUL=========");
 
             Console.WriteLine("Opcoes: ");
-            Console.WriteLine("1- MODULO 1");
-            Console.WriteLine("2- MODULO 2");
-            Console.WriteLine("3- MODULO 3");
-            Console.WriteLine("4- MODULO 4");
+            Console.WriteLine("1- Cadastrar, editar ou imprimir Clientes, Fornecedores, Produtos ou Matéria-prima");
+            Console.WriteLine("2- Venda de produto");
+            Console.WriteLine("3- Compra de matéria-prima");
+            Console.WriteLine("4- Produção de produtos");
             Console.WriteLine("0- SAIR");
             Console.Write("R: ");
 
