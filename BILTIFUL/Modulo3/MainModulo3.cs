@@ -1,4 +1,5 @@
 ﻿using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo2;
 using BILTIFUL.Modulo3.ManipuladorArquivos;
 
 namespace BILTIFUL.Modulo3
@@ -7,6 +8,7 @@ namespace BILTIFUL.Modulo3
     {
         public MainModulo3()
         {
+
             //Variavel global
             string path = @"C:\Biltiful\";
 
@@ -16,6 +18,8 @@ namespace BILTIFUL.Modulo3
             List<MPrima> listMPrima = new(ManipuladorArquivoCompra.importarMPrima(path, "Materia.dat"));
             List<Compra> listaCompra = new(ManipuladorArquivoCompra.importarCompra(path, "Compra.dat"));
             List<ItemCompra> listaItemCompra = new(ManipuladorArquivoCompra.importarItemCompra(path, "ItemCompra.dat"));
+
+            ChamarMenu();
 
             void RealizarCompra()
             {
@@ -469,26 +473,35 @@ namespace BILTIFUL.Modulo3
                 conteudoArquivo.Close();
             }
 
-            //Programa em si
-            do
+            void ChamarMenu()
             {
-
-                switch (Menu())
+                bool terminouMenu = false;
+                do
                 {
-                    case 1:
-                        RealizarCompra();
-                        break;
-                    case 2:
-                        LocalizarCompra();
-                        break;
-                    case 3:
-                        ExcluirCompra();
-                        break;
-                    case 4:
-                        ImprimirCompra();
-                        break;
-                }
-            } while (Menu() != 0);
+                    switch (Menu())
+                    {
+                        case 1:
+                            RealizarCompra();
+                            break;
+                        case 2:
+                            LocalizarCompra();
+                            break;
+                        case 3:
+                            ExcluirCompra();
+                            break;
+                        case 4:
+                            ImprimirCompra();
+                            break;
+                        case 0:
+                            Console.WriteLine("Encerrando o programa.");
+                            terminouMenu = true;
+                            break;
+                        default:
+                            Console.WriteLine("Opção inválida.");
+                            break;
+                    }
+                } while (!terminouMenu);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using BILTIFUL.Modulo4.Entidades;
-using BILTIFUL.Modulo1;
+﻿using BILTIFUL.Modulo1;
 //*//
 namespace BILTIFUL.Modulo2.ManipuladorArquivos
 {
@@ -20,10 +19,6 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                     {
                         templista.Add(importarClienteAux(item));
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
                 }
             }
             catch (Exception e)
@@ -49,10 +44,6 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                     {
                         templista.Add(importarVendaAux(item));
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
                 }
             }
             catch (Exception e)
@@ -80,10 +71,6 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                         templista.Add(importarBloqueado(item));
                     }
                 }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
-                }
             }
             catch (Exception e)
             {
@@ -109,10 +96,6 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                     {
                         templista.Add(importarProdutoAux(item));
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
                 }
             }
             catch (Exception e)
@@ -140,10 +123,6 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
                         ItemVenda aux=new (item);
                         templista.Add(aux);
                     }
-                }
-                else
-                {
-                    Console.WriteLine($"Arquivo {path}{file} inexistente!");
                 }
             }
             catch (Exception e)

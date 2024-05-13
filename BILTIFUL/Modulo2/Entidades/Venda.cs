@@ -60,7 +60,7 @@ namespace BILTIFUL.Modulo2
                 texto += $"    [Cliente: {clienteVenda.Nome}- {clienteVenda.DataNascimento} ]";
             }
 
-            texto += $"\n[ Lista de itens: {GetItensVenda(venda, listItemVenda)} ]";
+            texto += $"\n[ Lista de itens ]:\n{GetItensVenda(venda, listItemVenda)}";
             return texto;
         }
     
