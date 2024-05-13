@@ -60,8 +60,6 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
             } while (!terminouMenu);
         }
 
@@ -73,7 +71,9 @@ namespace BILTIFUL.Modulo1
 
             do
             {
-                switch (MenuGenerico(titulo, campos))
+                bool menuRisco = false;
+                int opcao = MenuGenerico(titulo, campos);
+                switch (opcao)
                 {
                     case 1:
                         _cliente.Cadastrar();
@@ -89,6 +89,7 @@ namespace BILTIFUL.Modulo1
                         break;
                     case 5:
                         MenuRisco();
+                        menuRisco = true;
                         break;
                     case 0:
                         Console.WriteLine("Opcao Voltar selecionada");
@@ -99,8 +100,12 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
+                if (!terminouMenu && menuRisco == false)
+                {
+                    Console.Write("Pressione qualquer tecla para continuar...");
+                    Console.ReadKey();
+                }
+
             } while (!terminouMenu);
         }
 
@@ -112,23 +117,24 @@ namespace BILTIFUL.Modulo1
             bool terminouMenu = false;
             do
             {
-
+                bool menuBloqueado = false;
                 switch (MenuGenerico(titulo, campos))
                 {
                     case 1:
                         _fornecedor.Cadastrar();
                         break;
                     case 2:
-                        _cliente.Editar();
+                        _fornecedor.Editar();
                         break;
                     case 3:
-                        _cliente.Localizar();
+                        _fornecedor.Localizar();
                         break;
                     case 4:
                         _fornecedor.Imprimir();
                         break;
                     case 5:
                         MenuBloqueado();
+                        menuBloqueado = true;
                         break;
                     case 0:
                         Console.WriteLine("Opcao Voltar selecionada");
@@ -139,8 +145,12 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
+                if (!terminouMenu && !menuBloqueado)
+                {
+                    Console.Write("Pressione qualquer tecla para continuar...");
+                    Console.ReadKey();
+                }
+
             } while (!terminouMenu);
         }
 
@@ -175,8 +185,12 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
+                if (!terminouMenu)
+                {
+                    Console.Write("Pressione qualquer tecla para continuar...");
+                    Console.ReadKey();
+                }
+
             } while (!terminouMenu);
         }
 
@@ -211,8 +225,12 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
+                if (!terminouMenu)
+                {
+                    Console.Write("Pressione qualquer tecla para continuar...");
+                    Console.ReadKey();
+                }
+
             } while (!terminouMenu);
         }
 
@@ -239,16 +257,18 @@ namespace BILTIFUL.Modulo1
                         _risco.Imprimir();
                         break;
                     case 0:
-                        Console.WriteLine("Opcao Voltar selecionada");
                         terminouMenu = true;
                         break;
                     default:
                         Console.WriteLine("Opcao invalida!");
                         break;
                 }
+                if (!terminouMenu)
+                {
+                    Console.Write("Pressione qualquer tecla para continuar...");
+                    Console.ReadKey();
+                }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
             } while (!terminouMenu);
         }
 
@@ -284,8 +304,12 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
+                if (!terminouMenu)
+                {
+                    Console.Write("Pressione qualquer tecla para continuar...");
+                    Console.ReadKey();
+                }
+
             } while (!terminouMenu);
         }
 

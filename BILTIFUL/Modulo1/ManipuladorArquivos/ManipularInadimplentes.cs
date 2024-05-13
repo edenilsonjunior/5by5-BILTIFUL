@@ -62,18 +62,27 @@
 
             string cpf = LerCpf();
 
-            List<string> risco = Recuperar();
+            var listaDeRisco = Recuperar();
+            var listaClientes = new ManipularCliente(_caminho, "Clientes.dat").Recuperar();
 
-            // Adiciona o cliente a lista de risco
-            if (!risco.Contains(cpf))
+            bool contemListaRisco = listaDeRisco.Contains(cpf);
+            bool existeCliente = listaClientes.Exists(c => c.Cpf.Equals(cpf));
+
+            if (contemListaRisco)
             {
-                risco.Add(cpf);
-                Console.WriteLine(">>>Cliente adicionado na lista de risco!<<<");
-                Salvar(risco);
+                Console.WriteLine("Cliente já está na lista de risco!");
                 return;
             }
 
-            Console.WriteLine("Cliente já está na lista de risco!");
+            if (!existeCliente)
+            {
+                Console.WriteLine("Cliente não existe!");
+                return;
+            }
+
+            listaDeRisco.Add(cpf);
+            Console.WriteLine(">>>Cliente adicionado na lista de risco!<<<");
+            Salvar(listaDeRisco);
         }
 
 
@@ -149,23 +158,84 @@
         public void Imprimir()
         {
             Console.Clear();
-            Console.WriteLine("=====Lista de clientes em risco=====");
+            Console.WriteLine("=====Imprimir todos os clientes inadimplentes=====");
 
-            List<string> risco = Recuperar();
+            var risco = Recuperar();
 
-            if (risco.Count != 0)
+            if (risco.Count == 0)
             {
-                foreach (var item in risco)
-                {
-                    Console.WriteLine($"-->{item}");
-                }
+                Console.WriteLine("Nenhum clientena inadimplente!");
                 return;
             }
 
-            Console.WriteLine("Nenhum cliente em risco!");
+            int indice = 0;
+            int opcao;
+
+            do
+            {
+                bool numeroCerto = false;
+                bool opcaoValida = true;
+                bool isNumero = true;
+
+                Console.Clear();
+                do
+                {
+                    Console.WriteLine("Cliente atual:");
+                    Console.WriteLine(risco[indice] + $"\n\n");
+                    ExibirMenuImprimir(isNumero, opcaoValida);
+
+                    if (int.TryParse(Console.ReadLine(), out opcao))
+                    {
+                        if (opcao >= 0 && opcao <= 4)
+                            numeroCerto = opcaoValida = true;
+                        else
+                            opcaoValida = false;
+                    }
+                    else
+                        isNumero = false;
+
+                } while (!numeroCerto);
+
+                switch (opcao)
+                {
+                    case 1:
+                        indice = indice == risco.Count - 1 ? 0 : indice + 1;
+                        break;
+                    case 2:
+                        indice = indice == 0 ? risco.Count - 1 : indice - 1;
+                        break;
+                    case 3:
+                        indice = 0;
+                        break;
+                    case 4:
+                        indice = risco.Count - 1;
+                        break;
+                }
+            } while (opcao != 0);
         }
 
+        /// <summary>
+        /// Exibe o menu de impressão.
+        /// </summary>
+        /// <param name="isNumero">Se o usuario nao digitou um numero</param>
+        /// <param name="opcaoValida">Se a opcao que o usuario digitou é invalida</param>
+        private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
+        {
+            Console.WriteLine("=====Navegar pelos clientes:");
+            Console.WriteLine("Opcoes: ");
+            Console.WriteLine("1- Proximo da lista");
+            Console.WriteLine("2- Anterior da lista");
+            Console.WriteLine("3- Final da lista");
+            Console.WriteLine("0- Parar navegacao");
 
+            if (!isNumero)
+                Console.WriteLine("Voce deve digitar um numero!");
+
+            if (!opcaoValida)
+                Console.WriteLine("Opcao invalida!");
+
+            Console.Write("R: ");
+        }
 
         /// <summary>
         ///  Le o cpf do cliente

@@ -31,6 +31,7 @@
         /// <param name="dataAbertura">A data de abertura do fornecedor.</param>
         public Fornecedor(string cnpj, string razaoSocial, DateOnly dataAbertura)
         {
+            cnpj = RemoverCaractere(cnpj);
             _cnpj = Formatar(cnpj, 14);
             _razaoSocial = Formatar(razaoSocial, 50);
             DataAbertura = dataAbertura;
@@ -221,7 +222,7 @@
         /// </summary>
         /// <param name="cnpj">O CNPJ a ser formatado.</param>
         /// <returns>O CNPJ formatado.</returns>
-        private static string RemoverCaractere(string cnpj)
+        public static string RemoverCaractere(string cnpj)
         {
             cnpj = cnpj.Replace(".", "");
             cnpj = cnpj.Replace("/", "");

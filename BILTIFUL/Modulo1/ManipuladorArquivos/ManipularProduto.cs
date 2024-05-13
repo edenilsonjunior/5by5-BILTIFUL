@@ -18,7 +18,6 @@
         }
 
 
-
         /// <summary>
         /// Recupera a lista de produtos do arquivo.
         /// </summary>
@@ -29,8 +28,7 @@
 
             foreach (string linha in File.ReadAllLines(_caminho + _arquivo))
             {
-                var aux = new Produto(linha);
-                produtos.Add(aux);
+                produtos.Add(new(linha));
             }
 
             return produtos;
@@ -91,9 +89,17 @@
         /// </summary>
         public void Editar()
         {
+            Console.Clear();
+            Console.WriteLine("=====Editar produto=====");
             var produtos = Recuperar();
 
-            Produto produto = EscolherProduto();
+            Produto? produto = produtos.Find(p => p.CodigoBarras == EscolherProduto());
+
+            if(produto == null)
+            {
+                Console.WriteLine("Produto nao existe!");
+                return;
+            }
 
             bool terminouEdicao = false;
             do
@@ -123,32 +129,23 @@
 
 
         /// <summary>
-        /// Busca um produto pelo código de barras.
-        /// </summary>
-        /// <param name="codigoBarras">O código de barras.</param>
-        /// <returns>O produto encontrado.</returns>
-        public Produto? BuscarPorCB(string codigoBarras)
-        {
-            List<Produto> produtos = Recuperar();
-
-            Produto? produto = produtos.Find(p => p.CodigoBarras == codigoBarras);
-
-            return produto;
-        }
-
-
-        /// <summary>
         /// Localiza produtos pelo termo de busca.
         /// </summary>
         public void Localizar()
         {
             Console.Clear();
-            Console.WriteLine("Imprimir um produto especifico");
+            Console.WriteLine("=====Imprimir um produto especifico=====");
 
-            var p = EscolherProduto();
+            Produto? produto = Recuperar().Find(p => p.CodigoBarras == EscolherProduto());
+
+            if (produto == null)
+            {
+                Console.WriteLine("Produto nao existe!");
+                return;
+            }
 
             Console.WriteLine("Produto encontrado:");
-            Console.WriteLine(p.Print());
+            Console.WriteLine(produto.Print());
         }
 
 
@@ -157,40 +154,105 @@
         /// </summary>
         public void Imprimir()
         {
-            List<Produto> produtos = Recuperar();
-
             Console.Clear();
-            Console.WriteLine("=====Lista de Produtos=====");
+            Console.WriteLine("=====Imprimir todos os produtos=====");
 
-            if (produtos.Count != 0)
+            var risco = Recuperar();
+
+            if (risco.Count == 0)
             {
-                foreach (var produto in produtos)
-                {
-                    Console.WriteLine(produto);
-                    Console.WriteLine("-------------------------");
-                }
+                Console.WriteLine("-->Nenhum produto cadastrado!");
                 return;
             }
 
-            Console.WriteLine("Nenhum produto cadastrado!");
+            int indice = 0;
+            int opcao;
+
+            do
+            {
+                bool numeroCerto = false;
+                bool opcaoValida = true;
+                bool isNumero = true;
+
+                Console.Clear();
+                do
+                {
+                    Console.WriteLine("Produto atual:");
+                    Console.WriteLine(risco[indice].Print() + $"\n\n");
+                    ExibirMenuImprimir(isNumero, opcaoValida);
+
+                    if (int.TryParse(Console.ReadLine(), out opcao))
+                    {
+                        if (opcao >= 0 && opcao <= 4)
+                            numeroCerto = opcaoValida = true;
+                        else
+                            opcaoValida = false;
+                    }
+                    else
+                        isNumero = false;
+
+                } while (!numeroCerto);
+
+                switch (opcao)
+                {
+                    case 1:
+                        indice = indice == risco.Count - 1 ? 0 : indice + 1;
+                        break;
+                    case 2:
+                        indice = indice == 0 ? risco.Count - 1 : indice - 1;
+                        break;
+                    case 3:
+                        indice = 0;
+                        break;
+                    case 4:
+                        indice = risco.Count - 1;
+                        break;
+                }
+            } while (opcao != 0);
         }
 
+        /// <summary>
+        /// Exibe o menu de impressão.
+        /// </summary>
+        /// <param name="isNumero">Se o usuario nao digitou um numero</param>
+        /// <param name="opcaoValida">Se a opcao que o usuario digitou é invalida</param>
+        private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
+        {
+            Console.WriteLine("Navegar pelos produtos:");
+            Console.WriteLine("Opcoes: ");
+            Console.WriteLine("1- Proximo da lista");
+            Console.WriteLine("2- Anterior da lista");
+            Console.WriteLine("3- Final da lista");
+            Console.WriteLine("0- Parar navegacao");
+
+            if (!isNumero)
+                Console.WriteLine("Voce deve digitar um numero!");
+
+            if (!opcaoValida)
+                Console.WriteLine("Opcao invalida!");
+
+            Console.Write("R: ");
+        }
 
 
         /// <summary>
         /// Escolhe um produto da lista.
         /// </summary>
         /// <returns>O produto escolhido.</returns>
-        private Produto EscolherProduto()
+        private string EscolherProduto()
         {
             var produtos = Recuperar();
             var codigosBarras = new List<string>();
             int escolha;
 
+            if(produtos.Count == 0)
+            {
+                return "";
+            }
+
             // Adiciona os códigos de barras dos produtos à lista
             foreach (var produto in produtos)
                 codigosBarras.Add(produto.CodigoBarras);
-
 
 
             Console.WriteLine("Escolha um produto pelo código de barras:");
@@ -198,6 +260,7 @@
             for (int i = 0; i < codigosBarras.Count; i++)
                 Console.WriteLine($"{i + 1}. {codigosBarras[i]}");
 
+            bool valido = false;
             do
             {
                 Console.Write("Digite o número correspondente ao código de barras: ");
@@ -206,11 +269,11 @@
                     if (escolha < 1 || escolha > codigosBarras.Count)
                         Console.WriteLine("Índice inválido! Digite um número correspondente ao código de barras.");
                     else
-                        Console.WriteLine("Digite um número válido!");
+                        valido = true;
 
-            } while (escolha < 1 || escolha > codigosBarras.Count);
+            } while (!valido);
 
-            return produtos[escolha - 1];
+            return produtos[escolha - 1].CodigoBarras;
         }
 
 

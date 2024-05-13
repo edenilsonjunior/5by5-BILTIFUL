@@ -155,7 +155,7 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
         }
         public static void salvarArquivo<T>(List<T> lista, string file)
         {
-            string path = @"C:\BILTIFUL\";
+            string path = @"C:\Biltiful\";
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);

@@ -8,7 +8,7 @@ namespace BILTIFUL.Modulo3
         public MainModulo3()
         {
             //Variavel global
-            string path = @"C:\BILTIFUL\";
+            string path = @"C:\Biltiful\";
 
             //Listas para acessar as propriedades das classes necessarias
             List<Fornecedor> listFornecedor = new(ManipuladorArquivoCompra.importarFornecedor(path, "Fornecedor.dat"));
@@ -455,7 +455,7 @@ namespace BILTIFUL.Modulo3
 
             void EscreverNoArquivo<T>(List<T> l, string file)
             {
-                string path = @"C:\BILTIFUL\";
+                string path = @"C:\Biltiful\";
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
