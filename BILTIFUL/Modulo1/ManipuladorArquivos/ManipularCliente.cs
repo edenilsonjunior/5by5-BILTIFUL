@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BILTIFUL.Modulo1.ManipuladorArquivos
+﻿namespace BILTIFUL.Modulo1.ManipuladorArquivos
 {
     internal class ManipularCliente
     {
@@ -16,22 +9,33 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
         {
             _caminho = caminho;
             _arquivo = arquivo;
-            CriarDiretorioArquivo(caminho, arquivo);
+            MainModulo1.CriarDiretorioArquivo(_caminho, _arquivo);
         }
 
+
+
+        /// <summary>
+        /// Recupera a lista de clientes a partir do arquivo.
+        /// </summary>
+        /// <returns>A lista de clientes recuperada.</returns>
         public List<Cliente> Recuperar()
         {
             List<Cliente> clientes = new();
 
             foreach (string linha in File.ReadAllLines(_caminho + _arquivo))
             {
-                Cliente aux = new(linha);
+                var aux = new Cliente(linha);
                 clientes.Add(aux);
             }
 
             return clientes;
         }
 
+
+        /// <summary>
+        /// Salva a lista de clientes no arquivo.
+        /// </summary>
+        /// <param name="clientes">A lista de clientes a ser salva.</param>
         public void Salvar(List<Cliente> clientes)
         {
             using var sw = new StreamWriter(_caminho + _arquivo);
@@ -43,63 +47,69 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
             }
         }
 
+
+        /// <summary>m
+        /// Cadastra um novo cliente.
+        /// </summary>
         public void Cadastrar()
         {
-            List<Cliente> clientes = Recuperar();
-            string cpf, nome;
-            char sexo;
-            DateOnly dataNascimento;
+            Console.Clear();
+            Console.WriteLine("======Cadastrar Cliente======");
 
-
-            cpf = LerCpf(verificaRegistros: true);
-
-
-            nome = MainModulo1.LerString("Digite o nome: ");
-            sexo = LerSexo();
-
-
-            Cliente c = new(cpf, nome, dataNascimento, sexo);
-
-            clientes.Add(c);
-            Salvar(clientes);
-        }
-
-        public void Editar()
-        {
-            List<Cliente> clientes = Recuperar();
+            var clientes = Recuperar();
             string cpf;
-
-            cpf = LerCpf(verificaRegistros: false);
-
-            Cliente achei = null;
-            foreach (var item in clientes)
-            {
-                if (item.Cpf.Equals(cpf))
-                {
-                    achei = item;
-                }
-            }
-
-            Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
-
-            if (c == null)
-            {
-                Console.WriteLine("O cpf digitado nao existe nos registros!");
-                return;
-            }
-
-
-            int opcao;
-
+            bool cpfExiste = true;
             do
             {
-                opcao = MenuEditar(c.Nome);
+                cpf = LerCpf();
 
-                switch (opcao)
+                if (clientes.Exists(clientes => clientes.Cpf == cpf))
+                {
+                    Console.WriteLine("CPF já cadastrado!");
+                }
+                else
+                {
+                    cpfExiste = false;
+                }
+
+            } while (cpfExiste);
+
+            string nome = MainModulo1.LerString("Digite o nome: ");
+            char sexo = LerSexo();
+            DateOnly dataNascimento = MainModulo1.LerData("Digite a data de nascimento: ");
+
+            clientes.Add(new Cliente(cpf, nome, dataNascimento, sexo));
+            Salvar(clientes);
+
+            Console.WriteLine(">>>Cliente cadastrado com sucesso!<<<");
+        }
+
+
+        /// <summary>
+        /// Edita um cliente existente.
+        /// </summary>
+        public void Editar()
+        {
+            Console.Clear();
+            Console.WriteLine("======Editar Cliente======");
+
+            var clientes = Recuperar();
+
+            Cliente? c = BuscarPorCpf();
+            if (c == null)
+                return;
+
+            bool terminouMenu = false;
+            do
+            {
+
+                switch (MenuEditar(c.Nome))
                 {
                     case 1:
+                        c.Nome = MainModulo1.LerString("Digite o novo nome: ");
                         break;
                     case 2:
+                        c.DataNascimento = MainModulo1.LerData("Digite a nova data de nascimento: ");
                         break;
                     case 3:
                         c.Sexo = LerSexo();
@@ -107,18 +117,117 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
                     case 4:
                         c.Situacao = (c.Situacao == 'A') ? 'I' : 'A';
                         break;
+                    case 0:
+                        terminouMenu = true;
+                        break;
                     default:
                         Console.WriteLine("Opcao invalida!");
                         break;
                 }
 
-            } while (opcao != 0);
+            } while (!terminouMenu);
 
+            Console.WriteLine("Usuario atualizado:");
+            Console.WriteLine(c.Print());
 
-
-
+            Salvar(clientes);
         }
 
+
+        /// <summary>
+        /// Busca um cliente pelo CPF.
+        /// </summary>
+        /// <returns>O cliente encontrado ou null se não existir.</returns>
+        public Cliente? BuscarPorCpf()
+        {
+            string cpf = LerCpf();
+
+            return Recuperar().Find(c => c.Cpf.Equals(cpf));
+        }
+
+        /// <summary>
+        /// Localiza um cliente pelo CPF e exibe seus dados.
+        /// </summary>
+        public void Localizar()
+        {
+            Console.Clear();
+            Console.WriteLine("=====Imprimir Cliente especifico");
+
+            Cliente? c = BuscarPorCpf();
+
+            if (c == null)
+                return;
+
+            Console.WriteLine("Dados do cliente localizado: ");
+            Console.WriteLine(c.Print());
+        }
+
+
+        /// <summary>
+        /// Imprime a lista de clientes.
+        /// </summary>
+        public void Imprimir()
+        {
+            var clientes = Recuperar();
+            Console.WriteLine("Lista de Clientes:");
+
+            if (clientes.Count != 0)
+            {
+                foreach (var item in clientes)
+                {
+                    Console.WriteLine(item.Print());
+                    Console.WriteLine("-------------------------");
+                }
+                return;
+            }
+
+            Console.WriteLine("Nenhum cliente cadastrado!");
+        }
+
+
+
+        /// <summary>
+        /// Lê o sexo do cliente.
+        /// </summary>
+        /// <returns>O sexo do cliente.</returns>
+        private char LerSexo()
+        {
+            char sexo;
+            do
+            {
+                sexo = MainModulo1.LerChar("Digite o sexo(M-F):");
+
+                if (sexo != 'M' && sexo != 'F') Console.WriteLine("Digito invalido!");
+
+            } while (sexo != 'M' && sexo != 'F');
+
+            return sexo;
+        }
+
+        /// <summary>
+        /// Lê o CPF do cliente.
+        /// </summary>
+        /// <returns>O CPF do cliente.</returns>
+        private string LerCpf()
+        {
+            string cpf;
+
+            do
+            {
+                cpf = MainModulo1.LerString("Digite o cpf: ");
+
+                if (!Cliente.VerificarCpf(cpf)) Console.WriteLine("O cpf digitado é invalido");
+
+            } while (!Cliente.VerificarCpf(cpf));
+
+            return cpf;
+        }
+
+        /// <summary>
+        /// Exibe o menu de edição do cliente.
+        /// </summary>
+        /// <param name="nomeCliente">O nome do cliente.</param>
+        /// <returns>A opção selecionada.</returns>
         private int MenuEditar(string nomeCliente)
         {
             Console.Clear();
@@ -146,68 +255,5 @@ namespace BILTIFUL.Modulo1.ManipuladorArquivos
                 return MenuEditar(nomeCliente);
             }
         }
-
-        private char LerSexo()
-        {
-            char sexo;
-            do
-            {
-                sexo = MainModulo1.LerChar("Digite o sexo(M-F):");
-
-                if (sexo != 'M' && sexo != 'F') Console.WriteLine("Digito invalido!");
-
-            } while (sexo != 'M' && sexo != 'F');
-
-            return sexo;
-        }
-
-        private string LerCpf(bool verificaRegistros)
-        {
-            string cpf;
-
-
-            if (verificaRegistros)
-            {
-                List<Cliente> clientes = Recuperar();
-                do
-                {
-                    cpf = MainModulo1.LerString("Digite o cpf da pessoa que deseja editar: ");
-
-                    if (!Cliente.VerificarCpf(cpf))
-                        Console.WriteLine("O cpf digitado é invalido");
-
-                    if (clientes.Exists(c => c.Cpf.Equals(cpf)))
-                        Console.WriteLine("Ja existe um cadastro com esse cpf!");
-
-                } while (!Cliente.VerificarCpf(cpf) || clientes.Exists(c => c.Cpf.Equals(cpf)));
-            }
-            else
-            {
-                do
-                {
-                    cpf = MainModulo1.LerString("Digite o cpf da pessoa que deseja editar: ");
-
-                    if (!Cliente.VerificarCpf(cpf)) Console.WriteLine("O cpf digitado é invalido");
-
-                } while (!Cliente.VerificarCpf(cpf));
-            }
-
-            return cpf;
-        }
-
-
-
-        private void CriarDiretorioArquivo(string caminho, string arquivo)
-        {
-            if (!Directory.Exists(caminho))
-                Directory.CreateDirectory(caminho);
-
-            if (!File.Exists(caminho + arquivo))
-            {
-                var file = File.Create(caminho + arquivo);
-                file.Close();
-            }
-        }
-
     }
 }

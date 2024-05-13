@@ -1,9 +1,4 @@
 ﻿using BILTIFUL.Modulo1.ManipuladorArquivos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BILTIFUL.Modulo1
 {
@@ -37,10 +32,13 @@ namespace BILTIFUL.Modulo1
 
         public void Executar()
         {
-            int opcao = 0;
+            string titulo = "Menu Modulo1";
+            string[] campos = new string[] { "Menu de cliente", "Menu de fornecedor", "Menu de materia prima", "Menu de produto" };
+
+            bool terminouMenu = false;
             do
             {
-                switch (opcao)
+                switch (MenuGenerico(titulo, campos))
                 {
                     case 1:
                         MenuCliente();
@@ -54,6 +52,9 @@ namespace BILTIFUL.Modulo1
                     case 4:
                         MenuProduto();
                         break;
+                    case 0:
+                        terminouMenu = true;
+                        break;
                     default:
                         Console.WriteLine("Opcao invalida!");
                         break;
@@ -61,43 +62,248 @@ namespace BILTIFUL.Modulo1
 
                 Console.Write("Pressione qualquer tecla para continuar...");
                 Console.ReadKey();
-            } while (opcao != 0);
+            } while (!terminouMenu);
         }
-
-
 
         private void MenuCliente()
         {
-            throw new NotImplementedException();
+            string titulo = "Menu Cliente";
+            string[] campos = new string[] { "Cadastrar cliente", "Editar cliente", "Imprimir cliente especifico", "Imprimir todos os clientes", "Menu dos clientes de risco" };
+            bool terminouMenu = false;
+
+            do
+            {
+                switch (MenuGenerico(titulo, campos))
+                {
+                    case 1:
+                        _cliente.Cadastrar();
+                        break;
+                    case 2:
+                        _cliente.Editar();
+                        break;
+                    case 3:
+                        _cliente.Localizar();
+                        break;
+                    case 4:
+                        _cliente.Imprimir();
+                        break;
+                    case 5:
+                        MenuRisco();
+                        break;
+                    case 0:
+                        Console.WriteLine("Opcao Voltar selecionada");
+                        terminouMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opcao invalida!");
+                        break;
+                }
+
+                Console.Write("Pressione qualquer tecla para continuar...");
+                Console.ReadKey();
+            } while (!terminouMenu);
         }
+
         private void MenuFornecedor()
         {
-            throw new NotImplementedException();
+            string titulo = "Menu Fornecedor";
+            string[] campos = new string[] { "Cadastrar fornecedor", "Editar fornecedor", "Imprimir fornecedor especifico", "Imprimir todos os fornecedores", "Menu dos fornecedores bloqueados" };
+
+            bool terminouMenu = false;
+            do
+            {
+
+                switch (MenuGenerico(titulo, campos))
+                {
+                    case 1:
+                        _fornecedor.Cadastrar();
+                        break;
+                    case 2:
+                        _cliente.Editar();
+                        break;
+                    case 3:
+                        _cliente.Localizar();
+                        break;
+                    case 4:
+                        _fornecedor.Imprimir();
+                        break;
+                    case 5:
+                        MenuBloqueado();
+                        break;
+                    case 0:
+                        Console.WriteLine("Opcao Voltar selecionada");
+                        terminouMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opcao invalida!");
+                        break;
+                }
+
+                Console.Write("Pressione qualquer tecla para continuar...");
+                Console.ReadKey();
+            } while (!terminouMenu);
         }
+
         private void MenuMPrima()
         {
-            throw new NotImplementedException();
+            string titulo = "Menu Materia Prima";
+            string[] campos = new string[] { "Cadastrar materia prima", "Editar materia prima", "Imprimir materia prima especifica", "Imprimir lista de materias primas" };
+
+            bool terminouMenu = false;
+            do
+            {
+                switch (MenuGenerico(titulo, campos))
+                {
+                    case 1:
+                        _materia.Cadastrar();
+                        break;
+                    case 2:
+                        _materia.Editar();
+                        break;
+                    case 3:
+                        _materia.Localizar();
+                        break;
+                    case 4:
+                        _materia.Imprimir();
+                        break;
+                    case 0:
+                        Console.WriteLine("Opcao Voltar selecionada");
+                        terminouMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opcao invalida!");
+                        break;
+                }
+
+                Console.Write("Pressione qualquer tecla para continuar...");
+                Console.ReadKey();
+            } while (!terminouMenu);
         }
+
         private void MenuProduto()
         {
-            throw new NotImplementedException();
+            string titulo = "Menu Produto";
+            string[] campos = new string[] { "Cadastrar produto", "Editar produto", "Imprimir produto especifico", "Imprimir lista de produtos" };
+            bool terminouMenu = false;
+
+            do
+            {
+                switch (MenuGenerico(titulo, campos))
+                {
+                    case 1:
+                        _produto.Cadastrar();
+                        break;
+                    case 2:
+                        _produto.Editar();
+                        break;
+                    case 3:
+                        _produto.Localizar();
+                        break;
+                    case 4:
+                        _produto.Imprimir();
+                        break;
+                    case 0:
+                        Console.WriteLine("Opcao Voltar selecionada");
+                        terminouMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opcao invalida!");
+                        break;
+                }
+
+                Console.Write("Pressione qualquer tecla para continuar...");
+                Console.ReadKey();
+            } while (!terminouMenu);
         }
 
-        private int MenuPrincipal()
+        private void MenuRisco()
+        {
+            string titulo = "Menu Risco";
+            string[] campos = new string[] { "Adicionar cliente de risco", "Remover cliente", "Localizar cliente especifico", "Listar todos os clientes de risco" };
+
+            bool terminouMenu = false;
+            do
+            {
+                switch (MenuGenerico(titulo, campos))
+                {
+                    case 1:
+                        _risco.Adicionar();
+                        break;
+                    case 2:
+                        _risco.Remover();
+                        break;
+                    case 3:
+                        _risco.Localizar();
+                        break;
+                    case 4:
+                        _risco.Imprimir();
+                        break;
+                    case 0:
+                        Console.WriteLine("Opcao Voltar selecionada");
+                        terminouMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opcao invalida!");
+                        break;
+                }
+
+                Console.Write("Pressione qualquer tecla para continuar...");
+                Console.ReadKey();
+            } while (!terminouMenu);
+        }
+
+        private void MenuBloqueado()
+        {
+
+            string titulo = "Menu Bloqueados";
+            string[] campos = new string[] { "Adicionar fornecedor", "Remover fornecedor da lista de bloqueados", "Localizar fornecedor bloqueado especifico", "Listar todos os fornecedores bloqueados" };
+            bool terminouMenu = false;
+
+            do
+            {
+                switch (MenuGenerico(titulo, campos))
+                {
+                    case 1:
+                        _bloqueado.Adicionar();
+                        break;
+                    case 2:
+                        _bloqueado.Remover();
+                        break;
+                    case 3:
+                        _bloqueado.Localizar();
+                        break;
+                    case 4:
+                        _bloqueado.Imprimir();
+                        break;
+                    case 0:
+                        Console.WriteLine("Opcao Voltar selecionada");
+                        terminouMenu = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opcao invalida!");
+                        break;
+                }
+
+                Console.Write("Pressione qualquer tecla para continuar...");
+                Console.ReadKey();
+            } while (!terminouMenu);
+        }
+
+        private int MenuGenerico(string titulo, string[] campos)
         {
             Console.Clear();
-            Console.WriteLine("======Menu Modulo1======");
+            Console.WriteLine($"======{titulo}======");
 
-            Console.WriteLine("Opcoes: ");
-            Console.WriteLine("1- Menu de cliente");
-            Console.WriteLine("2- Menu de fornecedor");
-            Console.WriteLine("3- Menu de materia prima");
-            Console.WriteLine("4- Menu de produto");
+            for (int i = 0; i < campos.Length; i++)
+            {
+                Console.WriteLine($"{i + 1}- {campos[i]}");
+            }
             Console.WriteLine("0- Voltar");
             Console.Write("R: ");
 
             if (int.TryParse(Console.ReadLine(), out int option))
             {
+                Console.WriteLine($"Opcao: {option}");
                 return option;
             }
             else
@@ -105,7 +311,7 @@ namespace BILTIFUL.Modulo1
                 Console.WriteLine("Voce deve digitar um numero!");
                 Console.Write("Pressione qualquer tecla para continuar...");
                 Console.ReadKey();
-                return MenuPrincipal();
+                return MenuGenerico(titulo, campos);
             }
         }
 
@@ -183,6 +389,7 @@ namespace BILTIFUL.Modulo1
             return dateOnly;
         }
 
+
         public static char LerChar(string texto)
         {
             Console.WriteLine(texto);
@@ -200,6 +407,23 @@ namespace BILTIFUL.Modulo1
             }
 
             return caractere;
+        }
+
+        /// <summary>
+        /// Cria o diretório e o arquivo se não existirem.
+        /// </summary>
+        /// <param name="arquivo" >O arquivo a ser criado.</param>
+        /// <param name="caminho" >O caminho onde o arquivo será criado.</param>
+        public static void CriarDiretorioArquivo(string caminho, string arquivo)
+        {
+            if (!Directory.Exists(caminho))
+                Directory.CreateDirectory(caminho);
+
+            if (!File.Exists(caminho + arquivo))
+            {
+                var file = File.Create(caminho + arquivo);
+                file.Close();
+            }
         }
 
     }
