@@ -8,11 +8,12 @@ namespace BILTIFUL.Modulo2
 {
     internal class ManipularVenda
     {
-        private List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(@"C:\Biltiful\", "Cliente.dat"));
-        private List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(@"C:\Biltiful\", "Venda.dat"));
-        private List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(@"C:\Biltiful\", "Cosmetico.dat"));
-        private List<string> listaBloqueados = new List<string>(ArquivoVenda.importarBloqueado(@"C:\Biltiful\", "Risco.dat"));
-        private List<ItemVenda> listItemVenda = ArquivoVenda.importarItemVenda(@"C:\Biltiful\", "ItemVenda.dat");
+        private static string _path = @"C:\Biltiful\";
+        private List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(_path, "Cliente.dat"));
+        private List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(_path, "Venda.dat"));
+        private List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(_path, "Cosmetico.dat"));
+        private List<string> listaBloqueados = new List<string>(ArquivoVenda.importarBloqueado(_path, "Risco.dat"));
+        private List<ItemVenda> listItemVenda = ArquivoVenda.importarItemVenda(_path, "ItemVenda.dat");
 
         public void CadastrarVenda()
         {

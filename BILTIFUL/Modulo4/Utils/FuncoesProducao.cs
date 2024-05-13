@@ -7,11 +7,11 @@ namespace BILTIFUL.Modulo4.Utils
 {
     internal class FuncoesProducao
     {
-        private string _path = @"C:\BILTIFUL\";
-        private List<Producao> _listaProducao = new ManipuladorProducao(@"C:\BILTIFUL\", "Producao.dat").Recuperar();
-        private List<ItemProducao> _listaItemProducao = new ManipuladorItemProducao(@"C:\BILTIFUL\", "ItemProducao.dat").Recuperar();
-        private List<MPrima> _listaMPrima = new ManipularMPrima(@"C:\BILTIFUL\", "Materia.dat").Recuperar();
-        private List<Produto> _listaProduto = new ManipularProduto(@"C:\BILTIFUL\", "Cosmetico.dat").Recuperar();
+        private static string _path = @"C:\Biltiful\";
+        private List<Producao> _listaProducao = new ManipuladorProducao(_path, "Producao.dat").Recuperar();
+        private List<ItemProducao> _listaItemProducao = new ManipuladorItemProducao(_path, "ItemProducao.dat").Recuperar();
+        private List<MPrima> _listaMPrima = new ManipularMPrima(_path, "Materia.dat").Recuperar();
+        private List<Produto> _listaProduto = new ManipularProduto(_path, "Cosmetico.dat").Recuperar();
         public FuncoesProducao()
         {
 

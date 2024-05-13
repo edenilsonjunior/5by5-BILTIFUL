@@ -60,8 +60,6 @@ namespace BILTIFUL.Modulo1
                         break;
                 }
 
-                Console.Write("Pressione qualquer tecla para continuar...");
-                Console.ReadKey();
             } while (!terminouMenu);
         }
 

@@ -1,4 +1,5 @@
 using BILTIFUL.Modulo1;
+using BILTIFUL.Modulo2;
 using BILTIFUL.Modulo3;
 using BILTIFUL.Modulo4;
 
@@ -22,10 +23,10 @@ namespace BILTIFUL
                         new MainModulo1().Executar();
                         break;
                     case 2:
-                        //new MainModulo2().Executar();
+                        _ = new MainModulo2();
                         break;
                     case 3:
-                        new MainModulo3();
+                        _ = new MainModulo3();
                         break;
                     case 4:
                         _ = new MainModulo4();
