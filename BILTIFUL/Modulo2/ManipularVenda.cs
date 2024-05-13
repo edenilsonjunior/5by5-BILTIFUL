@@ -9,7 +9,7 @@ namespace BILTIFUL.Modulo2
     internal class ManipularVenda
     {
         private static string _path = @"C:\Biltiful\";
-        private List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(_path, "Cliente.dat"));
+        private List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(_path, "Clientes.dat"));
         private List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(_path, "Venda.dat"));
         private List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(_path, "Cosmetico.dat"));
         private List<string> listaBloqueados = new List<string>(ArquivoVenda.importarBloqueado(_path, "Risco.dat"));

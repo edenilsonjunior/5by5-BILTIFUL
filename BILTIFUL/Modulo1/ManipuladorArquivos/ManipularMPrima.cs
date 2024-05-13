@@ -84,7 +84,10 @@
             Console.WriteLine("======Editar Matéria-prima======");
 
             var materias = Recuperar();
-            MPrima? materia = BuscarPorId();
+
+            string id = LerId();
+            MPrima? materia = materias.Find(x => x.Id == id);
+
             if (materia == null)
             {
                 Console.WriteLine("Matéria-prima não encontrada.");
@@ -122,19 +125,6 @@
         }
 
 
-        /// <summary>
-        /// Busca uma matéria-prima pelo seu ID.
-        /// </summary>
-        /// <returns>A matéria-prima encontrada ou null se não encontrada.</returns>
-        public MPrima? BuscarPorId()
-        {
-            string id = LerId();
-
-            var materias = Recuperar();
-
-            return materias.Find(x => x.Id == id);
-        }
-
 
         /// <summary>
         /// Localiza uma matéria-prima pelo seu ID e exibe suas informações.
@@ -142,9 +132,12 @@
         public void Localizar()
         {
             Console.Clear();
-            Console.WriteLine("=====Imprimir materia-prima especifica:");
+            Console.WriteLine("=====Imprimir materia-prima especifica:=====");
 
-            MPrima? materia = BuscarPorId();
+            var materias = Recuperar();
+
+            string id = LerId();
+            MPrima? materia = materias.Find(x => x.Id == id);
 
             if (materia != null)
             {
@@ -162,23 +155,84 @@
         public void Imprimir()
         {
             Console.Clear();
-            Console.WriteLine("=====Imprimir todas as matérias-primas=====");
-            List<MPrima> materias = Recuperar();
+            Console.WriteLine("=====Imprimir lista de materias-primas=====");
 
-            if (materias.Count != 0)
+            var risco = Recuperar();
+
+            if (risco.Count == 0)
             {
-                foreach (var item in materias)
-                {
-                    Console.WriteLine(item.Print());
-                    Console.WriteLine("---------------");
-                }
+                Console.WriteLine("Nenhum clientena inadimplente!");
                 return;
             }
 
-            Console.WriteLine("Nenhuma matéria-prima cadastrada.");
+            int indice = 0;
+            int opcao;
+
+            do
+            {
+                bool numeroCerto = false;
+                bool opcaoValida = true;
+                bool isNumero = true;
+
+                Console.Clear();
+                do
+                {
+                    Console.WriteLine("Materia prima atual:");
+                    Console.WriteLine(risco[indice].Print() + $"\n\n");
+                    ExibirMenuImprimir(isNumero, opcaoValida);
+
+                    if (int.TryParse(Console.ReadLine(), out opcao))
+                    {
+                        if (opcao >= 0 && opcao <= 4)
+                            numeroCerto = opcaoValida = true;
+                        else
+                            opcaoValida = false;
+                    }
+                    else
+                        isNumero = false;
+
+                } while (!numeroCerto);
+
+                switch (opcao)
+                {
+                    case 1:
+                        indice = indice == risco.Count - 1 ? 0 : indice + 1;
+                        break;
+                    case 2:
+                        indice = indice == 0 ? risco.Count - 1 : indice - 1;
+                        break;
+                    case 3:
+                        indice = 0;
+                        break;
+                    case 4:
+                        indice = risco.Count - 1;
+                        break;
+                }
+            } while (opcao != 0);
         }
 
+        /// <summary>
+        /// Exibe o menu de impressão.
+        /// </summary>
+        /// <param name="isNumero">Se o usuario nao digitou um numero</param>
+        /// <param name="opcaoValida">Se a opcao que o usuario digitou é invalida</param>
+        private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
+        {
+            Console.WriteLine("Navegar pelos clientes:");
+            Console.WriteLine("Opcoes: ");
+            Console.WriteLine("1- Proximo da lista");
+            Console.WriteLine("2- Anterior da lista");
+            Console.WriteLine("3- Final da lista");
+            Console.WriteLine("0- Parar navegacao");
 
+            if (!isNumero)
+                Console.WriteLine("Voce deve digitar um numero!");
+
+            if (!opcaoValida)
+                Console.WriteLine("Opcao invalida!");
+
+            Console.Write("R: ");
+        }
 
 
         /// <summary>

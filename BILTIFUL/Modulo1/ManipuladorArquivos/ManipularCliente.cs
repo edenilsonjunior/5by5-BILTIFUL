@@ -95,9 +95,15 @@
 
             var clientes = Recuperar();
 
-            Cliente? c = BuscarPorCpf();
+            string cpf = LerCpf();
+
+            Cliente? c = clientes.Find(c => c.Cpf.Equals(cpf));
+
             if (c == null)
+            {
+                Console.WriteLine("O CPF digitado nao coincide com nenhum cliente!");
                 return;
+            }
 
             bool terminouMenu = false;
             do
@@ -132,18 +138,7 @@
 
             Salvar(clientes);
         }
-
-
-        /// <summary>
-        /// Busca um cliente pelo CPF.
-        /// </summary>
-        /// <returns>O cliente encontrado ou null se não existir.</returns>
-        public Cliente? BuscarPorCpf()
-        {
-            string cpf = LerCpf();
-
-            return Recuperar().Find(c => c.Cpf.Equals(cpf));
-        }
+        
 
         /// <summary>
         /// Localiza um cliente pelo CPF e exibe seus dados.
@@ -153,10 +148,15 @@
             Console.Clear();
             Console.WriteLine("=====Imprimir Cliente especifico");
 
-            Cliente? c = BuscarPorCpf();
+            string cpf = LerCpf();
+
+            Cliente? c = Recuperar().Find(c => c.Cpf.Equals(cpf));
 
             if (c == null)
+            {
+                Console.WriteLine("O CPF digitado nao coincide com nenhum cliente!");
                 return;
+            }
 
             Console.WriteLine("Dados do cliente localizado: ");
             Console.WriteLine(c.Print());
@@ -168,23 +168,86 @@
         /// </summary>
         public void Imprimir()
         {
-            var clientes = Recuperar();
-            Console.WriteLine("Lista de Clientes:");
+            Console.Clear();
+            Console.WriteLine("=====Imprimir todos os clientes=====");
 
-            if (clientes.Count != 0)
+            var clientes = Recuperar();
+
+            if (clientes.Count == 0)
             {
-                foreach (var item in clientes)
-                {
-                    Console.WriteLine(item.Print());
-                    Console.WriteLine("-------------------------");
-                }
+                Console.WriteLine("Nenhum cliente cadastrado!");
                 return;
             }
 
-            Console.WriteLine("Nenhum cliente cadastrado!");
+            int indice = 0;
+            int opcao = -1;
+
+            do
+            {
+                bool numeroCerto = false;
+                bool opcaoValida = true;
+                bool isNumero = true;
+
+                Console.Clear();
+                do
+                {
+                    Console.WriteLine("Cliente atual:");
+                    Console.WriteLine(clientes[indice].Print() + $"\n\n");
+                    ExibirMenuImprimir(isNumero, opcaoValida);
+
+                    if (int.TryParse(Console.ReadLine(), out opcao))
+                    {
+                        if (opcao >= 0 && opcao <= 4)
+                            numeroCerto = opcaoValida = true;
+                        else
+                            opcaoValida = false;
+                    }
+                    else
+                        isNumero = false;
+
+                } while (!numeroCerto);
+
+                switch (opcao)
+                {
+                    case 1:
+                        indice = indice == clientes.Count - 1 ? 0 : indice + 1;
+                        break;
+                    case 2:
+                        indice = indice == 0 ? clientes.Count - 1 : indice - 1;
+                        break;
+                    case 3:
+                        indice = 0;
+                        break;
+                    case 4:
+                        indice = clientes.Count - 1;
+                        break;
+                }
+            } while (opcao != 0);
         }
 
 
+        /// <summary>
+        /// Exibe o menu de impressão dos clientes.
+        /// </summary>
+        /// <param name="isNumero">Se o valor digitado é um número.</param>
+        /// <param name="opcaoValida">Se a opcao é valida</param>
+        private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
+        {
+            Console.WriteLine("Navegar pelos clientes:");
+            Console.WriteLine("Opcoes: ");
+            Console.WriteLine("1- Proximo da lista");
+            Console.WriteLine("2- Anterior da lista");
+            Console.WriteLine("3- Final da lista");
+            Console.WriteLine("0- Parar navegacao");
+
+            if (!isNumero)
+                Console.WriteLine("Voce deve digitar um numero!");
+
+            if (!opcaoValida)
+                Console.WriteLine("Opcao invalida!");
+
+            Console.Write("R: ");
+        }
 
         /// <summary>
         /// Lê o sexo do cliente.

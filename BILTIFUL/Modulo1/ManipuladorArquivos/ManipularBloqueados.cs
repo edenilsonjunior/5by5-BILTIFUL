@@ -154,22 +154,84 @@
         /// </summary>
         public void Imprimir()
         {
+            Console.Clear();
+            Console.WriteLine("=====Imprimir todos os fornecedores bloqueados=====");
+
             var bloqueados = Recuperar();
 
-            Console.Clear();
-            Console.WriteLine("=====Imprimir todos os fornecedores=====");
-            Console.WriteLine("Lista de cpnj's bloqueados:");
-
-            if (bloqueados.Count != 0)
+            if (bloqueados.Count == 0)
             {
-                foreach (var item in bloqueados)
-                    Console.WriteLine(item);
-
+                Console.WriteLine("Nenhum fornecedor com cpnj bloqueado!");
                 return;
             }
 
-            Console.WriteLine("Nenhum fornecedor bloqueado!");
+            int indice = 0;
+            int opcao;
+
+            do
+            {
+                bool numeroCerto = false;
+                bool opcaoValida = true;
+                bool isNumero = true;
+
+                Console.Clear();
+                do
+                {
+                    Console.WriteLine("Cnpj atual:");
+                    Console.WriteLine(bloqueados[indice] + $"\n\n");
+                    ExibirMenuImprimir(isNumero, opcaoValida);
+
+                    if (int.TryParse(Console.ReadLine(), out opcao))
+                    {
+                        if (opcao >= 0 && opcao <= 4)
+                            numeroCerto = opcaoValida = true;
+                        else
+                            opcaoValida = false;
+                    }
+                    else
+                        isNumero = false;
+
+                } while (!numeroCerto);
+
+                switch (opcao)
+                {
+                    case 1:
+                        indice = indice == bloqueados.Count - 1 ? 0 : indice + 1;
+                        break;
+                    case 2:
+                        indice = indice == 0 ? bloqueados.Count - 1 : indice - 1;
+                        break;
+                    case 3:
+                        indice = 0;
+                        break;
+                    case 4:
+                        indice = bloqueados.Count - 1;
+                        break;
+                }
+            } while (opcao != 0);
         }
+
+
+
+        private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
+        {
+
+            Console.WriteLine("=====Navegar pelos cnpjs bloqueados!:");
+            Console.WriteLine("Opcoes: ");
+            Console.WriteLine("1- Proximo da lista");
+            Console.WriteLine("2- Anterior da lista");
+            Console.WriteLine("3- Final da lista");
+            Console.WriteLine("0- Parar navegacao");
+
+            if (!isNumero)
+                Console.WriteLine("Voce deve digitar um numero!");
+
+            if (!opcaoValida)
+                Console.WriteLine("Opcao invalida!");
+
+            Console.Write("R: ");
+        }
+
 
         private bool ExisteFornecedor(string cnpj)
         {

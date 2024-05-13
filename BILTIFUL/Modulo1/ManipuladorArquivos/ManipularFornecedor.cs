@@ -65,7 +65,7 @@
             {
                 cnpj = LerCnpj();
 
-                if(!fornecedores.Exists(c => c.Cnpj == cnpj))
+                if (!fornecedores.Exists(c => c.Cnpj == cnpj))
                 {
                     existeCnpj = false;
                 }
@@ -90,16 +90,21 @@
         public void Editar()
         {
             Console.Clear();
-            Console.WriteLine("=====Cadastrar Fornecedor=====");
+            Console.WriteLine("=====Editar Fornecedor=====");
 
-            Fornecedor? f = BuscarPorCnpj();
+            List<Fornecedor> fornecedores = Recuperar();
+            string cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
+
+            cnpj = Fornecedor.RemoverCaractere(cnpj);
+
+            Fornecedor f = fornecedores.Find(f => f.Cnpj.Equals(cnpj));
+
             if (f == null)
             {
                 Console.WriteLine("Fornecedor não encontrado!");
                 return;
             }
 
-            List<Fornecedor> fornecedores = Recuperar();
             bool continuar = true;
 
             do
@@ -119,24 +124,13 @@
                         Console.WriteLine("Opção inválida!");
                         break;
                 }
-            } while (!continuar);
+            } while (continuar);
+
+            Console.WriteLine("\nFornecedor atualizado:");
+            Console.WriteLine(f.Print());
 
             Salvar(fornecedores);
         }
-
-
-        /// <summary>
-        /// Busca um fornecedor pelo CNPJ.
-        /// </summary>
-        /// <returns>O fornecedor encontrado ou null se não encontrado.</returns>
-        public Fornecedor? BuscarPorCnpj()
-        {
-            List<Fornecedor> fornecedores = Recuperar();
-            string cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
-
-            return fornecedores.Find(f => f.Cnpj.Equals(cnpj));
-        }
-
 
         /// <summary>
         /// Localiza um fornecedor pelo CNPJ e exibe suas informações.
@@ -144,9 +138,17 @@
         public void Localizar()
         {
             Console.Clear();
-            Console.WriteLine("=====Imprimir Fornecedor especifico");
+            Console.WriteLine("Imprimir Fornecedor especifico");
 
-            Fornecedor? fornecedor = BuscarPorCnpj();
+            string cnpj = MainModulo1.LerString("Digite o CNPJ do fornecedor: ");
+            Fornecedor? fornecedor = Recuperar().Find(f => f.Cnpj.Equals(cnpj));
+
+            if (fornecedor == null)
+            {
+                Console.WriteLine("Fornecedor não encontrado!");
+                return;
+            }
+
 
             if (fornecedor != null)
             {
@@ -164,21 +166,79 @@
         /// </summary>
         public void Imprimir()
         {
-            List<Fornecedor> fornecedores = Recuperar();
+            Console.Clear();
+            Console.WriteLine("=====Imprimir todos os fornecedores=====");
 
-            Console.WriteLine("Lista de fornecedores");
+            var fornecedores = Recuperar();
 
-            if (fornecedores.Count != 0)
+            if (fornecedores.Count == 0)
             {
-                foreach (var item in fornecedores)
-                {
-                    Console.WriteLine(item.Print());
-                    Console.WriteLine("-------------------------");
-                }
+                Console.WriteLine("Nenhum fornecedor cadastrado!");
                 return;
             }
 
-            Console.WriteLine("Nenhum fornecedor cadastrado!");
+            int indice = 0;
+            int opcao;
+
+            do
+            {
+                bool numeroCerto = false;
+                bool opcaoValida = true;
+                bool isNumero = true;
+
+                Console.Clear();
+                do
+                {
+                    Console.WriteLine("Fornecedor atual:");
+                    Console.WriteLine(fornecedores[indice].Print() + $"\n\n");
+                    ExibirMenuImprimir(isNumero, opcaoValida);
+
+                    if (int.TryParse(Console.ReadLine(), out opcao))
+                    {
+                        if (opcao >= 0 && opcao <= 4)
+                            numeroCerto = opcaoValida = true;
+                        else
+                            opcaoValida = false;
+                    }
+                    else
+                        isNumero = false;
+
+                } while (!numeroCerto);
+
+                switch (opcao)
+                {
+                    case 1:
+                        indice = indice == fornecedores.Count - 1 ? 0 : indice + 1;
+                        break;
+                    case 2:
+                        indice = indice == 0 ? fornecedores.Count - 1 : indice - 1;
+                        break;
+                    case 3:
+                        indice = 0;
+                        break;
+                    case 4:
+                        indice = fornecedores.Count - 1;
+                        break;
+                }
+            } while (opcao != 0);
+        }
+
+        private void ExibirMenuImprimir(bool isNumero, bool opcaoValida)
+        {
+            Console.WriteLine("Navegar pelos fornecedores:");
+            Console.WriteLine("Opcoes: ");
+            Console.WriteLine("1- Proximo da lista");
+            Console.WriteLine("2- Anterior da lista");
+            Console.WriteLine("3- Final da lista");
+            Console.WriteLine("0- Parar navegacao");
+
+            if (!isNumero)
+                Console.WriteLine("Voce deve digitar um numero!");
+
+            if (!opcaoValida)
+                Console.WriteLine("Opcao invalida!");
+
+            Console.Write("R: ");
         }
 
 
