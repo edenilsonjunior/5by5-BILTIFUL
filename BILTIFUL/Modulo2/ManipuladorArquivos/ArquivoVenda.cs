@@ -1,6 +1,6 @@
 ﻿using BILTIFUL.Modulo4.Entidades;
 using BILTIFUL.Modulo1;
-//****
+//*//
 namespace BILTIFUL.Modulo2.ManipuladorArquivos
 {
     internal class ArquivoVenda
@@ -68,9 +68,9 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
             return tempProducao;
         }
 
-        public static List<Cliente> importarBloqueado(string path, string file)
+        public static List<string> importarBloqueado(string path, string file)
         {
-            List<Cliente> templista = new();
+            List<string> templista = new();
             try
             {
                 if (File.Exists(path + file))
@@ -92,9 +92,9 @@ namespace BILTIFUL.Modulo2.ManipuladorArquivos
             }
             return templista; 
         }
-        static Cliente importarBloqueado(string conteudo)
+        static string importarBloqueado(string conteudo)
         {
-            Cliente tempbloqueado = new Cliente(conteudo);
+            string tempbloqueado = new string(conteudo);
             return tempbloqueado;
         }
         public static List<Produto> importarProduto(string path, string file)

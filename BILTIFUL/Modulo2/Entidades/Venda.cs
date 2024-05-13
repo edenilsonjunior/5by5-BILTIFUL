@@ -1,8 +1,5 @@
 ﻿using BILTIFUL.Modulo1;
-using BILTIFUL.Modulo1.ManipuladorArquivos;
-using BILTIFUL.Modulo4.Entidades;
-
-//****
+//*//
 namespace BILTIFUL.Modulo2
 {
     internal class Venda
@@ -50,18 +47,36 @@ namespace BILTIFUL.Modulo2
             return data;
         }
 
-        public string Imprimir(List<Venda> listaVenda)
+        
+        public string Imprimir(Venda venda, List<Cliente> listaCliente, List<ItemVenda> listItemVenda)
         {
             string texto = "";
-            texto = $"Id: [ {idVenda} ]";
-            texto += $" [ Data da venda: {dataVenda} ]\n";
-            texto += $"    [ Venda: {listaVenda} - ";
-            if (listaVenda.Find(x => x.idVenda == Venda) != null)
+            texto += $"Id: [ {venda.idVenda} ]";
+            texto += $" [ Data da venda: {venda.dataVenda} ]\n";
+
+            Cliente clienteVenda = listaCliente.Find(x => x.Cpf == venda.cpfCliente);
+            if (clienteVenda != null)
             {
-                texto += (listaProduto.Find(x => x.CodigoBarras == Produto).Nome).Trim();
+                texto += $"    [Cliente: {clienteVenda.Nome}- {clienteVenda.DataNascimento} ]";
             }
-            texto += $" ]  [ QTDE PRODUZIDA: {Quantidade.ToString("N2")} ]";
+
+            texto += $"\n[ Lista de itens: {GetItensVenda(venda, listItemVenda)} ]";
             return texto;
+        }
+    
+
+        public string GetItensVenda(Venda venda, List<ItemVenda> listItemVenda)
+        {
+
+            string itens = "";
+            foreach (ItemVenda item in listItemVenda)
+            {
+                if (item.idVenda == venda.idVenda)
+                {
+                    itens += item.ImprimirItem();
+                }
+            }
+            return itens;
         }
     }
 }

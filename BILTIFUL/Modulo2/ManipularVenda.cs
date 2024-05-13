@@ -1,23 +1,34 @@
-﻿
-using BILTIFUL.Modulo1;
+﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo2.ManipuladorArquivos;
 using BILTIFUL.Modulo4.Entidades;
+using BILTIFUL.Modulo2;
+//*//
 
-//****
 namespace BILTIFUL.Modulo2
 {
     internal class ManipularVenda
     {
+        private List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(@"C:\Biltiful\", "Cliente.dat"));
+        private List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(@"C:\Biltiful\", "Venda.dat"));
+        private List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(@"C:\Biltiful\", "Cosmetico.dat"));
+        private List<string> listaBloqueados = new List<string>(ArquivoVenda.importarBloqueado(@"C:\Biltiful\", "Risco.dat"));
+        private List<ItemVenda> listItemVenda = ArquivoVenda.importarItemVenda(@"C:\Biltiful\", "ItemVenda.dat");
 
-        static public void CadastrarVenda(List<Venda> listaVenda, List<Cliente> listaCliente, List<Cliente> listaBloqueados)
+        public void CadastrarVenda()
         {
 
             DateOnly dataatual = DateOnly.FromDateTime(DateTime.Now);
             string cpf;
             int Id = 0;
-            List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(@"C:\Biltiful\", "Cosmetico.dat"));
-            Id = listaVenda.Last().idVenda + 1;
 
+            if (listaVenda.Count == 0)
+            {
+                Id = 1;
+            }
+            else
+            {
+                Id = listaVenda.Last().idVenda + 1;
+            }
             do
             {
                 Console.Write("Insira o CPF do cliente cadastrado: ");
@@ -26,6 +37,7 @@ namespace BILTIFUL.Modulo2
                 if (cpf != "0" && Cliente.VerificarCpf(cpf) == false)
                 {
                     Console.WriteLine("CPF inválido!");
+                    Console.ReadKey();
                 }
             } while (cpf != "0" && Cliente.VerificarCpf(cpf) == false);
 
@@ -36,13 +48,17 @@ namespace BILTIFUL.Modulo2
             if (ClienteVenda == null)
             {
                 Console.WriteLine("Não existe cliente cadastrado com esse CPF.");
+                Console.WriteLine("Pressione qualquer tecla para continuar.");
+                Console.ReadKey();
                 return;
             }
 
             //inadimplentes
-            if (listaBloqueados.Find(x => x.Cpf == cpf) != null)
+            if (listaBloqueados.Contains(cpf))
             {
                 Console.WriteLine("Venda não autorizada para este CPF.");
+                Console.WriteLine("Pressione qualquer tecla para continuar.");
+                Console.ReadKey();
                 return;
             }
 
@@ -53,6 +69,8 @@ namespace BILTIFUL.Modulo2
             if (idade < 18)
             {
                 Console.WriteLine("Venda não permitida para menor de 18 anos.");
+                Console.WriteLine("Pressione qualquer tecla para continuar.");
+                Console.ReadKey();
                 return;
             }
 
@@ -60,15 +78,18 @@ namespace BILTIFUL.Modulo2
             if (Id > 99999)
             {
                 Console.WriteLine("Excedeu o limite de vendas cadastradas no sistema.");
+                Console.WriteLine("Pressione qualquer tecla para continuar.");
+                Console.ReadKey();
                 return;
             }
 
             Console.WriteLine("Quantos itens deseja comprar?");
-            int qtditens = int.Parse(Console.ReadLine());
+            int qtditens = retornarInt();
+
             while (qtditens <= 0 || qtditens > 3)
             {
                 Console.WriteLine("Quantidade inválida, mín 1 e máx 3. Digite novamente!");
-                qtditens = int.Parse(Console.ReadLine());
+                qtditens = retornarInt();
             }
 
             ItemVenda[] Itens = new ItemVenda[qtditens];
@@ -89,14 +110,11 @@ namespace BILTIFUL.Modulo2
             }
 
             Venda venda = new Venda(Id, DateOnly.FromDateTime(DateTime.Now), ClienteVenda.Cpf, total);
+      
+            listaVenda.Add(venda);
 
-            List<Venda> listdeVenda = ArquivoVenda.importarVenda(@"C:\Biltiful\", "Venda.dat");
-            listdeVenda.Add(venda);
-
-            ArquivoVenda.salvarArquivo(listdeVenda, "Venda.dat");
-
-            List<ItemVenda> listItemVenda = ArquivoVenda.importarItemVenda(@"C:\Biltiful\", "ItemVenda.dat");
-
+            ArquivoVenda.salvarArquivo(listaVenda, "Venda.dat");
+    
             foreach (ItemVenda item in Itens)
             {
                 listItemVenda.Add(item);
@@ -109,7 +127,7 @@ namespace BILTIFUL.Modulo2
         }
 
 
-        static public void LocalizarVenda()
+        public void LocalizarVenda()
         {
 
             int Id;
@@ -121,7 +139,7 @@ namespace BILTIFUL.Modulo2
 
         }
 
-        static public int retornarInt()
+        public int retornarInt()
         {
             int Inteiro = 0;
             bool ex = false;
@@ -141,16 +159,16 @@ namespace BILTIFUL.Modulo2
             return Inteiro;
         }
 
-        static public void ExcluirVenda()
+        public void ExcluirVenda()
         {
-           
+
             string opcao = "";
             int Id;
 
             Console.WriteLine("Informe o ID da venda que deseja EXCLUIR:");
             Id = retornarInt();
 
-            var vendaLocalizada = listaVenda.Find(x => x.Id == Id);
+            var vendaLocalizada = listaVenda.Find(x => x.idVenda == Id);
             if (vendaLocalizada != null)
             {
                 ImprimirVendaAux(Id);
@@ -161,10 +179,10 @@ namespace BILTIFUL.Modulo2
                 opcao = Console.ReadLine();
                 if (opcao.ToLower() == "s")
                 {
-                    listItemVenda.RemoveAll(x => x.Id == Id);
+                    listItemVenda.RemoveAll(x => x.idVenda == Id);
                     listaVenda.Remove(vendaLocalizada);
-                    ArquivoVenda.salvarArquivo(listaVenda, @"C:\Biltiful\", "Venda.dat");
-                    ArquivoVenda.salvarArquivo(listItemVenda, @"C:\Biltiful\", "ItemVenda.dat");
+                    ArquivoVenda.salvarArquivo(listaVenda, "Venda.dat");
+                    ArquivoVenda.salvarArquivo(listItemVenda, "ItemVenda.dat");
                     Console.WriteLine($"Exclusão realizada com sucesso!");
                 }
             }
@@ -175,104 +193,102 @@ namespace BILTIFUL.Modulo2
             Console.WriteLine("Pressione qualquer tecla para continuar.");
             Console.ReadKey();
         }
-    }
 
-    static public void ImprimirRegisVenda(List<Venda> listaVenda)
-    {
-        int Id, IdInicial, IdFinal, opcao = 10;
-        Venda listaTemporaria;
-        if (listaVenda.Count == 0)
+
+        public void ImprimirRegisVenda()
         {
-            Console.WriteLine("Não há venda cadastrada!");
-            Console.WriteLine("Pressione qualquer tecla para continuar.");
-            Console.ReadKey();
-        }
-        else
-        {
-            IdInicial = listaVenda.First().idVenda;
-            Id = IdInicial;
-            IdFinal = listaVenda.Last().idVenda;
-            ImprimirVendaAux(IdInicial);
-            while (opcao != 9)
+            int Id, IdInicial, IdFinal, opcao = 10;
+            Venda listaTemporaria;
+            if (listaVenda.Count == 0)
             {
-                Console.WriteLine("Digite:");
-                Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
-                Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
-                Console.WriteLine("[ 9 - Sair ]");
-                opcao = retornarInt();
-                switch (opcao)
+                Console.WriteLine("Não há venda cadastrada!");
+                Console.WriteLine("Pressione qualquer tecla para continuar.");
+                Console.ReadKey();
+            }
+            else
+            {
+                IdInicial = listaVenda.First().idVenda;
+                Id = IdInicial;
+                IdFinal = listaVenda.Last().idVenda;
+                ImprimirVendaAux(IdInicial);
+                while (opcao != 9)
                 {
-                    case 0:
-                        Id = IdInicial;
-                        ImprimirVendaAux(Id);
-                        break;
-                    case 1:
-                        if (Id > IdInicial)
-                        {
-                            do
-                            {
-                                Id--;
-                                listaTemporaria = listaVenda.Find(x => x.idVenda == Id);
-                            } while (listaTemporaria == null);
+                    Console.WriteLine("Digite:");
+                    Console.WriteLine("[ 1 - Voltar ]           [ 2 - Avançar ]");
+                    Console.WriteLine("[ 0 - Voltar ao Início ] [ 3 - Avançar ao Final ]");
+                    Console.WriteLine("[ 9 - Sair ]");
+                    opcao = retornarInt();
+                    switch (opcao)
+                    {
+                        case 0:
+                            Id = IdInicial;
                             ImprimirVendaAux(Id);
-                        }
-                        else
-                        {
-                            ImprimirVendaAux(IdInicial);
-                            Console.WriteLine("Inicio da Lista!");
-                        }
-                        break;
-                    case 2:
-                        if (Id < IdFinal)
-                        {
-                            do
+                            break;
+                        case 1:
+                            if (Id > IdInicial)
                             {
-                                Id++;
-                                listaTemporaria = listaVenda.Find(x => x.idVenda == Id);
-                            } while (listaTemporaria == null);
+                                do
+                                {
+                                    Id--;
+                                    listaTemporaria = listaVenda.Find(x => x.idVenda == Id);
+                                } while (listaTemporaria == null);
+                                ImprimirVendaAux(Id);
+                            }
+                            else
+                            {
+                                ImprimirVendaAux(IdInicial);
+                                Console.WriteLine("Inicio da Lista!");
+                            }
+                            break;
+                        case 2:
+                            if (Id < IdFinal)
+                            {
+                                do
+                                {
+                                    Id++;
+                                    listaTemporaria = listaVenda.Find(x => x.idVenda == Id);
+                                } while (listaTemporaria == null);
+                                ImprimirVendaAux(Id);
+                            }
+                            else
+                            {
+                                ImprimirVendaAux(IdFinal);
+                                Console.WriteLine("Fim da Lista!");
+                            }
+                            break;
+                        case 3:
+                            Id = IdFinal;
                             ImprimirVendaAux(Id);
-                        }
-                        else
-                        {
-                            ImprimirVendaAux(IdFinal);
-                            Console.WriteLine("Fim da Lista!");
-                        }
-                        break;
-                    case 3:
-                        Id = IdFinal;
-                        ImprimirVendaAux(Id);
-                        break;
-                    case 9:
-                        break;
-                    default:
-                        Console.WriteLine("Opção inválida.");
-                        break;
+                            break;
+                        case 9:
+                            break;
+                        default:
+                            Console.WriteLine("Opção inválida.");
+                            break;
+                    }
                 }
             }
         }
-    }
 
-    static void ImprimirVendaAux(int idVenda)
-    {
-        var vendaLocalizada = listaVenda.Find(x => x.idVenda == idVenda);
-        var itemVendaLocalizado = listItemVenda.FindAll(x => x.idVenda == idVenda);
-
-        if (vendaLocalizada != null)
+        public void ImprimirVendaAux(int idVenda)
         {
-            Console.Clear();
-            Console.WriteLine("-".PadLeft(115, '-'));
-            Console.WriteLine(vendaLocalizada.Imprimir(listaVenda));
-            Console.WriteLine("-".PadLeft(115, '-'));
-            foreach (ItemProducao item in itemVendaLocalizado)
+            var vendaLocalizada = listaVenda.Find(x => x.idVenda == idVenda);
+            var itemVendaLocalizado = listItemVenda.FindAll(x => x.idVenda == idVenda);
+
+            if (vendaLocalizada != null)
             {
-                Console.WriteLine(item.Imprimir(listItemVenda));
+                Console.Clear();
+                Console.WriteLine("-".PadLeft(115, '-'));
+                Console.WriteLine(vendaLocalizada.Imprimir(vendaLocalizada, listaCliente, listItemVenda));
+                Console.WriteLine("-".PadLeft(115, '-'));
             }
-            Console.WriteLine("-".PadLeft(115, '-'));
+
+            else
+            {
+                Console.WriteLine("Não foi localizada uma venda com esse ID.");
+            }
         }
-        else
-        {
-            Console.WriteLine("Não foi localizada uma venda com esse ID.");
-        }
+       
     }
 }
 

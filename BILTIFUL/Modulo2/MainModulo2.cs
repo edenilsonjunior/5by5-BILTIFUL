@@ -1,7 +1,6 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo2.ManipuladorArquivos;
-
-//****
+//*//
 namespace BILTIFUL.Modulo2
 {
     internal class MainModulo2
@@ -39,25 +38,26 @@ namespace BILTIFUL.Modulo2
         }
         public void ChamarMenu()
         {
-            List<Cliente> listaCliente = new List<Cliente>(ArquivoVenda.importarCliente(@"C:\Biltiful\", "Cliente.dat"));
-            List<Venda> listaVenda = new List<Venda>(ArquivoVenda.importarVenda(@"C:\Biltiful\", "Venda.dat"));
-            List<Produto> listaProduto = new List<Produto>(ArquivoVenda.importarProduto(@"C:\Biltiful\", "Cosmetico.dat"));
-            List<Cliente> listaBloqueados = new List<Cliente>(ArquivoVenda.importarBloqueado(@"C:\Biltiful\", "Risco.dat"));
+           
             do
             {
                 switch (Menu())
                 {
                     case 1:
-                        ManipularVenda.CadastrarVenda(listaVenda, listaCliente, listaBloqueados);
+                        //ManipularVenda.CadastrarVenda(listaVenda, listaCliente, listaBloqueados);
+                        new ManipularVenda().CadastrarVenda();
                         break;
                     case 2:
-                        ManipularVenda.ExcluirVenda();
+                        //ManipularVenda.ExcluirVenda();
+                        new ManipularVenda().ExcluirVenda();
                         break;
                     case 3:
-                        ManipularVenda.LocalizarVenda();
+                        //ManipularVenda.LocalizarVenda();
+                        new ManipularVenda().LocalizarVenda();
                         break;
                     case 4:
-                        ManipularVenda.ImprimirRegisVenda(listaVenda);
+                        //ManipularVenda.ImprimirRegisVenda(listaVenda);
+                        new ManipularVenda().ImprimirRegisVenda();
                         break;
                     case 0:
                         Console.WriteLine("Encerrando o programa.");

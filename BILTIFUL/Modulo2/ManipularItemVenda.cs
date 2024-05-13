@@ -1,7 +1,7 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo2;
 using BILTIFUL.Modulo4.Entidades;
-
+//*//
 namespace BILTIFUL.Modulo2
 {
     internal class ManipularItemVenda
@@ -18,7 +18,7 @@ namespace BILTIFUL.Modulo2
                 return null;
             }
             Console.WriteLine("Digite a quantidade do produto desejado: ");
-            int qtd = int.Parse(Console.ReadLine());
+            int qtd = retornarInt();
 
             if (qtd <= 0 || qtd > 999)
             {
@@ -29,8 +29,27 @@ namespace BILTIFUL.Modulo2
 
             return item;
         }
+        static public int retornarInt()
+        {
+            int Inteiro = 0;
+            bool ex = false;
 
-       
+            while (!ex)
+            {
+                if (int.TryParse(Console.ReadLine(), out int varint))
+                {
+                    Inteiro = varint;
+                    ex = true;
+                }
+                else
+                {
+                    Console.WriteLine("Formato inválido. Informe números inteiros apenas.");
+                }
+            }
+            return Inteiro;
+        }
+
+
     }
 }
 
