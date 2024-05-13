@@ -1,6 +1,4 @@
-﻿using BILTIFUL.Modulo1;
-using BILTIFUL.Modulo2.ManipuladorArquivos;
-//*//
+﻿//*//
 namespace BILTIFUL.Modulo2
 {
     internal class MainModulo2
@@ -38,7 +36,7 @@ namespace BILTIFUL.Modulo2
         }
         public void ChamarMenu()
         {
-           
+            bool terminouMenu = false;
             do
             {
                 switch (Menu())
@@ -61,13 +59,13 @@ namespace BILTIFUL.Modulo2
                         break;
                     case 0:
                         Console.WriteLine("Encerrando o programa.");
-                        Environment.Exit(0);
+                        terminouMenu = true;
                         break;
                     default:
                         Console.WriteLine("Opção inválida.");
                         break;
                 }
-            } while (true);
+            } while (!terminouMenu);
         }
     }
 }

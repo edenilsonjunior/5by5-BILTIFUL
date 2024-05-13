@@ -1,6 +1,4 @@
-﻿//*//
-using BILTIFUL.Modulo1;
-namespace BILTIFUL.Modulo2
+﻿namespace BILTIFUL.Modulo2
 {
     internal class ItemVenda
     {
@@ -12,12 +10,11 @@ namespace BILTIFUL.Modulo2
 
         public ItemVenda(string data)
         {
-
             idVenda = int.Parse(data.Substring(0, 5));
             produto = data.Substring(5, 13);
-            qtd = int.Parse(data.Substring(13, 3));
-            valorUnitario = float.Parse(data.Substring(16, 5))/100;
-            totalItem = float.Parse(data.Substring(21, 6))/100;
+            qtd = int.Parse(data.Substring(18, 3));
+            valorUnitario = float.Parse(data.Substring(21, 5))/100;
+            totalItem = float.Parse(data.Substring(26, 6))/100;
         }
 
         public ItemVenda(int idVenda, string produto, int qtd, float valorUnitario)
@@ -45,10 +42,10 @@ namespace BILTIFUL.Modulo2
         public string ImprimirItem()
         {
             string texto= "";
-            texto += $"\nCódigo de barras: {produto}";
+            texto += $"Código de barras: {produto}";
             texto += $" Quantidade: {qtd}";
             texto += $" Valor unitário: {valorUnitario.ToString("N2")}";
-            texto += $" Valor total: {totalItem.ToString("N2")}";
+            texto += $" Valor total: {totalItem.ToString("N2")}\n";
 
             return texto;
 

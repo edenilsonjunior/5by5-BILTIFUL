@@ -1,9 +1,5 @@
 ﻿using BILTIFUL.Modulo1;
 using BILTIFUL.Modulo2.ManipuladorArquivos;
-using BILTIFUL.Modulo4.Entidades;
-using BILTIFUL.Modulo2;
-//*//
-
 namespace BILTIFUL.Modulo2
 {
     internal class ManipularVenda
@@ -123,7 +119,7 @@ namespace BILTIFUL.Modulo2
 
             ArquivoVenda.salvarArquivo(listItemVenda, "ItemVenda.dat");
 
-            Console.WriteLine("Pressione qualquer tecla");
+            Console.WriteLine("Venda criada com sucesso!");
             Console.ReadKey();
         }
 

@@ -56,10 +56,6 @@ internal class ManipuladorArquivoCompra
                     templista.Add(importarCompraAux(item));
                 }
             }
-            else
-            {
-                Console.WriteLine($"Arquivo {path}{file} inexistente!");
-            }
         }
         catch (Exception e)
         {
@@ -94,10 +90,6 @@ internal class ManipuladorArquivoCompra
                 {
                     templista.Add(importarItemCompraAux(item));
                 }
-            }
-            else
-            {
-                Console.WriteLine($"Arquivo {path}{file} inexistente!");
             }
         }
         catch (Exception e)
